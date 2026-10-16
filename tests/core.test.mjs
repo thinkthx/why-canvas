@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CANVAS, WhyCanvas } from './load.mjs';
+import { CANVAS, WhyCanvas, HTML } from './load.mjs';
 
 const priya = () => ({
   name: 'Priya',
@@ -48,9 +48,9 @@ test('multi-paragraph answers and lines starting with # survive the round trip',
   assert.deepEqual(parseOne(WhyCanvas.toMarkdown(reply)), reply);
 });
 
-test('the purpose statement is written as a sentence, which is not read back as an answer', () => {
+test('the why statement is written as a sentence, which is not read back as an answer', () => {
   const md = WhyCanvas.toMarkdown(priya());
-  assert.match(md, /## 8\. Purpose statement\n\nWe exist to help indie developers who struggle with \[problem\] because of the cloud-by-default habit/);
+  assert.match(md, /## 8\. Why statement\n\nWe exist to help indie developers who struggle with \[problem\] because of the cloud-by-default habit/);
   assert.deepEqual(parseOne(md).answers, priya().answers);
 });
 
@@ -237,4 +237,15 @@ test('a field title from any type reads back, even without a Type line', () => {
 
 test('a placeholder keeps the capital in a title like "What I do"', () => {
   assert.match(WhyCanvas.purposeSentence({}, { type: 'personal' }), /I do it by \[what I do\]\.$/);
+});
+
+test('a copy titled Purpose statement still reads, with no warnings', () => {
+  const md = WhyCanvas.toMarkdown(priya()).replace('## 8. Why statement', '## 8. Purpose statement');
+  const [reply] = WhyCanvas.parseReplies(md).replies;
+  assert.deepEqual(plain(reply.answers), priya().answers);
+  assert.deepEqual(plain(reply.warnings), []);
+});
+
+test('no copy says purpose statement', () => {
+  assert.doesNotMatch(HTML, /purpose statement/i);
 });
