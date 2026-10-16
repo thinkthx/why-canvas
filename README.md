@@ -21,17 +21,18 @@ Replies you paste in stay in the browser where you opened Group view. **Clear al
 
 To see what a finished canvas looks like, choose **See an example** on the start screen. From there, **See a group’s answers** shows Group view with six sample replies, no session needed.
 
-## Make sense of the replies
+## Talk it through
 
-The [synthesis skill](skills/why-canvas-synthesis/SKILL.md) turns a set of replies into a short prep pack for whoever runs the session: themes and how aligned the room is for each section, a quote here and there, up to three why statements with what each one gives up, questions to run the conversation, and gaps. It keeps everyone anonymous and never picks a winner; the room decides. Give it one canvas and it reads that canvas back to you instead.
+The canvas is there to start a conversation. Read the replies together, compare what matters to each person, and work towards a shared why. Group view puts every answer side by side for exactly that.
+
+If you'd like a hand preparing, an AI assistant can help. The [synthesis skill](skills/why-canvas-synthesis/SKILL.md) turns a set of replies into a short prep pack: how aligned the group is on each part of the canvas, a quote here and there, up to three why statements with what each one gives up, questions to ask the room, and gaps. It keeps everyone anonymous and never picks a winner; the room decides. Give it one canvas and it reads that canvas back to you instead.
 
 It works from a folder of `.md` replies, Group view's export, or text pasted in.
 
-- **Any chatbot:** in Group view, choose **Copy prompt for your agent** and paste the result in as it is. It holds the instructions and the replies. Names on the replies become Person 1, Person 2 and so on; what people wrote goes as written, so check answers for anything private first. Or paste in [SKILL.md](skills/why-canvas-synthesis/SKILL.md) and attach the replies.
-- **Claude Code:** copy the `skills/why-canvas-synthesis` folder into your project's `.claude/skills/` (or `~/.claude/skills/` for every project), then ask Claude to make sense of the replies.
-- **Claude's apps:** add the `why-canvas-synthesis` folder as a custom skill (Claude's help explains how for your plan), then share the replies in a chat.
+- **Any AI assistant:** in Group view, choose **Copy AI prompt** and paste the result in as it is. It includes the instructions and all the replies. Reply names become Person 1, Person 2 and so on; the answers stay as written, so check them for anything private first. Or paste in [SKILL.md](skills/why-canvas-synthesis/SKILL.md) and attach the replies.
+- **Assistants that support skills:** add the `skills/why-canvas-synthesis` folder as a skill, then share the replies. In Claude Code, for example, copy it into your project's `.claude/skills/` (or `~/.claude/skills/` for every project).
 
-If you change the skill, run the tests: the page carries a copy of it for Copy prompt, and a test keeps the two in step.
+If you change the skill, run the tests: the page carries a copy of it for Copy AI prompt, and a test keeps the two in step.
 
 ## Make it your own
 

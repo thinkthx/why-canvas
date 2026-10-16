@@ -289,7 +289,7 @@ test('the agent prompt is the skill, then the replies', () => {
 });
 
 test('the Copy prompt note does not overpromise', () => {
-  assert.match(CANVAS.agent.note, /What people wrote goes as written/);
+  assert.match(CANVAS.agent.note, /The answers stay as written/);
 });
 
 test('the People list runs Person 1, 2 … 10, not 1, 10, 2', () => {
@@ -299,8 +299,9 @@ test('the People list runs Person 1, 2 … 10, not 1, 10, 2', () => {
   assert.deepEqual(order, Array.from({ length: 11 }, (_, i) => `Person ${i + 1}`));
 });
 
-test('Group view explains what the prompt is for', () => {
-  assert.equal(CANVAS.agent.heading, 'Make sense of the replies');
-  assert.match(CANVAS.agent.lead, /prep pack/);
-  assert.match(CANVAS.agent.lead, /never picks a winner/);
+test('Group view puts the conversation first, and AI second and optional', () => {
+  assert.equal(CANVAS.agent.heading, 'Talk it through');
+  assert.match(CANVAS.agent.lead, /^Start with a conversation\./);
+  assert.match(CANVAS.agent.lead, /If you’d like a hand preparing, an AI assistant can help/);
+  assert.doesNotMatch(JSON.stringify(CANVAS.agent), /Claude/);
 });

@@ -117,15 +117,16 @@ const CANVAS = {
 
   // Group view's prompt for any agent, and a pointer to the skill.
   agent: {
-    heading: 'Make sense of the replies',
-    lead: 'An AI assistant reads every reply and gives you a short prep pack for the session: where the group agrees and where it splits, up to three why statements to discuss, and questions to ask the room. It never picks a winner; the room decides.',
+    heading: 'Talk it through',
+    lead: 'Start with a conversation. Read the replies together, compare what matters to each person, and work towards a shared why. If you’d like a hand preparing, an AI assistant can help spot patterns and suggest questions to discuss.',
     empty: 'Add some replies first.',
-    copy: 'Copy prompt for your agent',
-    copied: 'Copied. Paste it into your agent as it is.',
+    copy: 'Copy AI prompt',
+    copied: 'Copied. Paste it into your AI assistant as it is.',
     failed: 'Couldn’t copy automatically. The prompt below is selected: copy it with your keyboard.',
-    note: 'The prompt holds the instructions and everyone’s replies. Names on the replies become Person 1, Person 2 and so on. What people wrote goes as written.',
-    hint: 'Using Claude? Install the Why Canvas skill instead:',
-    link: 'get the skill',
+    note: 'The prompt includes all replies. Reply names become Person 1, Person 2, etc. The answers stay as written.',
+    hint: 'You can also use the reusable skill with an AI assistant that supports skills.',
+    link: 'Get the synthesis skill ↗',
+    linkLabel: 'Get the synthesis skill (opens in a new tab)',
     path: '/tree/main/skills/why-canvas-synthesis',
   },
 
@@ -971,8 +972,8 @@ td.numeric { font-variant-numeric: tabular-nums; }
 .type-option .prompt { grid-column: 2; }
 .link-out { flex: 1 1 280px; min-width: 0; font-family: var(--mono); font-size: var(--text-sm); }
 .mismatch { display: block; }
-/* Make sense of the replies: its own panel above Export. */
-.agent { display: flex; flex-direction: column; gap: 12px; padding: 24px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius); }
+/* Talk it through: its own half-width panel above Export. */
+.agent { max-width: 50%; display: flex; flex-direction: column; gap: 12px; padding: 24px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius); }
 .agent a { color: var(--fg1); text-underline-offset: 3px; }
 /* Dialogs: a sheet over the screen; full screen on a phone. */
 .sheet {
@@ -1016,6 +1017,7 @@ td.numeric { font-variant-numeric: tabular-nums; }
   .page { padding: 32px 16px 96px; }
   .sheet { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; border: 0; }
   .sheet-body { padding: 20px 16px 32px; }
+  .agent { max-width: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; scroll-behavior: auto !important; }
@@ -3500,7 +3502,7 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
             }))));
     }
 
-    // Copy prompt for your agent: the skill and the replies, names swapped for Person 1, 2 and so on.
+    // Talk it through: the conversation first; Copy AI prompt sends the skill and the replies, names swapped for Person 1, 2 and so on.
     function agentBlock(empty) {
       const c = CANVAS.agent;
       const out = h('textarea', { class: 'notes md', readonly: true, rows: '8', hidden: true, 'aria-label': 'The prompt for your agent' });
@@ -3519,7 +3521,8 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
         h('p', { class: 'body', text: c.lead }),
         h('div', { class: 'row' }, button, empty ? h('p', { class: 'small', text: c.empty }) : status),
         h('p', { class: 'prompt', text: c.note }),
-        CANVAS.source && h('p', { class: 'prompt' }, `${c.hint} `, h('a', { href: CANVAS.source + c.path, target: '_blank', rel: 'noopener', text: c.link }), '.'),
+        CANVAS.source && h('p', { class: 'prompt', text: c.hint }),
+        CANVAS.source && h('p', {}, h('a', { class: 'small', href: CANVAS.source + c.path, target: '_blank', rel: 'noopener', 'aria-label': c.linkLabel, text: c.link })),
         out);
     }
 

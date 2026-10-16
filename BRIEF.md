@@ -78,7 +78,7 @@ The canvas is the front door. Most people use it on their own or on a shared scr
 
 **Why statement** (16 October). Section 8 is the Why statement, not the Purpose statement. Field ids stay `purpose.*`, and older copies still import (sections match by number).
 
-**Synthesis skill** (16 October). `skills/why-canvas-synthesis/SKILL.md` turns replies into a facilitator's prep pack. Group view's **Copy prompt for your agent** sends the same instructions and the replies, pseudonymised as Person 1 to n, to any chatbot. The page embeds the skill's body; a test keeps it identical to `SKILL.md`. The design is kept outside the repo.
+**Synthesis skill** (16 October). `skills/why-canvas-synthesis/SKILL.md` turns replies into a facilitator's prep pack. Group view's **Talk it through** panel (16 to 17 October) leads with the conversation; AI is optional. Its **Copy AI prompt** sends the same instructions and the replies, pseudonymised as Person 1 to n, to any AI assistant. The page embeds the skill's body; a test keeps it identical to `SKILL.md`. The design is kept outside the repo.
 
 **Credit.** A subtle footer on every screen credits the author and links to the code, from `CANVAS.credit`. Set it to `null` to remove the footer.
 
