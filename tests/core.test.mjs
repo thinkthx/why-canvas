@@ -287,3 +287,7 @@ test('a reply from another group says so', () => {
 test('the agent prompt is the skill, then the replies', () => {
   assert.ok(WhyCanvas.agentPrompt('SKILL', people(), { seed: 1 }).startsWith('SKILL\n\n---\n\n# Why Canvas: all replies'));
 });
+
+test('the Copy prompt note does not overpromise', () => {
+  assert.match(CANVAS.agent.note, /What people wrote goes as written/);
+});

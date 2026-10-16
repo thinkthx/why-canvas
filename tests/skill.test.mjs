@@ -45,3 +45,25 @@ test('the page carries the skill exactly', async () => {
   const { SKILL_EMBED } = await import('./load.mjs');
   assert.equal(SKILL_EMBED.trim(), body.trim());
 });
+
+test('the skill reads exports from the older tool as a group, not a person', () => {
+  assert.ok(body.includes('# Our Why canvas: all replies'));
+  assert.match(body, /`From:` line lists names; never use them/);
+});
+
+test('a combined export is one session whatever its type', () => {
+  assert.match(body, /combined export[^.]*is one session[^.]*whatever its type/i);
+});
+
+test('small groups keep the outline but lose what points at people', () => {
+  assert.match(body, /With 2 to 4 people, keep the outline/);
+  assert.match(body, /Drop the One voice and Quote lines/);
+});
+
+test('an aligned room may say where it landed, and that is not a winner', () => {
+  assert.match(body, /"Where you landed" is allowed: it reports the room's own words, not your judgement/);
+});
+
+test('the pack comes back as plain Markdown', () => {
+  assert.match(body, /Write the pack as plain Markdown, not inside a code block/);
+});

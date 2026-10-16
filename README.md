@@ -27,7 +27,7 @@ The [synthesis skill](skills/why-canvas-synthesis/SKILL.md) turns a set of repli
 
 It works from a folder of `.md` replies, Group view's export, or text pasted in.
 
-- **Any chatbot:** in Group view, choose **Copy prompt for your agent** and paste the result in as it is. It holds the instructions and the replies, with names swapped for Person 1, Person 2 and so on. Or paste in [SKILL.md](skills/why-canvas-synthesis/SKILL.md) and attach the replies.
+- **Any chatbot:** in Group view, choose **Copy prompt for your agent** and paste the result in as it is. It holds the instructions and the replies. Names on the replies become Person 1, Person 2 and so on; what people wrote goes as written, so check answers for anything private first. Or paste in [SKILL.md](skills/why-canvas-synthesis/SKILL.md) and attach the replies.
 - **Claude Code:** copy the `skills/why-canvas-synthesis` folder into your project's `.claude/skills/` (or `~/.claude/skills/` for every project), then ask Claude to make sense of the replies.
 - **Claude's apps:** add the `why-canvas-synthesis` folder as a custom skill (Claude's help explains how for your plan), then share the replies in a chat.
 

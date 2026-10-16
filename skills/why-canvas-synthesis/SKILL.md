@@ -20,7 +20,7 @@ Each reply is one person's canvas in Markdown:
 - Then `## <number>. <section title>` for sections 1 to 8, and `### <field title>` for each answered field, with the answer below. Empty fields are left out. Titles vary by type (a personal canvas says "Why me (the guide)"), so go by the section number.
 - The sections: 1 the hero (who it's for), 2 what they're facing, 3 the villain, 4 why us (the guide), 5 what we offer and the plan, 6 stakes, 7 personal why, 8 the why statement. Section 8 holds the person's finished sentence, then each blank as its own field.
 
-You may instead get one combined export, which starts `# Why Canvas: all replies`. Under each section and field it lists everyone's answers as bullets, labelled `**Name:**` or `**Person 1:**`, or with no label at all. Section 8 has a `### Statements` list. A `People:` list, if present, notes anyone whose type or group differs from the rest.
+You may instead get one combined export, which starts `# Why Canvas: all replies` (older copies: `# Our Why canvas: all replies`). It is many people, never one person called "all replies". Under each section and field it lists everyone's answers as bullets, labelled `**Name:**` or `**Person 1:**`, or with no label at all. Section 8 has a `### Statements` list. A `People:` list, if present, notes anyone whose type or group differs from the rest. A `From:` line lists names; never use them.
 
 The facilitator may have marked answers. Marks follow an answer as `_(starred)_`, `_(agree)_`, `_(diverge)_` or a mix such as `_(starred, diverge)_`. A star means "this caught my eye". Agree marks an answer the facilitator sees as common ground; diverge marks one that pulls away from it.
 
@@ -28,7 +28,8 @@ The facilitator may have marked answers. Marks follow an answer as `_(starred)_`
 
 - **One copy per person.** If someone appears twice, keep the copy with the later `Updated:` and say which you dropped.
 - **One pack per group.** If replies carry different `Group:` or `Type:` values, say so and write a separate pack for each. Never blend two sessions.
-- **People working alone stay alone.** Personal canvases with no shared `Group:` get one read-back each, never a shared pack. Personal canvases that share a `Group:` (a coach's cohort) are a group.
+- **A combined export is one session** the facilitator put together: treat it as a group whatever its type, and split it only where `People:` shows a different group or type.
+- **People working alone stay alone.** Separate personal canvases with no shared `Group:` get one read-back each, never a shared pack. Personal canvases that share a `Group:` (a coach's cohort) are a group.
 - **Not a canvas, not counted.** List any file that isn't a canvas and skip it.
 
 ## How to read
@@ -40,15 +41,17 @@ The facilitator may have marked answers. Marks follow an answer as `_(starred)_`
 | People | Method |
 |---|---|
 | 1 | A read-back of their canvas (outline below). No themes or clusters. |
-| 2 to 4 | Too few to cluster. Compare answers side by side without naming anyone: "Two of you say X; one says Y." Small groups are easy to see through, so skip quotes, and see the why statement rule below. |
+| 2 to 4 | The full pack, adapted for a small group (see below). |
 | 5 to about 30 | The full pack. |
 | More than 30 | The full pack. Choose quotes that represent a theme, and put anything only one or two people said under Gaps. |
 
 These cut-offs are a starting point; use judgement at the edges.
 
+**With 2 to 4 people, keep the outline.** Theme lines become comparisons: "Two of you say X." Drop the One voice and Quote lines, because in a small group they point straight at a person. In section 7, show only what at least two people share; otherwise write "Little to go on."
+
 ## Write the pack
 
-Use this outline exactly: the same headings, in the same order, every time. Every block opens with its verdict. Every line stands on its own. No paragraphs.
+Use this outline exactly: the same headings, in the same order, every time. Every block opens with its verdict. Every line stands on its own. No paragraphs. Write the pack as plain Markdown, not inside a code block.
 
 ```markdown
 # Prep pack: <the group, or the canvas question>
@@ -70,7 +73,7 @@ Use this outline exactly: the same headings, in the same order, every time. Ever
 - Tension: <one line>
 - Ask the room: <one question>
 
-(One block for each of sections 1 to 7. Up to three themes and at most one quote per block. Section 8 has no block; the why statements draw on it.)
+(One block for each of sections 1 to 7. Up to three themes and at most one quote per block. In a count, n is everyone in the pack, not just those who answered that section. Section 8 has no block; the why statements draw on it.)
 
 ## Why statements
 
@@ -98,7 +101,7 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
 
 - **Split or scattered:** up to three statements from genuinely different readings, side by side and equal.
 - **Two to four people:** build each statement from more than one person's answers. If the readings would map one to one onto people, write fewer statements: one statement per person gives everyone away.
-- **Aligned:** say so. Title the first statement "A. Where you landed" and write the statement the room's own words point to. Then add one or two alternatives, there to pressure-test it.
+- **Aligned:** say so. Title the first statement "A. Where you landed" and write the statement the room's own words point to. It still gets its "You'd give up" line. Then add one or two real alternatives (not strawmen) to pressure-test it.
 
 **One person (a read-back):** use this outline instead.
 
@@ -115,7 +118,7 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
 - <For example, a hero in section 1 who never reaches the statement.>
 
 ## Why statements
-<One to three tighter versions of their own statement, each with one line on what it sharpens.>
+<One to three tighter versions of their own statement, each with one line on what it sharpens and one on what it gives up.>
 
 ## Gaps
 - <Sections left empty or thin.>
@@ -124,11 +127,11 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
 ## Hard rules
 
 - **No made-up themes.** A theme needs at least two replies behind it, shown as a count: "(4 of 7)". Anything one person said is "One voice" or goes under Gaps.
-- **No winner.** Never call a statement recommended, best, strongest, the consensus or your pick, in a heading or anywhere else. Each one shows what you'd give up.
+- **No winner.** Never call a statement recommended, best, strongest, the consensus or your pick, in a heading or anywhere else. Each one shows what you'd give up. In an aligned room, "Where you landed" is allowed: it reports the room's own words, not your judgement.
 - **No names.** No names anywhere in the pack: not in quotes, counts, tensions, questions or tables, and no "Person 3 says". If an answer names someone, don't repeat it.
 - **Quotes that can't give anyone away.** At most one per block, short and verbatim. Skip any line that would identify its writer (an employer, a unique role, a story only they would tell) and paraphrase it instead.
-- **Section 7 is private.** Summarise section 7 (personal why, or "why it matters to me") as themes only, and never quote it or tie it to a person.
-- **Their words, not yours.** Build statements from the replies' own words, in the canvas's sentence form. Mark your own interpretation "My read:".
-- **Don't invent.** No session length, timings or agenda, and no facts that aren't in the replies.
+- **Section 7 is private.** Summarise section 7 (personal why, or "why it matters to me") as themes only, and never quote it or tie it to a person. No One voice line in section 7.
+- **Their words, not yours.** Build statements from the replies' own words, in the canvas's sentence form. Outside a statement's Reading line, mark your own interpretation "My read:".
+- **Don't invent.** No session length or timings, and no facts that aren't in the replies. Running the session is a list of questions, not a timed agenda.
 - **Write like a sharp facilitator.** Plain words, short lines anyone could read aloud. No filler such as "delve", "unlock", "leverage", "empower", "seamless", "robust", "tapestry", "holistic" or "it's not just X, it's Y". No em-dashes or en-dashes: use commas, full stops or brackets.
 - **Their language.** Write in the language and spelling the replies use.
