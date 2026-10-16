@@ -1,0 +1,3529 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Why Canvas</title>
+
+<!--
+  CANVAS: all wording lives here. Edit freely; nothing else needs to change.
+  Keep field ids stable once people have started, because replies are matched
+  on section number and field title.
+  Copy may use {group} and {host}. A type's sheet overrides only what reads differently.
+-->
+<script id="canvas-config">
+const CANVAS = {
+  id: 'why-canvas',
+  version: 1,
+  // Used for {host} when the link has no facilitator name.
+  hostFallback: 'your facilitator',
+  // The footer on every screen, and the one place the page names its author.
+  // Make it your own: change it, or set credit to null to remove the footer.
+  credit: { lead: 'Created by', name: 'Rod Sampera', url: 'https://rodsampera.com', site: 'rodsampera.com', code: 'https://github.com/thinkthx/why-canvas', codeLabel: 'Get the code' },
+
+  // Screen copy shared by every type. This base is for working alone or on
+  // a shared screen; groupCopy replaces parts of it when the link names a
+  // host. A type's sheet can override keys in either (copy, groupCopy).
+  copy: {
+    heading: 'Why Canvas',
+    question: 'Why does {group} exist?',
+    intro: [
+      'A short canvas on why {group} exists. Fill it in on your own or on a shared screen. It takes about 20 minutes.',
+      'Rough notes are fine. No wordsmithing.',
+    ],
+    explainHeading: 'How this works',
+    explainLead: 'A minute on what this is, then you’re in.',
+    explainFor: { title: 'What this is for', text: "Getting clear on why {group} exists. Fill it in on your own, or on a shared screen with others. When you want everyone's answers side by side, choose Run it with a group." },
+    explainStory: { title: "It's told as a story", text: "The people we serve are the hero, not us. They face a problem, and something in their way: the villain. We're the guide that helps them get past it. The stakes are what happens if we succeed, or don't. The last step pulls it all into one sentence." },
+    explainHow: { title: 'How to fill it in', text: "Eight sections, about 20 minutes. Rough notes are fine, and you can skip anything that doesn't land. Each section has an info button with a short note on why it's there and what to think about." },
+    explainNext: { title: 'What happens next', text: 'Your answers save on this device as you type. When you’re done, choose Save or send to download your canvas, or copy it to paste somewhere else.' },
+    explainStart: 'Start the canvas',
+    privacy: 'Your answers stay on this device unless you copy or download them.',
+    confidential: "Please don't include anything confidential to your employer.",
+    share: 'Save or send',
+    sendHeading: 'Save or send',
+    keepEditing: 'You can keep editing and save again. The latest copy wins.',
+    sendTo: 'Download your canvas to keep it, or copy it to paste into a message or a document.',
+    copied: 'Copied. Paste it wherever you need it.',
+    nameLabel: 'Your first name',
+    nameHint: 'So it’s clear whose canvas this is.',
+    nameMissing: 'Add your first name first, so it’s clear whose canvas this is.',
+  },
+
+  // Replaces parts of the copy above when the link names a host.
+  groupCopy: {
+    intro: [
+      'Before the session, {host} would like your take on why {group} exists. It takes about 20 minutes.',
+      'Rough notes are fine. No wordsmithing.',
+    ],
+    explainFor: { title: 'What this is for', text: "Before the session, everyone fills in the same canvas on why {group} exists. {host} puts the answers side by side, so the group can see where it agrees and where it doesn't." },
+    explainNext: { title: 'What happens next', text: "Your answers save on this device as you type. When you're done, press Save or send. Copy your canvas and send it to {host} in a message or email, or download it as a Markdown file and send that. You can keep editing and share again." },
+    privacy: 'Your answers stay on this device until you share them with {host}.',
+    sendHeading: 'Share it with {host}',
+    keepEditing: 'You can keep editing and share again. The latest copy wins.',
+    sendTo: 'Copy your canvas and paste it into a message or email to {host}. You can keep editing and share again; {host} uses your latest copy.',
+    copied: 'Copied. Now paste it into a message to {host}.',
+  },
+
+  // The start screen, for anyone who opens the page without a link.
+  start: {
+    heading: 'What are you working on?',
+    lead: 'Why Canvas helps you get clear on why something exists: a community, a team, a product or your own work. Fill it in on your own, on a shared screen, or send it round a group.',
+    typeQuestion: 'What is it?',
+    groupLabel: 'Its name',
+    groupHint: 'Optional. You’ll see “Why does [name] exist?”, so add “the” if it reads better.',
+    nameLabel: 'Your first name',
+    nameHint: 'Optional. It goes on your canvas when you save or send it.',
+    start: 'Start',
+    restore: 'Continue from a copy',
+    example: 'See an example',
+    resume: 'Pick up where you left off',
+    incomplete: {
+      participant: 'This link is missing part of its setup. Choose what you’re working on below, or ask whoever sent it for a new one.',
+      facilitator: 'That Group view link is missing part of its setup. Start a canvas below, then choose Run it with a group.',
+    },
+  },
+
+  // Run it with a group: links for everyone else, and for Group view.
+  group: {
+    open: 'Run it with a group',
+    lead: 'Send everyone the same canvas. When their copies come back, paste them into Group view to see every answer side by side, then present them.',
+    groupLabel: 'Group name',
+    groupHint: 'Optional. People will see “Why does [name] exist?”.',
+    soloGroupHint: 'Optional. For example, a team or a cohort. It keeps this group’s answers apart from others.',
+    hostLabel: 'Your first name',
+    hostHint: 'So people know who to send their canvas to.',
+    shareLink: 'Share with your group',
+    viewLink: 'Your Group view link (keep this)',
+    viewNote: 'Replies you paste in stay in the browser where you open this link.',
+    copy: 'Copy',
+    copied: 'Copied.',
+    copyFailed: 'Selected. Copy it with your keyboard.',
+    openView: 'Open Group view',
+    back: 'Back to my canvas',
+  },
+
+  // An example canvas: one person's filled-in canvas, read-only.
+  example: {
+    label: 'Example',
+    note: 'Nothing here is saved.',
+    start: 'Start your own',
+    groupView: 'See a group’s answers',
+    switchLabel: 'Example type',
+  },
+
+  // The demo banner and the empty Group view.
+  demo: {
+    banner: 'Sample answers. Nothing here is real.',
+    exit: 'Exit demo',
+    try: 'Try it with sample answers',
+    switchLabel: 'Sample group',
+  },
+
+  // The shared structure. Section and field titles are the Markdown contract:
+  // keep them the same for every type. Prompts, examples and help here are
+  // the defaults a type's sheet can override.
+  sections: [
+    {
+      id: 'hero', number: 1, title: "Who it's for (the hero)",
+      help: { why: 'In a good story the people we serve are the hero, not us. Who we serve first shapes every other answer.', think: 'Who shows up today, who we most want to reach, and who would notice if we disappeared.' },
+      fields: [
+        { id: 'hero.primary', title: 'Primary audience', prompt: 'Who do we serve first?' },
+        { id: 'hero.secondary', title: 'Secondary audience', prompt: 'Who else benefits?' },
+        { id: 'hero.tertiary', title: 'Tertiary audience', prompt: 'Who is on the edge, but still in?' },
+        { id: 'hero.one', title: 'Only one group', prompt: 'If we could only serve one group, who is it?' },
+      ],
+    },
+    {
+      id: 'facing', number: 2, title: "What they're facing",
+      help: { why: "People come to us to get past a problem. The surface problem is what they'd say out loud, the internal driver is how it feels, and the bigger change is why it matters.", think: 'One real person you know, and what gets in their way in a normal week.' },
+      fields: [
+        { id: 'facing.surface', title: 'Surface problem', prompt: 'The immediate thing in their way.' },
+        { id: 'facing.internal', title: 'Internal driver', prompt: 'How does it make them feel?', example: 'One or two feelings is enough.' },
+        { id: 'facing.change', title: 'The bigger change', prompt: 'The better world they want to help create.' },
+      ],
+    },
+    {
+      id: 'villain', number: 3, title: 'The villain',
+      help: { why: 'A named villain gives us something to push against and makes the purpose sharper.', think: 'A force, habit or condition, not a company or a person. What makes the problem in section 2 hard?' },
+      fields: [
+        { id: 'villain.name', title: 'The villain', prompt: "What's in their way? Name it.", example: 'Name a force or a habit, not a person or a company.' },
+      ],
+    },
+    {
+      id: 'guide', number: 4, title: 'Why us (the guide)',
+      help: { why: "We're the guide, not the hero. Guides earn trust two ways: they understand the struggle, and they've been through it.", think: "What we've lived through ourselves, and what we've built, shipped or run." },
+      fields: [
+        { id: 'guide.empathy', title: 'Empathy', prompt: 'Why do we understand them?' },
+        { id: 'guide.authority', title: 'Authority', prompt: 'Why are we credible?', example: 'Think of what we have built, shipped or run.' },
+      ],
+    },
+    {
+      id: 'offer', number: 5, title: 'What we offer and the plan',
+      help: { why: 'A purpose needs a plan people can follow, simple enough to remember.', think: 'What we actually do for people, and the smallest first step someone could take this month.' },
+      fields: [
+        { id: 'offer.what', title: 'What we do for them', prompt: 'What do we actually do for them?' },
+        { id: 'offer.steps', title: 'Three simple steps', prompt: 'Three simple steps to get involved.', example: 'A few words per step. Start with the smallest one.' },
+      ],
+    },
+    {
+      id: 'stakes', number: 6, title: 'Stakes',
+      help: { why: "Stakes make the purpose matter. Success gives us something to aim for; failure shows what we'd lose.", think: 'Something you could see or count in two years, and who would feel it if we fizzled.' },
+      fields: [
+        { id: 'stakes.success', title: 'Success in two years', prompt: 'What does success look like in two years?' },
+        { id: 'stakes.fizzle', title: 'If it fizzles', prompt: "What happens if we don't exist, or it fizzles?" },
+      ],
+    },
+    {
+      id: 'personal', number: 7, title: 'Personal why',
+      help: { why: "This only works if each of us knows why we're in it. This is the honest version.", think: 'What you want, what your organisation wants, and your real deal-breakers.' },
+      fields: [
+        { id: 'personal.why', title: 'Why I am here', prompt: 'Why am I personally here, and what does my organisation hope to get from it?' },
+        { id: 'personal.stepback', title: 'What would make me step back', prompt: 'What would make me step back in six months?' },
+      ],
+    },
+    {
+      id: 'purpose', number: 8, title: 'Purpose statement',
+      help: { why: "This pulls it together in one sentence. In the session we'll compare everyone's and look for the common thread.", think: 'Plain words over polish. Use your earlier answers as a starting point.' },
+      template: 'We exist to help {purpose.hero} who struggle with {purpose.problem} because of {purpose.villain}, so that {purpose.change}. We do it by {purpose.what}.',
+      fields: [
+        { id: 'purpose.hero', title: 'Hero', prompt: 'Who we help', prefillFrom: ['hero.one', 'hero.primary'] },
+        { id: 'purpose.problem', title: 'Problem', prompt: 'What they struggle with', prefillFrom: ['facing.surface'] },
+        { id: 'purpose.villain', title: 'Villain', prompt: 'Because of…', prefillFrom: ['villain.name'] },
+        { id: 'purpose.change', title: 'Bigger change', prompt: 'So that…', prefillFrom: ['facing.change'] },
+        { id: 'purpose.what', title: 'What we do', prompt: 'We do it by…', prefillFrom: ['offer.what'] },
+      ],
+    },
+  ],
+
+  // One sheet per type, in the order setup shows them. Each sheet sets
+  // label, description and fallback (used for {group} when there's no
+  // name), and may override copy keys, section help (by section id),
+  // field prompt and example (by field id) and the purpose template.
+  types: {
+    community: {
+      label: 'Community',
+      description: 'A meetup, user group, online group or any group people choose to join.',
+      fallback: 'this community',
+      example: 'Ana’s canvas for Riverbend Coders, a local developer meetup.',
+      copy: {
+        explainStory: { title: "It's told as a story", text: "The people we serve are the hero, not us. They face a problem, and something in their way: the villain. The community is the guide that helps them get past it. The stakes are what happens if we succeed, or don't. The last step pulls it all into one sentence." },
+      },
+    },
+    team: {
+      label: 'Team',
+      description: 'A team or department inside an organisation.',
+      fallback: 'this team',
+      example: 'Grace’s canvas for the Payments team, who run payments for a mid-sized online retailer.',
+      copy: {
+        explainStory: { title: "It's told as a story", text: "The people our work serves are the hero, not us. They face a problem, and something in their way: the villain. The team is the guide that helps them get past it. The stakes are what happens if we succeed, or don't. The last step pulls it all into one sentence." },
+      },
+      groupCopy: {
+        explainFor: { title: 'What this is for', text: "Before the session, everyone on the team fills in the same canvas on why {group} exists. {host} puts the answers side by side, so we can see where we agree and where we don't." },
+      },
+      help: {
+        hero: { think: 'Who comes to us today, who we most want to help, and who would notice if we stopped.' },
+        personal: { think: 'What you want from this work, what you want to grow into, and your real deal-breakers.' },
+      },
+      fields: {
+        'hero.primary': { prompt: 'Who does our work serve first?' },
+        'hero.secondary': { prompt: 'Who else relies on what we do?' },
+        'hero.tertiary': { prompt: 'Who do we affect without always seeing it?' },
+        'guide.authority': { prompt: 'Why should they trust us with it?', example: 'Think of what we have built, shipped or fixed for them.' },
+        'offer.steps': { prompt: 'Three simple steps for working with us.', example: 'A few words per step. Start with the easiest way in.' },
+        'stakes.fizzle': { prompt: "What happens if this team didn't exist, or lost its way?" },
+        'personal.why': { prompt: 'Why am I on this team, and what do I want to get out of it?' },
+        'personal.stepback': { prompt: 'What would make me check out in six months?' },
+      },
+    },
+    product: {
+      label: 'Product',
+      description: 'A product, service or app, and the people who build it.',
+      fallback: 'this product',
+      example: 'Maya’s canvas for Penny Jar, a household budgeting app.',
+      copy: {
+        explainStory: { title: "It's told as a story", text: "The people who use it are the hero, not the product. They face a problem, and something in their way: the villain. The product, and the people behind it, are the guide that helps them get past it. The stakes are what happens if it succeeds, or doesn't. The last step pulls it all into one sentence." },
+      },
+      help: {
+        hero: { why: "In a good story the user is the hero, not the product. Who it's for first shapes every other answer.", think: 'Who uses it today, who we most want to win, and who would notice if it disappeared.' },
+        facing: { why: "People look for something like this to get past a problem. The surface problem is what they'd say out loud, the internal driver is how it feels, and the bigger change is why it matters." },
+        guide: { why: 'The product is the guide, not the hero. People trust a guide that understands their problem and has solved it before.' },
+        stakes: { think: 'Something you could see or count in two years, and who would feel it if the product went away.' },
+      },
+      fields: {
+        'hero.primary': { prompt: 'Who is it for, first?' },
+        'hero.secondary': { prompt: 'Who else gets value from it?' },
+        'hero.tertiary': { prompt: "Who uses it in ways we didn't plan for?" },
+        'hero.one': { prompt: 'If it could only work for one group, who is it?' },
+        'facing.surface': { prompt: 'The immediate thing in their way, before they find us.' },
+        'guide.authority': { prompt: 'Why should they trust us?', example: 'Think of what we have built, shipped or learnt from users.' },
+        'offer.what': { prompt: 'What does the product actually do for them?' },
+        'offer.steps': { prompt: 'Three simple steps from first hearing of it to getting value.', example: 'A few words per step. Start with the very first one.' },
+        'stakes.fizzle': { prompt: 'What happens if it never existed, or it fizzles?' },
+        'personal.why': { prompt: 'Why do I care about this product, and what does my organisation hope to get from it?' },
+        'personal.stepback': { prompt: 'What would make me lose faith in it in six months?' },
+        'purpose.hero': { prompt: 'Who it helps' },
+        'purpose.what': { prompt: 'It does it by…' },
+      },
+      template: '{group} helps {purpose.hero} who struggle with {purpose.problem} because of {purpose.villain}, so that {purpose.change}. It does it by {purpose.what}.',
+    },
+    personal: {
+      label: 'Personal',
+      description: 'Your own purpose: your work, a career move or a project of your own.',
+      fallback: 'my work',
+      example: 'Rae’s canvas: a team lead working out what to do next.',
+      solo: true,
+      copy: {
+        question: "What's my why?",
+        intro: [
+          'A short canvas to get clear on why you do what you do. Fill it in on your own, or with a coach or a group. It takes about 20 minutes.',
+          'Rough notes are fine. No wordsmithing.',
+        ],
+        explainFor: { title: 'What this is for', text: "Getting clear on your own why: who you want to help, what stands in their way, and why you're the one to help. Use it for your work, a career move or a project of your own." },
+        explainStory: { title: "It's told as a story", text: "The people you help are the hero, not you. They face a problem, and something in their way: the villain. You're the guide who helps them get past it. The stakes are what happens if you do, or don't. The last step pulls it all into one sentence." },
+      },
+      groupCopy: {
+        intro: [
+          'Before the session, {host} would like you to fill in your own why. It takes about 20 minutes.',
+          'Rough notes are fine. No wordsmithing.',
+        ],
+        explainFor: { title: 'What this is for', text: 'Before the session, everyone fills in their own canvas. {host} puts the answers side by side, so you can see what you share and where you differ.' },
+      },
+      sectionTitles: {
+        guide: 'Why me (the guide)',
+        offer: 'What I offer and the plan',
+        personal: 'Why it matters to me',
+      },
+      help: {
+        hero: { why: 'Even a personal why is about other people. Who you most want to help shapes every other answer.', think: "Who you love helping, who already asks you for help, and who you'd regret not reaching." },
+        facing: { why: "The people you help are trying to get past something. The surface problem is what they'd say out loud, the internal driver is how it feels, and the bigger change is why it matters.", think: 'One real person you have helped, and what was in their way.' },
+        villain: { why: 'Naming what stands in their way gives your why an edge.', think: 'A force, habit or condition, not a person. What makes their problem hard?' },
+        guide: { why: "You're the guide, not the hero. People trust you because you understand the struggle and you've been through it.", think: "What you've lived through yourself, and what you've built, done or learnt." },
+        offer: { why: 'A why needs a way to act on it, simple enough to start this week.', think: 'What you actually do for people, and the smallest step you could take this month.' },
+        stakes: { why: "Stakes make it matter. Success gives you something to aim for; giving up shows what you'd lose.", think: 'Something you could see in two years, and who would feel it if you stopped.' },
+        personal: { why: 'The honest version: what drives you, and what would make you stop.', think: 'What you get out of it, what you hope it leads to, and your real deal-breakers.' },
+        purpose: { why: 'This pulls it together in one sentence you can come back to.', think: 'Plain words over polish. Use your earlier answers as a starting point.' },
+      },
+      fields: {
+        'hero.primary': { prompt: 'Who do I most want to help?' },
+        'hero.tertiary': { prompt: 'Who is on the edge, but still matters to me?' },
+        'hero.one': { prompt: 'If I could only help one group, who is it?' },
+        'guide.empathy': { prompt: 'Why do I understand them?' },
+        'guide.authority': { prompt: 'Why am I credible?', example: 'Think of what you have built, done or learnt the hard way.' },
+        'offer.what': { title: 'What I do for them', prompt: 'What do I actually do for them?' },
+        'offer.steps': { prompt: 'Three simple steps to act on it.', example: 'A few words per step. Start with one you could do this week.' },
+        'stakes.fizzle': { prompt: "What happens if I don't do this, or give up?" },
+        'personal.why': { prompt: 'Why does this really matter to me?' },
+        'personal.stepback': { prompt: 'What would make me give up on it?' },
+        'purpose.hero': { prompt: 'Who I help' },
+        'purpose.what': { title: 'What I do', prompt: 'I do it by…' },
+      },
+      template: 'I want to help {purpose.hero} who struggle with {purpose.problem} because of {purpose.villain}, so that {purpose.change}. I do it by {purpose.what}.',
+    },
+  },
+};
+</script>
+
+<!--
+  Core: pure logic shared by both views, no DOM. The Markdown here is the
+  contract between the canvas and Group view; tests/core.test.mjs pins it.
+-->
+<script id="core">
+const WhyCanvas = (() => {
+  const TITLE_PREFIX = 'Why Canvas: ';
+  const fields = CANVAS.sections.flatMap((section) => section.fields.map((field) => ({ ...field, section })));
+  const fieldById = Object.fromEntries(fields.map((field) => [field.id, field]));
+  const purposeSection = CANVAS.sections.find((section) => section.template);
+  // A purpose blank is one of the purpose section's own field ids, nothing else.
+  const isBlank = (id) => purposeSection.fields.some((field) => field.id === id);
+
+  const clean = (value) => (typeof value === 'string' ? value.trim() : '');
+  const nameKey = (name) => clean(name).toLowerCase();
+  const answered = (reply, field) => clean(reply.answers[field.id]) !== '';
+
+  const DEFAULT_TYPE = 'community';
+  const TYPES = Object.keys(CANVAS.types);
+  const knownType = (type) => (Object.hasOwn(CANVAS.types, type ?? '') ? type : null);
+  const sheet = (type) => CANVAS.types[knownType(type) ?? DEFAULT_TYPE];
+  // The demo shows the group board, so it covers the types made for groups.
+  const DEMO_TYPES = TYPES.filter((type) => !CANVAS.types[type].solo);
+
+  // Titles can differ by type (a personal canvas says "Why me"). Sections
+  // are read back by number; a field is read back by any type's title.
+  const sectionTitle = (section, type) => sheet(type).sectionTitles?.[section.id] ?? section.title;
+  const fieldTitle = (field, type) => sheet(type).fields?.[field.id]?.title ?? field.title;
+  const titlesOf = (field) => [field.title, ...TYPES.map((type) => CANVAS.types[type].fields?.[field.id]?.title)]
+    .filter(Boolean).map((title) => title.toLowerCase());
+  const lowerFirst = (text) => text[0].toLowerCase() + text.slice(1);
+
+  // Fills {group} and {host}. A fallback ("your facilitator") that opens a
+  // sentence gets a capital; a name someone typed is left as typed.
+  const opensSentence = (before) => /(^|[.!?]\s+)$/.test(before);
+  function tokenValue(token, settings, type, opens) {
+    const given = clean(settings[token]);
+    if (given) return given;
+    const value = token === 'group' ? sheet(type).fallback : CANVAS.hostFallback;
+    return opens ? value[0].toUpperCase() + value.slice(1) : value;
+  }
+  function fill(text, settings = {}, type = DEFAULT_TYPE) {
+    return String(text).replace(/\{(group|host)\}/g, (_, token, offset, whole) =>
+      tokenValue(token, settings, type, opensSentence(whole.slice(0, offset))));
+  }
+
+  const templateFor = (type, group = '') => fill(sheet(type).template ?? purposeSection.template, { group }, type);
+
+  // The copy for one type, with tokens filled in. The UI reads only this.
+  function copyFor(type, settings = {}) {
+    const s = sheet(type);
+    const resolve = (value) => (typeof value === 'string' ? fill(value, settings, type)
+      : Array.isArray(value) ? value.map(resolve)
+      : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([k, v]) => [k, resolve(v)]))
+      : value);
+    return {
+      type: knownType(type) ?? DEFAULT_TYPE,
+      label: s.label,
+      description: s.description,
+      text: resolve({ ...CANVAS.copy, ...s.copy, ...(clean(settings.host) ? { ...CANVAS.groupCopy, ...s.groupCopy } : {}) }),
+      sections: CANVAS.sections.map((section) => ({
+        ...section,
+        title: sectionTitle(section, type),
+        help: resolve({ ...section.help, ...s.help?.[section.id] }),
+        fields: section.fields.map((field) => {
+          const own = { ...field, ...s.fields?.[field.id] };
+          return { ...own, prompt: resolve(own.prompt), example: own.example ? resolve(own.example) : undefined };
+        }),
+      })),
+      template: templateFor(type, settings.group),
+    };
+  }
+
+  // Settings travel in the hash, so they never reach a web server's logs.
+  // Anyone can edit a URL, so names are cleaned and capped (in code points).
+  const LIMITS = { group: 60, host: 30 };
+  function cleanSetting(value, max) {
+    const text = String(value ?? '').replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim();
+    return Array.from(text).slice(0, max).join('').trim();
+  }
+
+  function readSettings(hash) {
+    const params = new URLSearchParams(String(hash ?? '').replace(/^#/, ''));
+    if (params.has('example')) return { view: 'example', type: knownType(params.get('example')) ?? DEFAULT_TYPE, group: '', host: '', incomplete: null };
+    if (params.has('demo')) return { view: 'demo', type: DEMO_TYPES.find((t) => t === params.get('demo')) ?? DEFAULT_TYPE, group: '', host: '', incomplete: null };
+    const group = cleanSetting(params.get('group'), LIMITS.group);
+    const host = cleanSetting(params.get('host'), LIMITS.host);
+    const facilitator = params.has('group-view') || params.has('facilitator');
+    const type = knownType(params.get('type'));
+    if (!type) {
+      const incomplete = [...params.keys()].length ? (facilitator ? 'facilitator' : 'participant') : null;
+      return { view: 'start', type: null, group, host, incomplete };
+    }
+    return { view: facilitator ? 'facilitator' : 'participant', type, group, host, incomplete: null };
+  }
+
+  function settingsHash({ view = 'participant', type, group = '', host = '' }) {
+    if (view === 'demo' || view === 'example') return `#${view}=${encodeURIComponent(type)}`;
+    const params = new URLSearchParams();
+    params.set('type', type);
+    const g = cleanSetting(group, LIMITS.group);
+    const who = cleanSetting(host, LIMITS.host);
+    if (g) params.set('group', g);
+    if (who) params.set('host', who);
+    return `#${view === 'facilitator' ? 'group-view&' : ''}${params}`;
+  }
+
+  const groupKey = (group) => cleanSetting(group, LIMITS.group).toLowerCase() || '_';
+  const storageKey = ({ type, group }, kind) => `whycanvas:${type}:${groupKey(group)}:${kind}`;
+
+  // A line in an answer that starts with # would read back as a heading,
+  // so it gains one backslash on the way out and loses one on the way in.
+  const escapeLine = (line) => (/^\s*\\*#/.test(line) ? line.replace(/^(\s*)/, '$1\\') : line);
+  const unescapeLine = (line) => (/^\s*\\+#/.test(line) ? line.replace(/^(\s*)\\/, '$1') : line);
+
+
+  // The purpose sentence as text runs and blanks, built in one pass over the
+  // type's template: {group} becomes text and only the purpose fields become
+  // blanks, so nothing a person typed is ever read as a blank.
+  function purposeParts(type = DEFAULT_TYPE, group = '') {
+    const parts = [];
+    const before = () => parts.map((part) => part.text ?? 'x').join('');
+    const text = (value) => { if (parts.at(-1)?.text !== undefined) parts.at(-1).text += value; else parts.push({ text: value }); };
+    for (const piece of (sheet(type).template ?? purposeSection.template).split(/(\{[^}]+\})/).filter(Boolean)) {
+      const id = /^\{.+\}$/.test(piece) ? piece.slice(1, -1) : null;
+      if (id && isBlank(id)) parts.push({ field: id });
+      else if (id === 'group' || id === 'host') text(tokenValue(id, { group }, type, opensSentence(before())));
+      else text(piece);
+    }
+    return parts;
+  }
+
+  function purposeSentence(answers, { type = DEFAULT_TYPE, group = '' } = {}) {
+    return purposeParts(type, group).map((part) => part.text
+      ?? (clean(answers[part.field]) || `[${lowerFirst(fieldTitle(fieldById[part.field], type))}]`)).join('');
+  }
+
+  function toMarkdown(reply) {
+    const out = [
+      `# ${TITLE_PREFIX}${clean(reply.name)}`,
+      '',
+      `Canvas: ${CANVAS.id} (v${CANVAS.version})`,
+      ...(clean(reply.type) ? [`Type: ${clean(reply.type)}`] : []),
+      ...(clean(reply.group) ? [`Group: ${clean(reply.group)}`] : []),
+      `Updated: ${reply.updated}`,
+    ];
+    for (const section of CANVAS.sections) {
+      const filled = section.fields.filter((field) => answered(reply, field));
+      if (filled.length === 0) continue;
+      out.push('', `## ${section.number}. ${sectionTitle(section, reply.type)}`);
+      if (section.template) out.push('', purposeSentence(reply.answers, reply));
+      for (const field of filled) {
+        out.push('', `### ${fieldTitle(field, reply.type)}`, '', ...clean(reply.answers[field.id]).split('\n').map(escapeLine));
+      }
+    }
+    return `${out.join('\n')}\n`;
+  }
+
+  function parseOne(lines) {
+    const heading = lines[0].replace(/^#\s+/, '').trim();
+    const name = heading.startsWith(TITLE_PREFIX.trim())
+      ? heading.slice(TITLE_PREFIX.trim().length).trim()
+      : heading.replace(/^.*:\s*/, '').trim();
+    const reply = { name, updated: '', answers: {}, warnings: [] };
+    let section = null;
+    let field = null;
+    let body = [];
+
+    const flush = () => {
+      if (field) {
+        const text = body.map(unescapeLine).join('\n').trim().replace(/\n{3,}/g, '\n\n');
+        if (text) reply.answers[field.id] = text;
+      }
+      field = null;
+      body = [];
+    };
+
+    for (const raw of lines.slice(1)) {
+      const line = raw.replace(/\s+$/, '');
+      const h2 = line.match(/^##\s+(?:(\d+)\.\s*)?(.*)$/);
+      const h3 = line.match(/^###\s+(.*)$/);
+      if (h3) {
+        flush();
+        const title = h3[1].trim().toLowerCase();
+        field = section?.fields.find((f) => titlesOf(f).includes(title)) ?? null;
+        if (!field) reply.warnings.push(`Skipped "${h3[1].trim()}": the canvas has no field with that title${section ? ` in section ${section.number}` : ''}.`);
+      } else if (h2 && !line.startsWith('###')) {
+        flush();
+        section = CANVAS.sections.find((s) => String(s.number) === h2[1])
+          ?? CANVAS.sections.find((s) => TYPES.some((type) => sectionTitle(s, type).toLowerCase() === h2[2].trim().toLowerCase()))
+          ?? null;
+        if (!section) reply.warnings.push(`Skipped section "${line.replace(/^##\s+/, '')}": the canvas has no such section.`);
+      } else if (field) {
+        body.push(line);
+      } else if (!section) {
+        const meta = line.replace(/^\s*[-*•]\s*/, '');
+        const updated = meta.match(/^updated:\s*(.+)$/i);
+        if (updated) reply.updated = updated[1].trim();
+        const type = meta.match(/^type:\s*(.+)$/i);
+        if (type) reply.type = type[1].trim().toLowerCase();
+        const group = meta.match(/^group:\s*(.+)$/i);
+        if (group) reply.group = cleanSetting(group[1], LIMITS.group);
+      }
+    }
+    flush();
+    return reply;
+  }
+
+  function parseReplies(text) {
+    const lines = String(text ?? '').replace(/\r\n?/g, '\n').split('\n');
+    const starts = lines.flatMap((line, i) => (/^#\s+\S/.test(line) ? [i] : []));
+    if (starts.length === 0) {
+      return { replies: [], errors: ["Couldn't find a canvas in that text. It should start with a line like \"# Why Canvas: Name\"."] };
+    }
+    const replies = [];
+    const errors = [];
+    starts.forEach((start, i) => {
+      const reply = parseOne(lines.slice(start, starts[i + 1] ?? lines.length));
+      if (reply.name) replies.push(reply);
+      else errors.push(`A canvas on line ${start + 1} has no name.`);
+    });
+    return { replies, errors };
+  }
+
+  function progress(reply) {
+    const started = CANVAS.sections.filter((section) => section.fields.some((field) => answered(reply, field)));
+    return {
+      started: started.length,
+      total: CANVAS.sections.length,
+      sections: Object.fromEntries(CANVAS.sections.map((section) => [section.id, started.includes(section)])),
+    };
+  }
+
+  function prefillPurpose(answers) {
+    const next = { ...answers };
+    for (const field of purposeSection.fields) {
+      if (clean(next[field.id])) continue;
+      const source = (field.prefillFrom ?? []).map((id) => clean(answers[id])).find(Boolean);
+      if (source) next[field.id] = source;
+    }
+    return next;
+  }
+
+  // Replies are keyed by lower-cased name. A newer copy replaces an older one.
+  function mergeReplies(existing, incoming) {
+    const replies = { ...existing };
+    const added = [];
+    const replaced = [];
+    const skipped = [];
+    for (const { warnings, ...reply } of incoming) {
+      const key = nameKey(reply.name);
+      const current = replies[key];
+      if (!current) added.push(reply.name);
+      else if ((reply.updated || '') > (current.updated || '')) replaced.push(reply.name);
+      else { skipped.push(reply.name); continue; }
+      replies[key] = { ...reply, name: clean(reply.name) };
+    }
+    return { replies, added, replaced, skipped };
+  }
+
+  // The demo: one type's sample replies, read through the real importer.
+  function demoReplies(text, type) {
+    const { replies } = parseReplies(text);
+    return mergeReplies({}, replies.filter((r) => r.type === type)).replies;
+  }
+
+  // An example canvas: the fullest sample of a type.
+  function exampleReply(text, type) {
+    const mine = parseReplies(text).replies.filter((r) => r.type === type);
+    return mine.reduce((best, r) => (progress(r).started > progress(best).started ? r : best), mine[0]);
+  }
+
+  // A demo session uses the samples' own group, so no reply is flagged.
+  function demoSession(text, type) {
+    const replies = demoReplies(text, type);
+    return { settings: { type, group: Object.values(replies)[0]?.group ?? '', host: '' }, replies };
+  }
+
+  // Replies for another session are imported, but say so.
+  function mismatch(reply, { type, group = '' }) {
+    const notes = [];
+    if (clean(reply.group) && groupKey(reply.group) !== groupKey(group)) notes.push(`From a different group: ${clean(reply.group)}.`);
+    if (clean(reply.type) && knownType(reply.type) && reply.type !== type) {
+      notes.push(`Written for a ${CANVAS.types[reply.type].label.toLowerCase()} canvas, not a ${sheet(type).label.toLowerCase()} canvas.`);
+    }
+    return notes;
+  }
+
+  // A seeded shuffle, stable for a given salt and seed, so the order holds
+  // while presenting but can't be matched from one section to the next.
+  function shuffled(items, salt, seed) {
+    let h = 2166136261 ^ seed;
+    for (const ch of String(salt)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+    const random = () => {
+      h = (h + 0x6d2b79f5) | 0;
+      let t = Math.imul(h ^ (h >>> 15), 1 | h);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    const out = [...items];
+    for (let i = out.length - 1; i > 0; i--) {
+      const j = Math.floor(random() * (i + 1));
+      [out[i], out[j]] = [out[j], out[i]];
+    }
+    return out;
+  }
+
+  const highlightKey = (name, fieldId) => `${nameKey(name)}|${fieldId}`;
+
+  // Which replies to show for a section, in what order, and whether to name them.
+  // Anonymised, there are no names and the order is shuffled per section, so
+  // answers can't be matched from one section to the next.
+  function arrange(replies, section, { anonymise, seed }) {
+    const sorted = [...replies].sort((a, b) => a.name.localeCompare(b.name));
+    const ordered = anonymise ? shuffled(sorted, section.id, seed) : sorted;
+    return ordered.map((reply) => ({ reply, label: anonymise ? '' : reply.name }));
+  }
+
+  function highlightNote(highlight) {
+    if (!highlight) return '';
+    const parts = [highlight.star && 'starred', highlight.tag].filter(Boolean);
+    return parts.length ? ` _(${parts.join(', ')})_` : '';
+  }
+
+  function combinedMarkdown(replies, { anonymise = false, seed = 1, highlights = {}, type = '', group = '' } = {}) {
+    const list = (entries) => entries.map(({ label, text, note }) => {
+      const [first, ...rest] = text.split('\n').map(escapeLine);
+      const lead = label ? `**${label}:** ` : '';
+      return [`- ${lead}${first}${rest.length ? '' : note}`, ...rest.map((line, i) => (line ? `  ${line}` : '') + (i === rest.length - 1 ? note : ''))].join('\n');
+    }).join('\n');
+
+    const out = [`# ${TITLE_PREFIX}all replies`, '', `Canvas: ${CANVAS.id} (v${CANVAS.version})`,
+      ...(type ? [`Type: ${type}`] : []), ...(clean(group) ? [`Group: ${clean(group)}`] : []), `Replies: ${replies.length}`];
+    if (!anonymise) out.push(`From: ${[...replies].map((r) => r.name).sort().join(', ')}`);
+    for (const section of CANVAS.sections) {
+      const arranged = arrange(replies, section, { anonymise, seed });
+      const blocks = [];
+      if (section.template) {
+        const sentences = arranged.filter(({ reply }) => section.fields.some((f) => answered(reply, f)))
+          .map(({ reply, label }) => ({ label, text: purposeSentence(reply.answers, reply), note: highlightNote(highlights[highlightKey(reply.name, 'purpose.sentence')]) }));
+        if (sentences.length) blocks.push('', '### Statements', '', list(sentences));
+      }
+      for (const field of section.fields) {
+        const entries = arranged.filter(({ reply }) => answered(reply, field))
+          .map(({ reply, label }) => ({ label, text: clean(reply.answers[field.id]), note: highlightNote(highlights[highlightKey(reply.name, field.id)]) }));
+        if (entries.length) blocks.push('', `### ${fieldTitle(field, type)}`, '', list(entries));
+      }
+      if (blocks.length) out.push('', `## ${section.number}. ${sectionTitle(section, type)}`, ...blocks);
+    }
+    return `${out.join('\n')}\n`;
+  }
+
+  return {
+    DEFAULT_TYPE, TYPES, DEMO_TYPES, knownType, sectionTitle, fieldTitle, fill, templateFor, copyFor,
+    LIMITS, cleanSetting, readSettings, settingsHash, groupKey, storageKey,
+    fields, fieldById, purposeSection, nameKey, highlightKey,
+    toMarkdown, parseReplies, progress, purposeSentence, purposeParts, prefillPurpose,
+    mergeReplies, mismatch, demoReplies, demoSession, exampleReply, shuffled, arrange, combinedMarkdown,
+  };
+})();
+</script>
+
+<!-- Styles: sharp, flat, hairlines, one accent. Light only. Every visual value lives in :root. -->
+<style>
+/* Tokens: restyle here. Nothing below this block sets a colour, font, type size or radius. */
+:root {
+  color-scheme: light;
+  --accent: #2B4C7E;
+  --accent-hover: #213B63;
+  --on-accent: #FFFFFF;
+  --bg: #FFFFFF;
+  --bg-subtle: #F4F4F6;
+  --surface: #FFFFFF;
+  --fg1: #111216;
+  --fg2: #333544;
+  --fg3: #6B6B75;
+  --border: #C8C8CC;
+  --border-strong: #ADAEB4;
+  --invert-bg: #111216;
+  --invert-fg: #FFFFFF;
+  --disabled-bg: #E2E2E6;
+  --disabled-fg: #5E5E68;
+  --shadow-md: 0 6px 20px rgb(15 17 26 / 0.10);
+  --backdrop: rgb(17 18 22 / 0.45);
+  --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, Menlo, Consolas, monospace;
+  /* Type scale; the slide sizes scale with the screen for present mode. */
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-md: 15px;
+  --text-body: 17px;
+  --text-lg: 20px;
+  --text-xl: 24px;
+  --text-2xl: 28px;
+  --text-3xl: 40px;
+  --slide-eyebrow: max(13px, 1.7vh);
+  --slide-small: max(14px, 1.9vh);
+  --slide-text: max(20px, 3vh);
+  --slide-title: max(28px, 5.4vh);
+  --radius: 2px;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --bar-h: 64px;
+}
+
+* { box-sizing: border-box; }
+/* Hidden means hidden, whatever display a rule sets. */
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg1); font: 400 var(--text-body)/1.55 var(--font); }
+h1, h2, h3, p { margin: 0; }
+button, input, textarea { font: inherit; color: inherit; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Focus: a dark ring for contrast, the accent inside it. */
+:focus-visible { outline: 2px solid var(--fg1); outline-offset: 2px; box-shadow: 0 0 0 2px var(--accent); }
+
+/* Type */
+.eyebrow { font-size: var(--text-sm); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg3); }
+.num { font-size: var(--text-sm); font-weight: 600; letter-spacing: 0.04em; color: var(--fg3); font-variant-numeric: tabular-nums; }
+.title { font-size: var(--text-3xl); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; text-wrap: balance; }
+.section-title { font-size: var(--text-lg); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
+.body { font-size: var(--text-body); line-height: 1.55; color: var(--fg2); }
+.small { font-size: var(--text-md); line-height: 1.5; color: var(--fg3); }
+.label { font-size: var(--text-md); font-weight: 600; color: var(--fg1); }
+.prompt { font-size: var(--text-sm); line-height: 1.4; color: var(--fg3); }
+.error { font-size: var(--text-md); font-weight: 600; color: var(--fg1); }
+.error:empty { display: none; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 11px 20px; border: 2px solid transparent; border-radius: var(--radius);
+  font-size: var(--text-md); font-weight: 600; line-height: 1.2; white-space: nowrap; cursor: pointer;
+  transition: background-color 120ms var(--ease), color 120ms var(--ease), border-color 120ms var(--ease);
+}
+.btn svg { flex: none; }
+.btn-primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn-dark { background: var(--invert-bg); color: var(--invert-fg); border-color: var(--invert-bg); }
+.btn-dark:hover { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn-ghost { background: transparent; color: var(--fg1); border-color: var(--fg1); }
+.btn-ghost:hover { background: var(--invert-bg); color: var(--invert-fg); }
+.btn-big { min-height: 48px; padding-left: 28px; padding-right: 28px; }
+.btn-sm { min-height: 36px; padding: 6px 12px; font-size: var(--text-sm); }
+.btn:disabled, .btn:disabled:hover { background: var(--disabled-bg); color: var(--disabled-fg); border-color: var(--disabled-bg); cursor: not-allowed; }
+.btn-ghost[aria-pressed="true"] { background: var(--invert-bg); color: var(--invert-fg); }
+.btn-ghost.agree[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.link {
+  background: none; border: 0; padding: 10px 0; min-height: 44px; cursor: pointer;
+  font-size: var(--text-md); color: var(--fg2); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px;
+}
+.link:hover { color: var(--fg1); text-decoration-thickness: 2px; }
+.link.quiet { font-size: var(--text-sm); color: var(--fg3); }
+
+/* Fields */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.notes {
+  display: block; width: 100%; padding: 10px 12px; font-size: var(--text-md); line-height: 1.5;
+  color: var(--fg1); background: var(--bg-subtle); border: 1px solid transparent; border-radius: 0;
+  resize: vertical; field-sizing: content; min-height: calc(var(--rows, 3) * 1.5em + 22px);
+}
+.notes:focus, .text-input:focus { border-color: var(--accent); }
+.notes::placeholder, .blank::placeholder { color: var(--fg3); opacity: 1; }
+.text-input { width: 100%; padding: 11px 14px; font-size: var(--text-body); color: var(--fg1); background: var(--surface); border: 2px solid var(--border-strong); border-radius: var(--radius); }
+.hint summary { width: fit-content; cursor: pointer; font-size: var(--text-sm); color: var(--fg3); text-decoration: underline; text-underline-offset: 4px; list-style: none; }
+.hint summary::-webkit-details-marker { display: none; }
+.hint p { margin-top: 6px; font-size: var(--text-sm); line-height: 1.4; color: var(--fg2); }
+.md { font: var(--text-sm)/1.5 var(--mono); min-height: 16em; }
+
+/* Switch */
+.switch-row { display: flex; gap: 12px; align-items: flex-start; }
+.switch { flex: none; width: 44px; height: 24px; margin-top: 2px; padding: 2px; border: 0; border-radius: 0; background: var(--border-strong); display: flex; justify-content: flex-start; cursor: pointer; transition: background-color 120ms var(--ease); }
+.switch::after { content: ""; width: 20px; height: 20px; background: var(--surface); display: block; }
+.switch[aria-checked="true"] { background: var(--accent); justify-content: flex-end; }
+.switch[aria-checked="true"]::after { background: var(--on-accent); }
+.switch-text { display: flex; flex-direction: column; gap: 2px; }
+
+/* Banner */
+.banner { padding: 12px 14px; background: var(--bg-subtle); border: 1px solid var(--border); font-size: var(--text-md); line-height: 1.5; color: var(--fg2); }
+.banner strong { color: var(--fg1); }
+
+/* Top bar */
+.topbar { position: sticky; top: 0; z-index: 20; min-height: var(--bar-h); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; background: var(--bg); border-bottom: 1px solid var(--border); }
+.topbar-id { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.wordmark { font-size: var(--text-body); font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; align-self: center; }
+.topbar-name { font-size: var(--text-md); color: var(--fg2); }
+.topbar-meta { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+.progress { display: flex; align-items: center; gap: 12px; font-size: var(--text-md); color: var(--fg2); }
+.segs { display: flex; gap: 3px; }
+.seg { width: 18px; height: 6px; background: var(--bg-subtle); box-shadow: inset 0 0 0 1px var(--border); }
+.seg.done { background: var(--accent); box-shadow: none; }
+.save { display: flex; align-items: center; gap: 8px; font-size: var(--text-md); color: var(--fg2); }
+.save::before { content: ""; width: 8px; height: 8px; flex: none; background: var(--accent); }
+.save.warn { color: var(--fg1); font-weight: 600; }
+.save.warn::before { background: none; border: 2px solid var(--fg1); }
+
+/* Simple pages: start, how this works, restore, share */
+.page { max-width: 680px; margin: 0 auto; padding: 48px 24px 96px; display: flex; flex-direction: column; gap: 24px; }
+.page.wide-page { max-width: 1040px; }
+.page .stack, .sheet .stack { display: flex; flex-direction: column; gap: 12px; }
+/* A hint belongs to its label: 4px under it, 12px above the field. */
+.stack > .label + .prompt { margin-top: -8px; }
+.page-wordmark { font-size: var(--text-md); font-weight: 700; letter-spacing: 0.02em; color: var(--fg3); align-self: flex-start; }
+.row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.explain { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.explain-item { background: var(--surface); padding: 24px; display: flex; flex-direction: column; gap: 8px; }
+
+/* The board */
+.board { max-width: 1440px; margin: 0 auto; padding: 32px 40px 96px; display: flex; flex-direction: column; gap: 16px; }
+.board-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding-bottom: 8px; flex-wrap: wrap; }
+.board-note { font-size: var(--text-md); line-height: 1.5; color: var(--fg3); text-align: right; max-width: 420px; }
+.grid { display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cell { background: var(--surface); padding: 20px 20px 24px; display: flex; flex-direction: column; gap: 16px; scroll-margin-top: calc(var(--bar-h) + 16px); }
+.cell-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.cell-titles { display: flex; flex-direction: column; gap: 4px; }
+
+/* Help toggletip: the info glyph at each section's top right. */
+.help { position: relative; flex: none; margin: -10px -12px 0 0; }
+.info { width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--fg3); cursor: pointer; }
+.info:hover, .info[aria-expanded="true"] { color: var(--fg1); }
+.help-panel { position: absolute; right: 8px; top: 40px; z-index: 15; width: min(320px, calc(100vw - 48px)); padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; background: var(--surface); border: 1px solid var(--fg1); box-shadow: var(--shadow-md); text-align: left; }
+.help-panel[hidden] { display: none; }
+.help-panel h3 { font-size: var(--text-xs); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg3); }
+.help-panel p { font-size: var(--text-md); line-height: 1.5; color: var(--fg2); }
+.help-panel div { display: flex; flex-direction: column; gap: 4px; }
+
+/* The purpose statement sits apart, on its own grey band. */
+.purpose-box { margin-top: 16px; background: var(--bg-subtle); border: 1px solid var(--border); padding: 28px 28px 32px; display: flex; flex-direction: column; gap: 20px; scroll-margin-top: calc(var(--bar-h) + 16px); }
+.purpose-tools { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; justify-content: flex-end; }
+.purpose-tools .link { padding-top: 0; min-height: 0; margin-top: 2px; }
+.sentence-inline { font-size: var(--text-xl); line-height: 2; letter-spacing: -0.01em; color: var(--fg1); max-width: 1200px; }
+.blank {
+  font: 600 var(--text-xl)/1.3 var(--font); color: var(--fg1); background: var(--surface);
+  border: 0; border-bottom: 2px solid var(--fg1); border-radius: 0; padding: 4px 8px; max-width: 100%; min-width: 6ch;
+  display: inline-block; vertical-align: -0.58em; resize: none; overflow: hidden; field-sizing: fixed; white-space: pre-wrap;
+}
+.blank:focus { border-bottom-color: var(--accent); }
+.board-foot { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-top: 16px; flex-wrap: wrap; }
+.board-foot-notes { display: flex; flex-direction: column; gap: 4px; }
+
+/* Group view */
+.tabs { display: flex; gap: 24px; align-self: stretch; }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 0; min-height: 44px; font-size: var(--text-md); font-weight: 600; color: var(--fg3); cursor: pointer; }
+.tab[aria-pressed="true"] { color: var(--fg1); border-bottom-color: var(--fg1); }
+.wide { max-width: 1440px; margin: 0 auto; padding: 32px 40px 96px; display: flex; flex-direction: column; gap: 24px; }
+.drop { border: 1px dashed var(--border-strong); padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.drop.over { border-style: solid; border-color: var(--fg1); background: var(--bg-subtle); }
+table { width: 100%; border-collapse: collapse; font-size: var(--text-md); }
+th, td { text-align: left; padding: 12px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+th { font-size: var(--text-sm); font-weight: 600; letter-spacing: 0.04em; color: var(--fg3); }
+td.numeric { font-variant-numeric: tabular-nums; }
+.report { display: flex; flex-direction: column; gap: 4px; font-size: var(--text-md); color: var(--fg2); }
+.report:empty { display: none; }
+.section-picker { display: flex; flex-wrap: wrap; border: 1px solid var(--border); width: fit-content; }
+.section-picker button { min-width: 44px; min-height: 44px; border: 0; border-right: 1px solid var(--border); background: var(--surface); font-size: var(--text-md); font-weight: 600; cursor: pointer; font-variant-numeric: tabular-nums; }
+.section-picker button:last-child { border-right: 0; }
+.section-picker button[aria-pressed="true"] { background: var(--invert-bg); color: var(--invert-fg); }
+.board-row { display: flex; flex-direction: column; gap: 12px; padding-top: 8px; }
+.cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.answer { border: 1px solid var(--border); background: var(--surface); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.answer.starred { border: 2px solid var(--fg1); padding: 15px; }
+.answer[data-tag="agree"] { box-shadow: inset 4px 0 0 var(--accent); }
+.answer[data-tag="diverge"] { box-shadow: inset 4px 0 0 var(--fg1); }
+.answer-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--text-md); line-height: 1.5; }
+.answer-name { font-size: var(--text-sm); font-weight: 600; color: var(--fg3); }
+.answer-tools { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; }
+.answer-tools svg { display: block; }
+
+/* Present mode: sized to the screen so it reads from across a room. */
+.present { position: fixed; inset: 0; z-index: 40; display: flex; padding: 5vh 4vw 2.5vh; background: var(--bg); color: var(--fg1); }
+.present:focus { outline: none; box-shadow: none; }
+.slide { display: flex; flex-direction: column; gap: 2.8vh; width: 100%; height: 100%; }
+.slide-eyebrow { font-size: var(--slide-small); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg3); }
+.slide-title { font-size: var(--slide-title); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+.slide-grid { flex: 1; min-height: 0; overflow: hidden; display: grid; gap: 2.2vh 1.6vw; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); align-content: start; }
+.slide-card { margin: 0; padding: 2.8vh 1.8vw; background: var(--bg-subtle); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 1.8vh; }
+.slide-card blockquote { margin: 0; font-size: var(--slide-text); line-height: 1.3; white-space: pre-wrap; overflow-wrap: anywhere; }
+.slide-card figcaption { display: flex; align-items: center; gap: 1vw; font-size: var(--slide-small); font-weight: 600; color: var(--fg3); }
+.mark { display: inline-flex; align-items: center; gap: 0.5em; color: var(--fg1); text-transform: uppercase; letter-spacing: 0.08em; }
+.mark::before { content: ""; width: 0.6em; height: 0.6em; background: var(--accent); box-shadow: inset 0 0 0 1px var(--fg1); }
+.slide-foot { display: flex; align-items: center; gap: 16px; font-size: var(--slide-eyebrow); color: var(--fg3); font-variant-numeric: tabular-nums; }
+.slide-foot .btn { border-color: var(--border); color: var(--fg2); }
+.slide-empty { font-size: var(--slide-text); color: var(--fg3); }
+
+/* Responsive */
+/* Setup */
+.steps { margin: 0; padding-left: 1.4em; display: flex; flex-direction: column; gap: 6px; }
+.type-picker { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.type-picker legend { margin-bottom: 8px; padding: 0; }
+.type-option {
+  display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: baseline;
+  padding: 12px 16px; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer;
+}
+.type-option:has(input:checked) { border-color: var(--fg1); box-shadow: inset 0 0 0 1px var(--fg1); }
+.type-option input { margin: 0; width: 18px; height: 18px; accent-color: var(--accent); }
+.type-option .prompt { grid-column: 2; }
+.link-out { flex: 1 1 280px; min-width: 0; font-family: var(--mono); font-size: var(--text-sm); }
+.mismatch { display: block; }
+/* Dialogs: a sheet over the screen; full screen on a phone. */
+.sheet {
+  width: min(640px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); padding: 0;
+  border: 1px solid var(--border-strong); border-radius: var(--radius);
+  background: var(--surface); color: var(--fg1); box-shadow: var(--shadow-md);
+}
+.sheet::backdrop { background: var(--backdrop); }
+.sheet-body { padding: 28px; display: flex; flex-direction: column; gap: 20px; }
+.sheet-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.sheet .title { font-size: var(--text-2xl); }
+.sheet .md { margin-top: 12px; }
+/* Credit */
+.credit { padding: 32px 24px 40px; text-align: center; font-size: var(--text-sm); color: var(--fg3); }
+.credit a { color: inherit; text-underline-offset: 3px; }
+.credit a:hover { color: var(--fg1); }
+.resume { white-space: normal; text-align: left; justify-content: flex-start; }
+.demo-banner {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 24px; background: var(--bg-subtle); border-bottom: 1px solid var(--border);
+}
+
+@media (max-width: 1180px) {
+  .grid-4, .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid-3 > :last-child:nth-child(odd) { grid-column: span 2; }
+}
+@media (max-width: 860px) {
+  .topbar { padding: 12px 16px; position: static; }
+  .topbar-meta { gap: 12px 20px; }
+  .topbar .btn-dark, .topbar .topbar-group { display: none; }
+  .title { font-size: var(--text-2xl); line-height: 1.15; }
+  .board, .wide { padding: 24px 16px 96px; }
+  .board-note { text-align: left; }
+  .grid-4, .grid-3, .explain { grid-template-columns: minmax(0, 1fr); }
+  .grid-3 > :last-child:nth-child(odd) { grid-column: auto; }
+  .cell { padding: 20px 16px 24px; scroll-margin-top: 16px; }
+  .purpose-box { padding: 20px 16px 24px; }
+  .purpose-box .cell-head { flex-wrap: wrap; }
+  .sentence-inline { font-size: var(--text-lg); line-height: 1.9; }
+  .blank { font-size: var(--text-lg); }
+  .page { padding: 32px 16px 96px; }
+  .sheet { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; border: 0; }
+  .sheet-body { padding: 20px 16px 32px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<footer id="credit" class="credit"></footer>
+<div id="live-polite" class="sr-only" aria-live="polite"></div>
+<div id="live-assertive" class="sr-only" aria-live="assertive"></div>
+
+<!-- Demo: made-up replies, read through the real importer. Nothing here is real. -->
+<script id="samples" type="text/plain">
+# Why Canvas: Ana
+
+Canvas: why-canvas (v1)
+Type: community
+Group: Riverbend Coders
+Updated: 2026-10-19T21:42:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+People teaching themselves to code, mostly evenings and weekends
+
+### Secondary audience
+
+Working developers who want to give back
+
+### Only one group
+
+People teaching themselves to code
+
+## 2. What they're facing
+
+### Surface problem
+
+Not knowing what to learn next, or whether they're any good
+
+### Internal driver
+
+Stuck, and a bit embarrassed to ask
+
+### The bigger change
+
+Anyone in town can build something they're proud of
+
+## 3. The villain
+
+### The villain
+
+Learning alone
+
+## 4. Why us (the guide)
+
+### Empathy
+
+Most of us taught ourselves. We remember the 2 am error messages.
+
+### Authority
+
+We've run 30 meetups and helped a dozen people into their first dev job.
+
+## 5. What we offer and the plan
+
+### What we do for them
+
+Meet monthly to build small things together, with someone to ask
+
+### Three simple steps
+
+1. Come to one night
+2. Bring something you're stuck on
+3. Pair with someone once
+
+## 6. Stakes
+
+### Success in two years
+
+A hundred regulars, and newcomers turning into mentors
+
+### If it fizzles
+
+People quietly give up, and think it was them
+
+## 7. Personal why
+
+### Why I am here
+
+Someone did this for me. My employer likes that I mentor.
+
+### What would make me step back
+
+If it turned into recruiters and pitches
+
+## 8. Purpose statement
+
+We exist to help people teaching themselves to code who struggle with not knowing what to learn next because of learning alone, so that anyone in town can build something they're proud of. We do it by meeting monthly to build small things together.
+
+### Hero
+
+people teaching themselves to code
+
+### Problem
+
+not knowing what to learn next
+
+### Villain
+
+learning alone
+
+### Bigger change
+
+anyone in town can build something they're proud of
+
+### What we do
+
+meeting monthly to build small things together
+
+# Why Canvas: Ben
+
+Canvas: why-canvas (v1)
+Type: community
+Group: Riverbend Coders
+Updated: 2026-10-19T22:19:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Career changers
+
+### Secondary audience
+
+Uni students who want something practical
+
+### Only one group
+
+People teaching themselves to code
+
+## 2. What they're facing
+
+### Surface problem
+
+They finish a course and still can't build anything real.
+
+### Internal driver
+
+Like a fraud
+
+## 3. The villain
+
+### The villain
+
+Tutorials that stop at hello world
+
+## 4. Why us (the guide)
+
+### Empathy
+
+Half of us changed careers ourselves.
+
+## 5. What we offer and the plan
+
+### What we do for them
+
+Project nights where you finish something
+
+### Three simple steps
+
+Show up. Pick a starter project. Demo it next month.
+
+## 6. Stakes
+
+### Success in two years
+
+Every regular has shipped one thing they can show an employer.
+
+## 7. Personal why
+
+### Why I am here
+
+I like being useful, and I miss the buzz of building with other people.
+
+## 8. Purpose statement
+
+We exist to help career changers who struggle with courses that don't lead to real work because of tutorials that stop at hello world, so that they can show something they built. We do it by running project nights.
+
+### Hero
+
+career changers
+
+### Problem
+
+courses that don't lead to real work
+
+### Villain
+
+tutorials that stop at hello world
+
+### Bigger change
+
+they can show something they built
+
+### What we do
+
+running project nights
+
+# Why Canvas: Chloe
+
+Canvas: why-canvas (v1)
+Type: community
+Group: Riverbend Coders
+Updated: 2026-10-19T22:56:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+People who think coding "isn't for people like me"
+
+### Tertiary audience
+
+Teachers looking for ideas for their classes
+
+### Only one group
+
+People teaching themselves to code
+
+## 2. What they're facing
+
+### Surface problem
+
+Walking into a room full of people who already seem to know everything.
+
+### Internal driver
+
+Nervous. Out of place.
+
+### The bigger change
+
+Tech in this town looks like the town.
+
+## 3. The villain
+
+### The villain
+
+The idea that you need permission to start
+
+## 4. Why us (the guide)
+
+### Empathy
+
+I was the only woman at my first three meetups. I nearly didn't come back.
+
+### Authority
+
+We already have a code of conduct that works, and people say they feel welcome.
+
+## 6. Stakes
+
+### If it fizzles
+
+The same twenty people talk to each other forever.
+
+## 7. Personal why
+
+### Why I am here
+
+I want the room to look different in two years.
+
+### What would make me step back
+
+If we stop caring who feels welcome.
+
+## 8. Purpose statement
+
+We exist to help people who think coding isn't for them who struggle with feeling out of place because of the idea that you need permission to start, so that tech in this town looks like the town. We do it by making the first night easy.
+
+### Hero
+
+people who think coding isn't for them
+
+### Problem
+
+feeling out of place
+
+### Villain
+
+the idea that you need permission to start
+
+### Bigger change
+
+tech in this town looks like the town
+
+### What we do
+
+making the first night easy
+
+# Why Canvas: Dev
+
+Canvas: why-canvas (v1)
+Type: community
+Group: Riverbend Coders
+Updated: 2026-10-19T23:33:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Working developers who feel stuck in their current role
+
+### Secondary audience
+
+Self-taught people
+
+### Only one group
+
+Working developers who feel stuck
+
+## 2. What they're facing
+
+### Surface problem
+
+No time to learn anything new at work.
+
+### The bigger change
+
+People here grow their careers without having to move to the city.
+
+## 3. The villain
+
+### The villain
+
+Meetups that are just talks
+
+## 4. Why us (the guide)
+
+### Authority
+
+Between us we have a few hundred years of shipping software.
+
+## 5. What we offer and the plan
+
+### What we do for them
+
+Hands-on workshops, not slides
+
+### Three simple steps
+
+1. Pick a workshop
+2. Vote on the next topic
+3. Run a ten-minute lightning demo
+
+## 6. Stakes
+
+### Success in two years
+
+Local companies point new hires our way.
+
+### If it fizzles
+
+Good people leave town for the city.
+
+## 7. Personal why
+
+### Why I am here
+
+Honestly, my company wants to hire from here, and I want people to work with.
+
+### What would make me step back
+
+If it became a recruiting funnel for one company. Including mine.
+
+## 8. Purpose statement
+
+We exist to help working developers who struggle with stalling in their careers because of meetups that are just talks, so that they can grow without leaving town. We do it by running hands-on workshops.
+
+### Hero
+
+working developers
+
+### Problem
+
+stalling in their careers
+
+### Villain
+
+meetups that are just talks
+
+### Bigger change
+
+they can grow without leaving town
+
+### What we do
+
+running hands-on workshops
+
+# Why Canvas: Ellie
+
+Canvas: why-canvas (v1)
+Type: community
+Group: Riverbend Coders
+Updated: 2026-10-20T00:10:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Beginners
+
+### Only one group
+
+People teaching themselves to code
+
+## 2. What they're facing
+
+### Surface problem
+
+Getting stuck on setup before they write a line of code
+
+### Internal driver
+
+Defeated
+
+## 3. The villain
+
+### The villain
+
+Learning alone
+
+## 4. Why us (the guide)
+
+### Empathy
+
+We all lost a weekend to installing something once.
+
+## 5. What we offer and the plan
+
+### What we do for them
+
+A help desk table at every meetup
+
+## 6. Stakes
+
+### Success in two years
+
+Nobody leaves their first night without something running.
+
+## 7. Personal why
+
+### Why I am here
+
+It's the best night of my month.
+
+## 8. Purpose statement
+
+We exist to help beginners who struggle with getting stuck before they start because of learning alone, so that everyone gets to the fun part. We do it by sitting next to them while they set up.
+
+### Hero
+
+beginners
+
+### Problem
+
+getting stuck before they start
+
+### Villain
+
+learning alone
+
+### Bigger change
+
+everyone gets to the fun part
+
+### What we do
+
+sitting next to them while they set up
+
+# Why Canvas: Farid
+
+Canvas: why-canvas (v1)
+Type: community
+Group: Riverbend Coders
+Updated: 2026-10-20T00:47:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Anyone curious about code
+
+### Only one group
+
+People teaching themselves
+
+## 3. The villain
+
+### The villain
+
+Learning alone, mostly
+
+## 8. Purpose statement
+
+We exist to help anyone curious about code who struggle with [problem] because of learning alone, so that [bigger change]. We do it by [what we do].
+
+### Hero
+
+anyone curious about code
+
+### Villain
+
+learning alone
+
+# Why Canvas: Grace
+
+Canvas: why-canvas (v1)
+Type: team
+Group: the Payments team
+Updated: 2026-10-20T01:24:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Product teams who need to take payments without becoming payments experts
+
+### Secondary audience
+
+Finance, who reconcile what we move
+
+### Tertiary audience
+
+Customers at the checkout, who never see us unless something breaks
+
+### Only one group
+
+Product teams who need to take payments
+
+## 2. What they're facing
+
+### Surface problem
+
+Every new payment method takes months to switch on.
+
+### Internal driver
+
+Frustrated, and a bit powerless
+
+### The bigger change
+
+Launching a new way to pay is a config change, not a project.
+
+## 3. The villain
+
+### The villain
+
+Every change needing four approvals
+
+## 4. Why us (the guide)
+
+### Empathy
+
+We've sat in their launch meetings and watched dates slip because of us.
+
+### Authority
+
+We moved $2 billion last year with no major outage.
+
+## 5. What we offer and the plan
+
+### What we do for them
+
+A payments platform other teams can use on their own
+
+### Three simple steps
+
+1. Read the guide
+2. Try it in the sandbox
+3. Book one office hour with us
+
+## 6. Stakes
+
+### Success in two years
+
+Most new payment methods go live without a meeting with us.
+
+### If it fizzles
+
+Teams build their own payment code, and we spend years cleaning it up.
+
+## 7. Personal why
+
+### Why I am here
+
+I want to build something other teams love using. I'd like to lead a platform team one day.
+
+### What would make me step back
+
+If we keep being measured only on incidents.
+
+## 8. Purpose statement
+
+We exist to help product teams who struggle with slow, risky payment changes because of every change needing four approvals, so that launching a new way to pay is a config change. We do it by building a payments platform they can use on their own.
+
+### Hero
+
+product teams
+
+### Problem
+
+slow, risky payment changes
+
+### Villain
+
+every change needing four approvals
+
+### Bigger change
+
+launching a new way to pay is a config change
+
+### What we do
+
+building a payments platform they can use on their own
+
+# Why Canvas: Hamish
+
+Canvas: why-canvas (v1)
+Type: team
+Group: the Payments team
+Updated: 2026-10-20T02:01:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Other engineering teams
+
+### Secondary audience
+
+The risk team
+
+### Only one group
+
+Product teams who need to take payments
+
+## 2. What they're facing
+
+### Surface problem
+
+They can't tell what we'll accept until they've built it.
+
+## 3. The villain
+
+### The villain
+
+Legacy we're scared to touch
+
+## 4. Why us (the guide)
+
+### Authority
+
+We know where every body is buried in the old system.
+
+## 5. What we offer and the plan
+
+### What we do for them
+
+Clear contracts and fast reviews
+
+## 6. Stakes
+
+### If it fizzles
+
+We become the team everyone routes around.
+
+## 7. Personal why
+
+### Why I am here
+
+I like hard problems that matter.
+
+### What would make me step back
+
+Another year of only keeping the lights on.
+
+## 8. Purpose statement
+
+We exist to help other engineering teams who struggle with not knowing what will pass because of legacy we're scared to touch, so that they can build with confidence. We do it by publishing clear contracts.
+
+### Hero
+
+other engineering teams
+
+### Problem
+
+not knowing what will pass
+
+### Villain
+
+legacy we're scared to touch
+
+### Bigger change
+
+they can build with confidence
+
+### What we do
+
+publishing clear contracts
+
+# Why Canvas: Isla
+
+Canvas: why-canvas (v1)
+Type: team
+Group: the Payments team
+Updated: 2026-10-20T02:38:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Customers paying at the checkout
+
+### Only one group
+
+Customers paying at the checkout
+
+## 2. What they're facing
+
+### Surface problem
+
+Declined payments they don't understand.
+
+### Internal driver
+
+Embarrassed at the till
+
+### The bigger change
+
+Paying is the part nobody remembers.
+
+## 3. The villain
+
+### The villain
+
+Being seen as a cost centre
+
+## 4. Why us (the guide)
+
+### Empathy
+
+Every one of us has had a card declined in a queue.
+
+## 6. Stakes
+
+### Success in two years
+
+Fewer failed payments, and we can prove it was us.
+
+## 7. Personal why
+
+### Why I am here
+
+Payments is where the business meets real people's money. I want to get it right for them.
+
+## 8. Purpose statement
+
+We exist to help customers who struggle with failed payments they don't understand because of being seen as a cost centre, so that paying is the part nobody remembers. We do it by treating every decline as a bug.
+
+### Hero
+
+customers
+
+### Problem
+
+failed payments they don't understand
+
+### Villain
+
+being seen as a cost centre
+
+### Bigger change
+
+paying is the part nobody remembers
+
+### What we do
+
+treating every decline as a bug
+
+# Why Canvas: Jun
+
+Canvas: why-canvas (v1)
+Type: team
+Group: the Payments team
+Updated: 2026-10-20T03:15:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Product teams
+
+### Secondary audience
+
+Finance
+
+### Only one group
+
+Product teams who need to take payments
+
+## 2. What they're facing
+
+### Surface problem
+
+They bring us a design, not a problem.
+
+## 3. The villain
+
+### The villain
+
+Requests that arrive as solutions
+
+## 4. Why us (the guide)
+
+### Empathy
+
+We used to be a product team ourselves.
+
+### Authority
+
+We know the regulations better than anyone else in the building.
+
+## 5. What we offer and the plan
+
+### What we do for them
+
+Help shaping the problem before anyone writes code
+
+### Three simple steps
+
+Tell us the outcome. Sketch it with us. Build it together.
+
+## 6. Stakes
+
+### Success in two years
+
+Teams come to us early, not at the end.
+
+## 7. Personal why
+
+### Why I am here
+
+I want to be pulled in early, not blamed late.
+
+### What would make me step back
+
+If we lose the people who know the old system.
+
+## 8. Purpose statement
+
+We exist to help product teams who struggle with payments work that starts in the wrong place because of requests that arrive as solutions, so that the right thing gets built first time. We do it by shaping problems with them early.
+
+### Hero
+
+product teams
+
+### Problem
+
+payments work that starts in the wrong place
+
+### Villain
+
+requests that arrive as solutions
+
+### Bigger change
+
+the right thing gets built first time
+
+### What we do
+
+shaping problems with them early
+
+# Why Canvas: Kiri
+
+Canvas: why-canvas (v1)
+Type: team
+Group: the Payments team
+Updated: 2026-10-20T03:52:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Product teams who want to move quickly and safely
+
+### Only one group
+
+Product teams who need to take payments
+
+## 2. What they're facing
+
+### Surface problem
+
+Waiting weeks for sign-off.
+
+### Internal driver
+
+Blocked
+
+## 3. The villain
+
+### The villain
+
+Every change needing four approvals
+
+## 5. What we offer and the plan
+
+### What we do for them
+
+Guard rails instead of gates
+
+## 6. Stakes
+
+### Success in two years
+
+Most changes need one approval, and incidents still go down.
+
+### If it fizzles
+
+We stay the bottleneck and nobody wants to join the team.
+
+## 7. Personal why
+
+### Why I am here
+
+I'm here because I think we can make safe the same as fast.
+
+## 8. Purpose statement
+
+We exist to help product teams who struggle with waiting weeks for sign-off because of every change needing four approvals, so that safe and fast are the same thing. We do it by building guard rails instead of gates.
+
+### Hero
+
+product teams
+
+### Problem
+
+waiting weeks for sign-off
+
+### Villain
+
+every change needing four approvals
+
+### Bigger change
+
+safe and fast are the same thing
+
+### What we do
+
+building guard rails instead of gates
+
+# Why Canvas: Leo
+
+Canvas: why-canvas (v1)
+Type: team
+Group: the Payments team
+Updated: 2026-10-20T04:29:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Whoever needs to move money
+
+### Only one group
+
+Product teams
+
+## 3. The villain
+
+### The villain
+
+Legacy we're scared to touch
+
+## 8. Purpose statement
+
+We exist to help product teams who struggle with [problem] because of the old system, so that [bigger change]. We do it by [what we do].
+
+### Hero
+
+product teams
+
+### Villain
+
+the old system
+
+# Why Canvas: Maya
+
+Canvas: why-canvas (v1)
+Type: product
+Group: Penny Jar
+Updated: 2026-10-20T05:06:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Households sharing bills: couples, families and share houses
+
+### Secondary audience
+
+Young people managing money on their own for the first time
+
+### Tertiary audience
+
+Parents teaching their kids about pocket money
+
+### Only one group
+
+Households sharing bills
+
+## 2. What they're facing
+
+### Surface problem
+
+Working out who owes what, every single month
+
+### Internal driver
+
+Awkward. Nobody wants to be the one who asks.
+
+### The bigger change
+
+Talking about money at home feels normal, not tense.
+
+## 3. The villain
+
+### The villain
+
+Money talk feeling shameful
+
+## 4. Why us (the guide)
+
+### Empathy
+
+Most of us have lived in a share house with a spreadsheet nobody updated.
+
+### Authority
+
+Forty thousand households use it weekly, and our reviews talk about less arguing.
+
+## 5. What we offer and the plan
+
+### What we do for them
+
+One shared jar for the bills, so everyone can see where it stands
+
+### Three simple steps
+
+1. Make a jar
+2. Invite the house
+3. Add the first bill
+
+## 6. Stakes
+
+### Success in two years
+
+A million households, and "Penny Jar it" is how people say "let's split it".
+
+### If it fizzles
+
+People go back to spreadsheets and sticky notes, and the arguments come back.
+
+## 7. Personal why
+
+### Why I am here
+
+My parents fought about money. I want to make that conversation easier for someone.
+
+### What would make me step back
+
+If we started selling loans to people who are already stretched.
+
+## 8. Purpose statement
+
+Penny Jar helps households sharing bills who struggle with working out who owes what because of money talk feeling shameful, so that talking about money at home feels normal. It does it by giving them one shared jar everyone can see.
+
+### Hero
+
+households sharing bills
+
+### Problem
+
+working out who owes what
+
+### Villain
+
+money talk feeling shameful
+
+### Bigger change
+
+talking about money at home feels normal
+
+### What we do
+
+giving them one shared jar everyone can see
+
+# Why Canvas: Noah
+
+Canvas: why-canvas (v1)
+Type: product
+Group: Penny Jar
+Updated: 2026-10-20T05:43:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+People who have tried budgeting apps and given up
+
+### Only one group
+
+Households sharing bills
+
+## 2. What they're facing
+
+### Surface problem
+
+Apps that make them feel bad for spending.
+
+### Internal driver
+
+Guilty
+
+## 3. The villain
+
+### The villain
+
+Apps that judge you
+
+## 4. Why us (the guide)
+
+### Empathy
+
+I've deleted four budgeting apps myself.
+
+## 5. What we offer and the plan
+
+### What we do for them
+
+Shows where money went without telling you off
+
+## 6. Stakes
+
+### Success in two years
+
+People still open it after a bad month.
+
+## 7. Personal why
+
+### Why I am here
+
+I want to build something kind.
+
+## 8. Purpose statement
+
+Penny Jar helps people who gave up on budgeting who struggle with feeling judged because of apps that judge you, so that they keep going after a bad month. It does it by showing the numbers without the lecture.
+
+### Hero
+
+people who gave up on budgeting
+
+### Problem
+
+feeling judged
+
+### Villain
+
+apps that judge you
+
+### Bigger change
+
+they keep going after a bad month
+
+### What we do
+
+showing the numbers without the lecture
+
+# Why Canvas: Olu
+
+Canvas: why-canvas (v1)
+Type: product
+Group: Penny Jar
+Updated: 2026-10-20T06:20:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Casual and gig workers whose income changes every week
+
+### Secondary audience
+
+Students
+
+### Only one group
+
+Casual and gig workers
+
+## 2. What they're facing
+
+### Surface problem
+
+Every budgeting tool assumes the same pay every fortnight.
+
+### Internal driver
+
+Anxious, and like they're doing it wrong
+
+### The bigger change
+
+A bad week is a bad week, not a crisis.
+
+## 3. The villain
+
+### The villain
+
+Budgets that assume a steady pay cheque
+
+## 4. Why us (the guide)
+
+### Authority
+
+Our support inbox is full of exactly this problem.
+
+## 5. What we offer and the plan
+
+### What we do for them
+
+Jars that fill from whatever comes in, in the order you choose
+
+### Three simple steps
+
+Set your must-pays. Let the rest flow. Check in on payday.
+
+## 6. Stakes
+
+### If it fizzles
+
+We end up as another app built for people who already have it easy.
+
+## 7. Personal why
+
+### Why I am here
+
+This was me at uni.
+
+### What would make me step back
+
+If we only chase the high-income users.
+
+## 8. Purpose statement
+
+Penny Jar helps casual and gig workers who struggle with income that changes every week because of budgets that assume a steady pay cheque, so that a bad week is not a crisis. It does it by filling jars from whatever comes in.
+
+### Hero
+
+casual and gig workers
+
+### Problem
+
+income that changes every week
+
+### Villain
+
+budgets that assume a steady pay cheque
+
+### Bigger change
+
+a bad week is not a crisis
+
+### What we do
+
+filling jars from whatever comes in
+
+# Why Canvas: Pia
+
+Canvas: why-canvas (v1)
+Type: product
+Group: Penny Jar
+Updated: 2026-10-20T06:57:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Couples moving in together
+
+### Only one group
+
+Households sharing bills
+
+## 2. What they're facing
+
+### Surface problem
+
+Not knowing how to start the money conversation.
+
+## 3. The villain
+
+### The villain
+
+Money talk feeling shameful
+
+## 4. Why us (the guide)
+
+### Empathy
+
+We designed it for the conversation, not just the numbers.
+
+## 5. What we offer and the plan
+
+### What we do for them
+
+Prompts that help two people agree how to split things
+
+## 6. Stakes
+
+### Success in two years
+
+Couples tell us it was the easiest talk they had.
+
+## 7. Personal why
+
+### Why I am here
+
+I love working on the part of the product that is about people, not money.
+
+### What would make me step back
+
+If we add ads.
+
+## 8. Purpose statement
+
+Penny Jar helps couples moving in together who struggle with starting the money conversation because of money talk feeling shameful, so that money is just another thing they plan together. It does it by guiding the first conversation.
+
+### Hero
+
+couples moving in together
+
+### Problem
+
+starting the money conversation
+
+### Villain
+
+money talk feeling shameful
+
+### Bigger change
+
+money is just another thing they plan together
+
+### What we do
+
+guiding the first conversation
+
+# Why Canvas: Quinn
+
+Canvas: why-canvas (v1)
+Type: product
+Group: Penny Jar
+Updated: 2026-10-20T07:34:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Busy parents
+
+### Secondary audience
+
+Share houses
+
+### Only one group
+
+Households sharing bills
+
+## 2. What they're facing
+
+### Surface problem
+
+Bills coming out of three accounts on different days
+
+### Internal driver
+
+Overwhelmed
+
+## 3. The villain
+
+### The villain
+
+Too many accounts in too many places
+
+## 4. Why us (the guide)
+
+### Authority
+
+We've connected to every major bank here.
+
+## 5. What we offer and the plan
+
+### What we do for them
+
+One view of every bill, whichever account it comes from
+
+## 6. Stakes
+
+### Success in two years
+
+Nobody in a Penny Jar household misses a bill.
+
+### If it fizzles
+
+Late fees, and the stress that comes with them.
+
+## 7. Personal why
+
+### Why I am here
+
+I want my own household to use it without me nagging.
+
+## 8. Purpose statement
+
+Penny Jar helps busy households who struggle with bills spread across accounts because of too many accounts in too many places, so that nobody misses a bill. It does it by showing every bill in one place.
+
+### Hero
+
+busy households
+
+### Problem
+
+bills spread across accounts
+
+### Villain
+
+too many accounts in too many places
+
+### Bigger change
+
+nobody misses a bill
+
+### What we do
+
+showing every bill in one place
+
+# Why Canvas: Raf
+
+Canvas: why-canvas (v1)
+Type: product
+Group: Penny Jar
+Updated: 2026-10-20T08:11:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+Households
+
+### Only one group
+
+Households sharing bills
+
+## 3. The villain
+
+### The villain
+
+Apps that judge you
+
+## 8. Purpose statement
+
+Penny Jar helps households who struggle with [problem] because of judgement, so that [bigger change]. It does it by [what we do].
+
+### Hero
+
+households
+
+### Villain
+
+judgement
+
+# Why Canvas: Rae
+
+Canvas: why-canvas (v1)
+Type: personal
+Updated: 2026-10-20T08:48:00.000Z
+
+## 1. Who it's for (the hero)
+
+### Primary audience
+
+New team leads, especially people promoted for being great engineers
+
+### Secondary audience
+
+Engineers wondering whether to lead at all
+
+### Tertiary audience
+
+Their managers, who often don't know how to help
+
+### Only one group
+
+New team leads
+
+## 2. What they're facing
+
+### Surface problem
+
+Suddenly being responsible for people, with no training for it
+
+### Internal driver
+
+Out of their depth, and quietly lonely
+
+### The bigger change
+
+A first lead job is a good experience, not a trial by fire
+
+## 3. The villain
+
+### The villain
+
+The idea that good engineers just figure out leading
+
+## 4. Why me (the guide)
+
+### Empathy
+
+I was thrown in at the deep end and nearly quit in my first year.
+
+### Authority
+
+I've led three teams and mentored a dozen new leads since.
+
+## 5. What I offer and the plan
+
+### What I do for them
+
+Mentor new leads through their first six months
+
+### Three simple steps
+
+1. Write down what I wish I'd known
+2. Offer one new lead a monthly coffee
+3. Start a small circle for new leads
+
+## 6. Stakes
+
+### Success in two years
+
+Ten leads I've mentored are leading well, and some are mentoring others.
+
+### If it fizzles
+
+I keep doing it informally, and run out of steam.
+
+## 7. Why it matters to me
+
+### Why I am here
+
+Helping someone through a hard first year is the most useful thing I've done at work.
+
+### What would make me step back
+
+If it turned into selling courses.
+
+## 8. Purpose statement
+
+I want to help new team leads who struggle with being responsible for people with no training because of the idea that good engineers just figure it out, so that their first lead job is a good experience. I do it by mentoring them through their first six months.
+
+### Hero
+
+new team leads
+
+### Problem
+
+being responsible for people with no training
+
+### Villain
+
+the idea that good engineers just figure it out
+
+### Bigger change
+
+their first lead job is a good experience
+
+### What I do
+
+mentoring them through their first six months
+</script>
+
+<!-- App: the start screen and canvas, and Group view at #group-view. -->
+<script id="app">
+(() => {
+
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
+  function h(tag, attrs, ...children) {
+    const el = document.createElement(tag);
+    for (const [key, value] of Object.entries(attrs ?? {})) {
+      if (value == null || value === false) continue;
+      if (key === 'class') el.className = value;
+      else if (key === 'text') el.textContent = value;
+      else if (key === 'value') el.value = value;
+      else if (key === 'style') el.setAttribute('style', value);
+      else if (key.startsWith('on')) el.addEventListener(key.slice(2), value);
+      else el.setAttribute(key, value === true ? '' : value);
+    }
+    for (const child of children.flat(Infinity)) {
+      if (child == null || child === false) continue;
+      el.append(child instanceof Node ? child : document.createTextNode(String(child)));
+    }
+    return el;
+  }
+
+  // Line icons in the Lucide style (ISC licence), drawn in currentColor.
+  const ICONS = {
+    share: ['M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8', 'M16 6l-4-4-4 4', 'M12 2v13'],
+    info: ['M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'M12 16v-4', 'M12 8h.01'],
+    star: ['M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'],
+  };
+  function icon(name, size = 18, filled = false) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    for (const [k, v] of Object.entries({ viewBox: '0 0 24 24', width: size, height: size, 'aria-hidden': 'true', fill: filled ? 'currentColor' : 'none', stroke: 'currentColor', 'stroke-width': '2', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' })) svg.setAttribute(k, v);
+    for (const d of ICONS[name]) {
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', d);
+      svg.append(path);
+    }
+    return svg;
+  }
+
+  const storage = {
+    ok: (() => {
+      try { localStorage.setItem('whycanvas:probe', '1'); localStorage.removeItem('whycanvas:probe'); return true; } catch { return false; }
+    })(),
+    read(key) { try { return JSON.parse(localStorage.getItem(key) ?? 'null'); } catch { return null; } },
+    write(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; } },
+    remove(key) { try { localStorage.removeItem(key); } catch { /* nothing to remove */ } },
+  };
+
+  function announce(text, assertive = false) {
+    const region = $(assertive ? '#live-assertive' : '#live-polite');
+    region.textContent = '';
+    setTimeout(() => { region.textContent = text; }, 50);
+  }
+
+  const listFormat = new Intl.ListFormat('en-AU', { type: 'conjunction' });
+  const clock = (iso) => new Date(iso).toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit' });
+  const dayClock = (iso) => (iso ? new Date(iso).toLocaleString('en-AU', { weekday: 'short', hour: 'numeric', minute: '2-digit' }) : '–');
+  const slug = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'canvas';
+  const two = (n) => String(n).padStart(2, '0');
+  const fieldDomId = (field) => `f-${field.id.replace('.', '-')}`;
+  const wordmark = (cls) => h('span', { class: cls, text: 'Why Canvas' });
+
+  function autosize(el) {
+    if (CSS.supports?.('field-sizing', 'content')) return;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight + 2}px`;
+  }
+
+  // Inline blanks are as wide as their text, up to the line, then wrap and grow taller.
+  const measure = document.createElement('canvas').getContext('2d');
+  function sizeBlank(el) {
+    if (!el.isConnected) return;
+    const style = getComputedStyle(el);
+    measure.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    const text = el.value || el.placeholder;
+    const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+    el.style.width = `min(100%, ${Math.ceil(measure.measureText(text).width + padding + 4)}px)`;
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight + parseFloat(style.borderBottomWidth)}px`;
+  }
+  const sizeBlanks = () => { for (const el of $$('.blank')) sizeBlank(el); };
+  window.addEventListener('resize', sizeBlanks);
+  document.fonts?.ready.then(sizeBlanks);
+
+  function download(filename, text, type) {
+    const url = URL.createObjectURL(new Blob([text], { type }));
+    const a = h('a', { href: url, download: filename });
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  async function copyText(text, fallback) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      fallback.focus();
+      fallback.select();
+      try { return document.execCommand('copy'); } catch { return false; }
+    }
+  }
+
+  function switchButton(id, checked, onChange) {
+    const button = h('button', { type: 'button', class: 'switch', role: 'switch', id, 'aria-checked': String(!!checked) });
+    button.addEventListener('click', () => {
+      const next = button.getAttribute('aria-checked') !== 'true';
+      button.setAttribute('aria-checked', String(next));
+      onChange(next);
+    });
+    return button;
+  }
+
+  // One help toggletip open at a time; a click elsewhere or Esc closes it.
+  let openTip = null;
+  function closeTip(returnFocus = false) {
+    if (!openTip) return;
+    const tip = openTip;
+    openTip = null;
+    tip.show(false);
+    if (returnFocus) tip.button.focus();
+  }
+  document.addEventListener('click', (event) => { if (openTip && !openTip.wrap.contains(event.target)) closeTip(); });
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && openTip) closeTip(true); });
+
+  function helpTip(section) {
+    if (!section.help) return null;
+    const id = `help-${section.id}`;
+    const panel = h('div', { class: 'help-panel', id, hidden: true },
+      h('div', {}, h('h3', { text: 'Why this step' }), h('p', { text: section.help.why })),
+      h('div', {}, h('h3', { text: 'Think about' }), h('p', { text: section.help.think })));
+    const button = h('button', { type: 'button', class: 'info', 'aria-expanded': 'false', 'aria-controls': id, 'aria-label': `About ${section.title}` }, icon('info', 20));
+    const wrap = h('div', { class: 'help' }, button, panel);
+    const tip = {
+      button, wrap,
+      show(open) { button.setAttribute('aria-expanded', String(open)); panel.hidden = !open; },
+    };
+    button.addEventListener('click', () => {
+      const opening = panel.hidden;
+      closeTip();
+      if (opening) { tip.show(true); openTip = tip; }
+    });
+    return wrap;
+  }
+
+  // A dialog over the current screen. Close, Esc and the browser's Back all
+  // shut it: opening adds a history entry with the same address, so Back
+  // closes the dialog instead of leaving the canvas. Every way out goes
+  // through finish(), rather than the dialog's close event, which some
+  // browsers don't fire reliably.
+  function openDialog(label, ...content) {
+    let done = false;
+    const finish = (stepBack) => {
+      if (done) return;
+      done = true;
+      window.removeEventListener('popstate', onBack);
+      if (dialog.open) dialog.close();
+      dialog.remove();
+      // Closed in place: step back over the entry opening added.
+      if (stepBack && history.state?.dialog) history.back();
+    };
+    const onBack = () => finish(false);
+    const dialog = h('dialog', {
+      class: 'sheet', 'aria-label': label,
+      onkeydown: (event) => { if (event.key === 'Escape') { event.preventDefault(); finish(true); } },
+      onclose: () => finish(true),
+    },
+    h('div', { class: 'sheet-body' },
+      h('div', { class: 'sheet-head' },
+        h('h2', { class: 'title', text: label }),
+        h('button', { type: 'button', class: 'btn btn-ghost btn-sm', text: 'Close', onclick: () => finish(true) })),
+      ...content));
+    dialog.finish = finish;
+    document.body.append(dialog);
+    history.pushState({ dialog: true }, '', location.href);
+    window.addEventListener('popstate', onBack);
+    dialog.showModal();
+    return dialog;
+  }
+  // Leaving for another screen: the new screen takes the dialog's history
+  // entry, so one Back returns to the canvas. A bare '#' keeps it in-page.
+  const leaveDialog = (dialog, hash) => { dialog.finish(false); location.replace(`${location.href.replace(/#.*$/, '')}${hash || '#'}`); };
+
+  // ---------------------------------------------------------------- participant
+
+  // Carries a new or restored draft from the start screen to the canvas, which
+  // opens under its own link once the type is known.
+  let handoff = null;
+  const LAST = 'whycanvas:last';
+
+  function participant(root, settings, { example = null } = {}) {
+    const chooser = !settings.type;
+    // An example is someone else's filled-in canvas: read-only, never saved.
+    const viewing = !!example;
+    const words = WhyCanvas.copyFor(settings.type, settings);
+    const sections = words.sections;
+    const purpose = sections.find((s) => s.template);
+    const fieldById = Object.fromEntries(sections.flatMap((s) => s.fields).map((f) => [f.id, f]));
+    const KEY = chooser || viewing ? null : WhyCanvas.storageKey(settings, 'draft');
+    const stored = KEY ? storage.read(KEY) : null;
+    let draft = viewing ? { ...example, introSeen: true }
+      : stored && typeof stored.answers === 'object' && typeof stored.name === 'string' ? stored : null;
+    if (draft) Object.assign(draft, { type: settings.type, group: settings.group });
+    let saveTimer = null;
+    let failed = !storage.ok;
+
+    const blank = (name) => ({ name, type: settings.type, group: settings.group, updated: new Date().toISOString(), answers: {} });
+    const here = () => WhyCanvas.settingsHash({ view: 'participant', ...settings });
+
+    function save() {
+      if (viewing) return;
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => {
+        const ok = storage.ok && storage.write(KEY, draft);
+        if (ok) storage.write(LAST, here());
+        if (ok === failed) announce(ok ? 'Saving on this device again.' : statusText(false), !ok);
+        failed = !ok;
+        renderStatus();
+      }, 250);
+    }
+
+    function change(mutate) {
+      mutate(draft);
+      draft.updated = new Date().toISOString();
+      renderProgress();
+      save();
+    }
+
+    const statusText = (ok) => (ok
+      ? `Saved ${clock(draft.updated)}`
+      : 'Not saving: this browser is blocking storage. Copy your answers before you close the tab.');
+
+    function renderStatus() {
+      const el = $('#save-status');
+      if (!el) return;
+      el.textContent = failed ? 'Not saving' : statusText(true);
+      el.title = failed ? statusText(false) : 'Saved on this device';
+      el.className = `save${failed ? ' warn' : ''}`;
+    }
+
+    function renderProgress() {
+      const p = WhyCanvas.progress(draft);
+      const text = $('#progress-text');
+      if (text) text.textContent = `${p.started} of ${p.total} sections`;
+      for (const section of sections) $(`[data-seg="${section.id}"]`)?.classList.toggle('done', p.sections[section.id]);
+    }
+
+    // Running it with a group is for whoever started the canvas, not for people on a group's link.
+    const groupButton = (cls) => !settings.host && !viewing && h('button', { type: 'button', class: cls, text: CANVAS.group.open, onclick: showGroup });
+    const shareButton = (cls) => h('button', { type: 'button', class: cls, onclick: showSend }, icon('share'), words.text.share);
+
+    // ---- pieces of the board
+
+    function topBar() {
+      return h('header', { class: 'topbar' },
+        h('div', { class: 'topbar-id' },
+          wordmark('wordmark'),
+          h('span', { class: 'topbar-name', text: draft.name ? `${draft.name}’s canvas` : 'Your canvas' })),
+        h('div', { class: 'topbar-meta' },
+          h('div', { class: 'progress' },
+            h('div', { class: 'segs', 'aria-hidden': 'true' }, sections.map((s) => h('span', { class: 'seg', 'data-seg': s.id }))),
+            h('span', { id: 'progress-text' })),
+          !viewing && h('p', { id: 'save-status', class: 'save', role: 'status' }),
+          groupButton('link quiet topbar-group'),
+          !viewing && shareButton('btn btn-dark')));
+    }
+
+    function fieldBlock(field, rows) {
+      const id = fieldDomId(field);
+      const box = h('textarea', {
+        id, class: 'notes', rows: String(rows), style: `--rows:${rows}`, placeholder: 'Notes', 'aria-describedby': `${id}-prompt`, readonly: viewing,
+        oninput: (event) => {
+          autosize(event.target);
+          const value = event.target.value;
+          change((d) => { if (value.trim()) d.answers[field.id] = value; else delete d.answers[field.id]; });
+        },
+      });
+      box.value = draft.answers[field.id] ?? '';
+      return h('div', { class: 'field' },
+        h('label', { for: id, class: 'label', text: field.title }),
+        h('p', { id: `${id}-prompt`, class: 'prompt', text: field.prompt }),
+        box,
+        field.example && h('details', { class: 'hint' }, h('summary', { text: 'Hint' }), h('p', { text: field.example })));
+    }
+
+    const sectionHeading = (section) => h('div', { class: 'cell-titles' },
+      h('span', { class: 'num', 'aria-hidden': 'true', text: two(section.number) }),
+      h('h2', { class: 'section-title', id: `h-${section.id}` }, h('span', { class: 'sr-only', text: `Section ${section.number}: ` }), section.title));
+
+    function purposeSentence() {
+      return h('p', { class: 'sentence-inline' }, WhyCanvas.purposeParts(words.type, settings.group).map((part) => {
+        if (part.text) return part.text;
+        const field = fieldById[part.field];
+        const input = h('textarea', {
+          class: 'blank', rows: '1', id: fieldDomId(field), 'aria-label': `${field.title}: ${field.prompt}`, readonly: viewing,
+          placeholder: field.title[0].toLowerCase() + field.title.slice(1), autocomplete: 'off', spellcheck: 'true',
+          onkeydown: (event) => { if (event.key === 'Enter') event.preventDefault(); },
+          oninput: (event) => {
+            sizeBlank(event.target);
+            const value = event.target.value.replace(/\n/g, ' ');
+            change((d) => { if (value.trim()) d.answers[field.id] = value; else delete d.answers[field.id]; });
+          },
+        });
+        input.value = draft.answers[field.id] ?? '';
+        return input;
+      }));
+    }
+
+    function prefillButton(section) {
+      if (viewing) return null;
+      return h('button', {
+        type: 'button', class: 'link', text: 'Use my earlier answers',
+        onclick: () => {
+          const next = WhyCanvas.prefillPurpose(draft.answers);
+          if (JSON.stringify(next) === JSON.stringify(draft.answers)) {
+            announce('Nothing to fill: the blanks are done, or sections 1, 2, 3 and 5 are empty.');
+            return;
+          }
+          change((d) => { d.answers = next; });
+          for (const field of section.fields) {
+            const input = $(`#${fieldDomId(field)}`);
+            input.value = draft.answers[field.id] ?? '';
+            sizeBlank(input);
+          }
+          announce('Filled the empty blanks from your earlier answers.');
+        },
+      });
+    }
+
+    // ---- screens
+
+    function showStart() {
+      const c = CANVAS.start;
+      let type = WhyCanvas.DEFAULT_TYPE;
+      const field = (id, label, hint, attrs) => {
+        const input = h('input', { type: 'text', id, class: 'text-input', 'aria-describedby': `${id}-hint`, ...attrs });
+        return { input, block: h('div', { class: 'stack' }, h('label', { for: id, class: 'label', text: label }), h('p', { id: `${id}-hint`, class: 'prompt', text: hint }), input) };
+      };
+      const group = chooser && field('group', c.groupLabel, c.groupHint, { maxlength: String(WhyCanvas.LIMITS.group), autocomplete: 'off', value: settings.group });
+      const name = field('name', c.nameLabel, c.nameHint, { autocomplete: 'given-name' });
+      const last = chooser && storage.read(LAST);
+      const begin = (next) => {
+        const target = chooser ? { view: 'participant', type, group: CANVAS.types[type].solo ? '' : group.input.value, host: '' } : null;
+        if (!target) { draft = next; save(); return draft.introSeen ? showCanvas() : showExplain(); }
+        handoff = next;
+        location.hash = WhyCanvas.settingsHash(target);
+      };
+      root.replaceChildren(h('main', { class: 'page' },
+        wordmark('page-wordmark'),
+        h('h1', { class: 'title', text: chooser ? c.heading : words.text.question }),
+        h('p', { class: 'body', text: chooser ? c.lead : words.text.intro[0] }),
+        settings.incomplete && h('p', { class: 'banner', role: 'alert', text: c.incomplete[settings.incomplete] }),
+        typeof last === 'string' && WhyCanvas.readSettings(last).view === 'participant' && h('div', {},
+          h('a', { class: 'btn btn-ghost resume', href: last, text: `${c.resume}: ${WhyCanvas.copyFor(WhyCanvas.readSettings(last).type, WhyCanvas.readSettings(last)).text.question}` })),
+        h('form', {
+          class: 'stack',
+          onsubmit: (event) => { event.preventDefault(); begin(blank(name.input.value.trim())); },
+        },
+        chooser && h('fieldset', { class: 'type-picker' },
+          h('legend', { class: 'label', text: c.typeQuestion }),
+          WhyCanvas.TYPES.map((id) => h('label', { class: 'type-option' },
+            h('input', { type: 'radio', name: 'type', value: id, checked: id === type, onchange: () => { type = id; group.block.hidden = !!CANVAS.types[id].solo; } }),
+            h('span', { class: 'label', text: CANVAS.types[id].label }),
+            h('span', { class: 'prompt', text: CANVAS.types[id].description })))),
+        chooser && group.block,
+        name.block,
+        h('div', { class: 'row' }, h('button', { class: 'btn btn-primary btn-big', type: 'submit', text: c.start }))),
+        h('div', { class: 'row' },
+          h('button', { class: 'link', type: 'button', onclick: showRestore, text: c.restore }),
+          chooser && h('button', { class: 'link', type: 'button', text: c.example, onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'example', type }); } })),
+      ));
+      window.scrollTo(0, 0);
+      (chooser ? $('input[name="type"]', root) : name.input).focus();
+    }
+
+    // The step between name and canvas: what this is and how it works.
+    function showExplain() {
+      const start = h('button', {
+        class: 'btn btn-primary btn-big', type: 'button', text: words.text.explainStart,
+        onclick: () => { draft.introSeen = true; save(); showCanvas(); },
+      });
+      root.replaceChildren(h('main', { class: 'page wide-page' },
+        wordmark('page-wordmark'),
+        h('div', { class: 'stack' },
+          h('h1', { class: 'title', text: words.text.explainHeading }),
+          h('p', { class: 'body', text: draft.name ? `Hi ${draft.name}. ${words.text.explainLead}` : words.text.explainLead })),
+        h('div', { class: 'explain' }, [words.text.explainFor, words.text.explainStory, words.text.explainHow, words.text.explainNext].map((item) => h('section', { class: 'explain-item' },
+          h('h2', { class: 'section-title', text: item.title }),
+          h('p', { class: 'body', text: item.text })))),
+        h('p', { class: 'banner' }, h('strong', { text: `${words.text.privacy} ` }), words.text.confidential),
+        h('div', { class: 'row' }, start),
+      ));
+      window.scrollTo(0, 0);
+      start.focus();
+    }
+
+    function showRestore() {
+      const box = h('textarea', { id: 'restore', class: 'notes md', rows: '10', 'aria-describedby': 'restore-help restore-error' });
+      const error = h('p', { id: 'restore-error', class: 'error', role: 'alert' });
+      root.replaceChildren(h('main', { class: 'page' },
+        wordmark('page-wordmark'),
+        h('h1', { class: 'title', text: 'Continue from a copy' }),
+        h('p', { id: 'restore-help', class: 'body', text: 'Paste the canvas you copied earlier, starting with “# Why Canvas”.' }),
+        h('label', { for: 'restore', class: 'sr-only', text: 'Your copied canvas' }), box, error,
+        h('div', { class: 'row' },
+          h('button', {
+            class: 'btn btn-primary', type: 'button', text: 'Continue',
+            onclick: () => {
+              const { replies, errors } = WhyCanvas.parseReplies(box.value);
+              if (replies.length !== 1) { error.textContent = errors[0] ?? 'That looks like more than one canvas. Paste just yours.'; return; }
+              const hasAnswers = draft && Object.keys(draft.answers).length > 0;
+              if (hasAnswers && !confirm('Replace the answers on this device with the pasted copy?')) return;
+              const { warnings, ...reply } = replies[0];
+              if (warnings.length) announce(`Restored, with ${warnings.length} answer${warnings.length > 1 ? 's' : ''} that no longer match the canvas.`);
+              if (chooser) {
+                // A copy says what it was for, so it opens under its own link.
+                handoff = { ...reply, introSeen: true };
+                location.hash = WhyCanvas.settingsHash({ view: 'participant', type: WhyCanvas.knownType(reply.type) ?? WhyCanvas.DEFAULT_TYPE, group: reply.group ?? '' });
+                return;
+              }
+              draft = { ...reply, type: settings.type, group: settings.group, introSeen: true };
+              save();
+              showCanvas();
+            },
+          }),
+          h('button', { class: 'btn btn-ghost', type: 'button', text: 'Back', onclick: () => (draft ? showCanvas() : showStart()) })),
+      ));
+      box.focus();
+    }
+
+    function startAgain() {
+      if (!confirm('Remove these answers from this device and start again? Copy them first if you need them.')) return;
+      storage.remove(KEY);
+      storage.remove(LAST);
+      draft = null;
+      if (settings.host) showStart(); else location.hash = '';
+    }
+
+    // Who wrote the example and what for, with a way to switch types or start your own.
+    function exampleBanner() {
+      const c = CANVAS.example;
+      return h('div', { class: 'demo-banner', role: 'region', 'aria-label': c.label },
+        h('p', { class: 'body' }, h('strong', { text: `${c.label}: ` }), `${CANVAS.types[settings.type].example} ${c.note}`),
+        h('div', { class: 'row', role: 'group', 'aria-label': c.switchLabel },
+          WhyCanvas.TYPES.map((id) => h('button', {
+            type: 'button', class: 'btn btn-ghost btn-sm', 'aria-pressed': String(id === settings.type), text: CANVAS.types[id].label,
+            onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'example', type: id }); },
+          }))),
+        h('div', { class: 'row' },
+          !CANVAS.types[settings.type].solo && h('button', { type: 'button', class: 'btn btn-ghost btn-sm', text: c.groupView, onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'demo', type: settings.type }); } }),
+          h('button', { type: 'button', class: 'btn btn-dark btn-sm', text: c.start, onclick: () => { location.hash = ''; } })));
+    }
+
+    // The board: all eight sections in view, the purpose statement apart on its own band.
+    function showCanvas() {
+      const plain = sections.filter((s) => !s.template);
+      const cell = (section) => h('section', { class: 'cell', id: `s-${section.id}`, 'aria-labelledby': `h-${section.id}` },
+        h('div', { class: 'cell-head' }, sectionHeading(section), helpTip(section)),
+        section.fields.map((field) => fieldBlock(field, section.fields.length === 1 ? 6 : 3)));
+
+      root.replaceChildren(...[
+        viewing && exampleBanner(),
+        topBar(),
+        h('main', { class: 'board' },
+          h('div', { class: 'board-head' },
+            h('h1', { class: 'title', text: words.text.question }),
+            h('p', { class: 'board-note', text: words.text.intro[1] })),
+          h('div', { class: 'grid grid-4' }, plain.slice(0, 4).map(cell)),
+          h('div', { class: 'grid grid-3' }, plain.slice(4).map(cell)),
+          h('section', { class: 'purpose-box', id: `s-${purpose.id}`, 'aria-labelledby': `h-${purpose.id}` },
+            h('div', { class: 'cell-head' },
+              sectionHeading(purpose),
+              h('div', { class: 'purpose-tools' }, prefillButton(purpose), helpTip(purpose))),
+            purposeSentence()),
+          viewing ? h('div', { class: 'board-foot' }, h('p', { class: 'small', text: CANVAS.example.note }),
+            h('button', { type: 'button', class: 'btn btn-primary btn-big', text: CANVAS.example.start, onclick: () => { location.hash = ''; } }))
+          : h('div', { class: 'board-foot' },
+            h('div', { class: 'board-foot-notes' },
+              h('p', { class: 'small', text: words.text.keepEditing }),
+              h('p', { class: 'small', text: words.text.confidential }),
+              h('div', { class: 'row' },
+                groupButton('link quiet'),
+                h('button', { class: 'link quiet', type: 'button', text: draft.name ? `Not ${draft.name}? Start again` : 'Start again', onclick: startAgain }))),
+            shareButton('btn btn-primary btn-big')))].filter(Boolean));
+      for (const box of $$('textarea.notes', root)) autosize(box);
+      renderProgress();
+      renderStatus();
+      sizeBlanks();
+    }
+
+    // Run it with a group: a link for everyone else, and one for Group view.
+    function showGroup() {
+      const c = CANVAS.group;
+      const solo = !!CANVAS.types[settings.type].solo;
+      const field = (id, label, hint, attrs) => {
+        const input = h('input', { type: 'text', id, class: 'text-input', 'aria-describedby': `${id}-hint`, ...attrs });
+        input.addEventListener('input', update);
+        return { input, block: h('div', { class: 'stack' }, h('label', { for: id, class: 'label', text: label }), h('p', { id: `${id}-hint`, class: 'prompt', text: hint }), input) };
+      };
+      const group = field('group', c.groupLabel, solo ? c.soloGroupHint : c.groupHint, { maxlength: String(WhyCanvas.LIMITS.group), autocomplete: 'off', value: settings.group });
+      const host = field('host', c.hostLabel, c.hostHint, { maxlength: String(WhyCanvas.LIMITS.host), autocomplete: 'given-name', value: draft.name });
+      const base = location.href.replace(/#.*$/, '');
+      const links = {};
+      const target = (view) => WhyCanvas.settingsHash({ view, type: settings.type, group: group.input.value, host: host.input.value });
+
+      function linkRow(view, label, note) {
+        const id = `link-${view}`;
+        const out = h('input', { type: 'text', id, class: 'text-input link-out', readonly: true, 'aria-describedby': note ? `${id}-note` : null });
+        const status = h('span', { class: 'small', role: 'status' });
+        links[view] = out;
+        return h('div', { class: 'stack' },
+          h('label', { for: id, class: 'label', text: label }),
+          note && h('p', { id: `${id}-note`, class: 'prompt', text: note }),
+          h('div', { class: 'row' }, out,
+            h('button', {
+              type: 'button', class: view === 'participant' ? 'btn btn-primary' : 'btn btn-ghost', text: c.copy,
+              onclick: async () => { status.textContent = (await copyText(out.value, out)) ? c.copied : c.copyFailed; },
+            }),
+            status));
+      }
+      function update() {
+        if (!links.participant) return;
+        links.participant.value = base + target('participant');
+        links.facilitator.value = base + target('facilitator');
+      }
+
+      const dialog = openDialog(c.open,
+        h('p', { class: 'body', text: c.lead }),
+        group.block,
+        host.block,
+        linkRow('participant', c.shareLink),
+        linkRow('facilitator', c.viewLink, c.viewNote),
+        h('div', { class: 'row' },
+          h('button', { class: 'btn btn-dark', type: 'button', text: c.openView, onclick: () => leaveDialog(dialog, target('facilitator')) })));
+      update();
+      group.input.focus();
+    }
+
+    // Save or send: copy or download the canvas, over the canvas itself.
+    function showSend() {
+      const t = words.text;
+      const out = h('textarea', { class: 'notes md', readonly: true, rows: '12', 'aria-label': 'Your canvas as Markdown', value: WhyCanvas.toMarkdown(draft) });
+      const markdown = h('details', { class: 'hint' }, h('summary', { text: 'Show the Markdown' }), out);
+      const message = h('p', { class: 'body', role: 'status' });
+      const nameError = h('p', { id: 'send-name-error', class: 'error', role: 'alert' });
+      const name = h('input', {
+        type: 'text', id: 'send-name', class: 'text-input', autocomplete: 'given-name', value: draft.name, 'aria-describedby': 'send-name-hint send-name-error',
+        oninput: (event) => {
+          change((d) => { d.name = event.target.value.trim(); });
+          out.value = WhyCanvas.toMarkdown(draft);
+          nameError.textContent = '';
+          const label = $('.topbar-name');
+          if (label) label.textContent = draft.name ? `${draft.name}’s canvas` : 'Your canvas';
+          if (draft.name) known.firstChild.textContent = savingAs();
+        },
+      });
+      // Known from the start screen: one quiet line. Not known yet: the field.
+      const savingAs = () => `Saving as ${draft.name}’s canvas.`;
+      const nameBlock = h('div', { class: 'stack', hidden: !!draft.name },
+        h('label', { for: 'send-name', class: 'label', text: t.nameLabel }),
+        h('p', { id: 'send-name-hint', class: 'prompt', text: t.nameHint }),
+        name, nameError);
+      const known = h('p', { class: 'small', hidden: !draft.name },
+        h('span', { text: draft.name ? savingAs() : '' }), ' ',
+        h('button', { type: 'button', class: 'link quiet', text: 'Change name', onclick: () => { known.hidden = true; nameBlock.hidden = false; name.focus(); } }));
+      // The Markdown opens with the name, so a canvas needs one before it leaves the device.
+      const named = () => {
+        if (draft.name) return true;
+        known.hidden = true;
+        nameBlock.hidden = false;
+        nameError.textContent = t.nameMissing;
+        name.focus();
+        return false;
+      };
+      // If the clipboard is blocked, show the Markdown and select it to copy by hand.
+      const fallback = { focus: () => { markdown.open = true; out.focus(); }, select: () => out.select() };
+      const copyButton = h('button', {
+        class: 'btn btn-primary btn-big', type: 'button', text: 'Copy',
+        onclick: async () => {
+          if (!named()) return;
+          const ok = await copyText(out.value, fallback);
+          copyButton.textContent = ok ? 'Copied' : 'Copy';
+          message.textContent = ok ? t.copied : 'Couldn’t copy automatically. The Markdown below is selected: copy it with your keyboard or the share menu.';
+        },
+      });
+      const dialog = openDialog(t.sendHeading,
+        h('p', { class: 'body', text: t.sendTo }),
+        known,
+        nameBlock,
+        h('div', { class: 'row' },
+          copyButton,
+          h('button', { class: 'btn btn-ghost btn-big', type: 'button', text: 'Download .md', onclick: () => { if (named()) download(`why-canvas-${slug(draft.name)}.md`, out.value, 'text/markdown'); } })),
+        message,
+        markdown,
+        h('div', {},
+          h('button', {
+            class: 'link quiet', type: 'button', text: 'Clear this device',
+            onclick: () => {
+              if (!confirm('Remove your answers from this device? Make sure you have saved or sent them first.')) return;
+              storage.remove(KEY);
+              storage.remove(LAST);
+              draft = null;
+              if (settings.host) { dialog.finish(true); showStart(); } else leaveDialog(dialog, '');
+            },
+          })));
+      (draft.name ? copyButton : name).focus();
+    }
+
+    // A draft handed on from the start screen: a new one never replaces a
+    // draft already here, a pasted copy does. A name typed at the start
+    // always carries over.
+    if (handoff && !viewing) {
+      if (!draft || handoff.introSeen) { draft = { ...handoff, type: settings.type, group: settings.group }; save(); }
+      else if ((handoff.name ?? '').trim()) { draft.name = handoff.name.trim(); save(); }
+      handoff = null;
+    }
+    if (!draft) showStart();
+    else if (!draft.introSeen) showExplain();
+    else showCanvas();
+  }
+
+  // ---------------------------------------------------------------- group view
+
+  function facilitator(root, settings, { demo = false, exitDemo } = {}) {
+    // The demo reads its replies, and its group, from the samples, and never touches storage.
+    const session = demo ? WhyCanvas.demoSession($('#samples').textContent, settings.type) : null;
+    if (session) settings = session.settings;
+    const words = WhyCanvas.copyFor(settings.type, settings);
+    const sections = words.sections;
+    const purpose = sections.find((s) => s.template);
+    const fieldById = Object.fromEntries(sections.flatMap((s) => s.fields).map((f) => [f.id, f]));
+    const KEY = WhyCanvas.storageKey(settings, 'facilitator');
+    const saved = demo ? {} : (storage.read(KEY) ?? {});
+    const state = {
+      replies: session ? session.replies : (saved.replies ?? {}),
+      highlights: saved.highlights ?? {},
+      anonymise: !!saved.anonymise,
+      seed: saved.seed ?? Math.floor(Math.random() * 2 ** 31),
+      tab: demo ? 'board' : 'replies',
+      section: sections[0].id,
+      report: [],
+    };
+    const replies = () => Object.values(state.replies);
+    const persist = demo ? () => {} : () => {
+      const ok = storage.write(KEY, { replies: state.replies, highlights: state.highlights, anonymise: state.anonymise, seed: state.seed });
+      if (!ok) announce('This browser is blocking storage, so replies and highlights will be lost when you close the tab.', true);
+    };
+
+    function addText(text) {
+      const { replies: incoming, errors } = WhyCanvas.parseReplies(text);
+      const result = WhyCanvas.mergeReplies(state.replies, incoming);
+      state.replies = result.replies;
+      persist();
+      state.report = [
+        result.added.length && `Added ${listFormat.format(result.added)}.`,
+        result.replaced.length && `Replaced ${listFormat.format(result.replaced)} with a newer copy.`,
+        result.skipped.length && `Skipped ${listFormat.format(result.skipped)}: you already have the same or a newer copy.`,
+        ...errors,
+        ...incoming.flatMap((r) => r.warnings.map((w) => `${r.name}: ${w}`)),
+        ...incoming.flatMap((r) => WhyCanvas.mismatch(r, settings).map((note) => `${r.name}: ${note}`)),
+      ].filter(Boolean);
+      render();
+      announce(state.report.join(' '));
+    }
+
+    async function addFiles(files) {
+      const texts = await Promise.all([...files].map((file) => file.text()));
+      addText(texts.join('\n\n'));
+    }
+
+    function header() {
+      const tab = (id, label) => h('button', { type: 'button', class: 'tab', 'aria-pressed': String(state.tab === id), text: label, onclick: () => { state.tab = id; render(); } });
+      return h('header', { class: 'topbar' },
+        h('div', { class: 'topbar-id' },
+          wordmark('wordmark'),
+          h('span', { class: 'topbar-name', text: settings.group ? `Group view · ${settings.group}` : 'Group view' })),
+        h('div', { class: 'tabs' }, tab('replies', `Replies (${replies().length})`), tab('board', 'Board')),
+        h('div', { class: 'topbar-meta' },
+          h('div', { class: 'switch-row' },
+            switchButton('anonymise', state.anonymise, (on) => { state.anonymise = on; persist(); render(); }),
+            h('label', { for: 'anonymise', class: 'label', text: 'Anonymise' })),
+          h('button', { class: 'btn btn-dark', type: 'button', id: 'present', text: 'Present', disabled: replies().length === 0, onclick: present })));
+    }
+
+    function repliesView() {
+      const paste = h('textarea', { id: 'paste', class: 'notes md', rows: '8', style: '--rows:8', 'aria-describedby': 'paste-help' });
+      const files = h('input', { type: 'file', id: 'files', class: 'sr-only', multiple: true, accept: '.md,.txt,text/markdown,text/plain', onchange: (e) => addFiles(e.target.files) });
+      const drop = h('div', {
+        class: 'drop',
+        ondragover: (e) => { e.preventDefault(); drop.classList.add('over'); },
+        ondragleave: () => drop.classList.remove('over'),
+        ondrop: (e) => { e.preventDefault(); drop.classList.remove('over'); if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files); },
+      },
+      h('label', { for: 'paste', class: 'label', text: 'Paste replies' }),
+      h('p', { id: 'paste-help', class: 'prompt', text: 'Paste one or several canvases from a chat or email, or drop .md files here. A newer copy from the same person replaces the older one.' }),
+      paste,
+      h('div', { class: 'row' },
+        h('button', { class: 'btn btn-primary', type: 'button', text: 'Add replies', onclick: () => { if (paste.value.trim()) addText(paste.value); } }),
+        files,
+        h('button', { class: 'btn btn-ghost', type: 'button', text: 'Choose files', onclick: () => files.click() })));
+
+      const rows = replies().sort((a, b) => a.name.localeCompare(b.name)).map((reply) => {
+        const p = WhyCanvas.progress(reply);
+        return h('tr', {},
+          h('td', {}, reply.name, WhyCanvas.mismatch(reply, settings).map((note) => h('span', { class: 'prompt mismatch', text: note }))),
+          h('td', { class: 'numeric', text: `${p.started} of ${p.total}` }),
+          h('td', { class: 'numeric', text: dayClock(reply.updated) }),
+          h('td', {}, !demo && h('button', {
+            type: 'button', class: 'link', text: 'Remove', 'aria-label': `Remove ${reply.name}`,
+            onclick: () => { if (!confirm(`Remove ${reply.name}'s reply?`)) return; delete state.replies[WhyCanvas.nameKey(reply.name)]; persist(); render(); },
+          })));
+      });
+
+      return h('main', { class: 'wide' },
+        h('h1', { class: 'title', text: 'Replies' }),
+        drop,
+        h('div', { class: 'report', role: 'status' }, state.report.map((line) => h('p', { text: line }))),
+        rows.length
+          ? h('table', {}, h('thead', {}, h('tr', {}, ['Name', 'Sections', 'Updated', ''].map((t) => h('th', { scope: 'col', text: t })))), h('tbody', {}, rows))
+          : h('div', { class: 'row' },
+            h('p', { class: 'small', text: 'No replies yet.' }),
+            !demo && h('button', { type: 'button', class: 'link', text: CANVAS.demo.try, onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'demo', type: settings.type }); } })),
+        h('div', { style: 'display:flex;flex-direction:column;gap:12px' },
+          h('h2', { class: 'section-title', text: 'Export' }),
+          h('p', { class: 'prompt', text: 'The Markdown export is ready to paste into an AI assistant to summarise. It follows the Anonymise switch and notes your highlights. JSON holds everything.' }),
+          h('div', { class: 'row' },
+            h('button', { class: 'btn btn-ghost', type: 'button', text: 'Export Markdown', disabled: rows.length === 0, onclick: () => download('why-canvas-all-replies.md', WhyCanvas.combinedMarkdown(replies(), { ...state, type: settings.type, group: settings.group }), 'text/markdown') }),
+            h('button', { class: 'btn btn-ghost', type: 'button', text: 'Export JSON', disabled: rows.length === 0, onclick: () => download('why-canvas-all-replies.json', `${JSON.stringify({ canvas: CANVAS.id, version: CANVAS.version, type: settings.type, group: settings.group, exported: new Date().toISOString(), replies: replies(), highlights: state.highlights }, null, 2)}\n`, 'application/json') }),
+            !demo && h('button', {
+              type: 'button', class: 'link', text: 'Clear all', disabled: rows.length === 0,
+              onclick: () => {
+                if (!confirm(`Remove ${rows.length} replies and all highlights from this browser? This can't be undone.`)) return;
+                state.replies = {}; state.highlights = {}; state.report = []; persist(); render();
+              },
+            }))));
+    }
+
+    function answerCard(reply, label, fieldId, text) {
+      const key = WhyCanvas.highlightKey(reply.name, fieldId);
+      const mark = { ...(state.highlights[key] ?? {}) };
+      const star = h('button', { type: 'button', class: 'btn btn-ghost btn-sm' });
+      const agree = h('button', { type: 'button', class: 'btn btn-ghost btn-sm agree', text: 'Agree' });
+      const diverge = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', text: 'Diverge' });
+      const card = h('article', { class: 'answer' },
+        h('p', { class: 'answer-text', text }),
+        label && h('p', { class: 'answer-name', text: label }),
+        h('div', { class: 'answer-tools' }, star, agree, diverge));
+      const paint = () => {
+        star.replaceChildren(icon('star', 16, !!mark.star), mark.star ? 'Starred' : 'Star');
+        star.setAttribute('aria-pressed', String(!!mark.star));
+        agree.setAttribute('aria-pressed', String(mark.tag === 'agree'));
+        diverge.setAttribute('aria-pressed', String(mark.tag === 'diverge'));
+        card.classList.toggle('starred', !!mark.star);
+        card.dataset.tag = mark.tag ?? '';
+      };
+      const update = (next) => {
+        Object.assign(mark, next);
+        if (!mark.star && !mark.tag) delete state.highlights[key];
+        else state.highlights[key] = { star: !!mark.star, tag: mark.tag ?? null };
+        persist();
+        paint();
+      };
+      star.addEventListener('click', () => update({ star: !mark.star }));
+      agree.addEventListener('click', () => update({ tag: mark.tag === 'agree' ? null : 'agree' }));
+      diverge.addEventListener('click', () => update({ tag: mark.tag === 'diverge' ? null : 'diverge' }));
+      paint();
+      return card;
+    }
+
+    // Everything the board and present mode show for one section, in order.
+    function sectionRows(section) {
+      const arranged = WhyCanvas.arrange(replies(), section, state);
+      const has = (reply, field) => (reply.answers[field.id] ?? '').trim() !== '';
+      const rows = [];
+      if (section.template) {
+        rows.push({
+          title: 'Statements', prompt: 'Each person’s purpose statement, with their blanks filled in.', fieldId: 'purpose.sentence',
+          entries: arranged.filter(({ reply }) => section.fields.some((f) => has(reply, f)))
+            .map(({ reply, label }) => ({ reply, label, text: WhyCanvas.purposeSentence(reply.answers, { type: reply.type ?? settings.type, group: reply.group ?? settings.group }) })),
+        });
+      }
+      for (const field of section.fields) {
+        rows.push({
+          title: field.title, prompt: field.prompt, fieldId: field.id,
+          entries: arranged.filter(({ reply }) => has(reply, field)).map(({ reply, label }) => ({ reply, label, text: reply.answers[field.id].trim() })),
+        });
+      }
+      return rows;
+    }
+
+    function boardView() {
+      const section = sections.find((s) => s.id === state.section);
+      return h('main', { class: 'wide' },
+        h('nav', { class: 'section-picker', 'aria-label': 'Sections' },
+          sections.map((s) => h('button', {
+            type: 'button', 'aria-pressed': String(s.id === section.id), 'aria-label': `Section ${s.number}: ${s.title}`, text: two(s.number), 'data-section': s.id,
+            onclick: () => { state.section = s.id; render(); $(`[data-section="${s.id}"]`)?.focus(); },
+          }))),
+        h('div', { style: 'display:flex;flex-direction:column;gap:8px' },
+          h('span', { class: 'num', text: `${two(section.number)} of ${two(sections.length)}` }),
+          h('h1', { class: 'title', text: section.title }),
+          state.anonymise && h('p', { class: 'prompt', text: 'Names hidden and order shuffled.' })),
+        replies().length === 0
+          ? h('p', { class: 'small', text: 'No replies yet. Paste them in on the Replies tab.' })
+          : sectionRows(section).map((row) => h('section', { class: 'board-row' },
+            h('div', {}, h('h2', { class: 'label', text: row.title }), h('p', { class: 'prompt', text: row.prompt })),
+            row.entries.length
+              ? h('div', { class: 'cards' }, row.entries.map((e) => answerCard(e.reply, e.label, row.fieldId, e.text)))
+              : h('p', { class: 'small', text: 'No answers.' }))));
+    }
+
+    function present() {
+      const slides = sections.flatMap((section) => sectionRows(section)
+        .filter((row) => row.entries.length && !(section.template && row.fieldId !== 'purpose.sentence'))
+        .map((row) => ({
+          section, title: row.title,
+          entries: row.entries.map((e) => ({ ...e, mark: state.highlights[WhyCanvas.highlightKey(e.reply.name, row.fieldId)] })),
+        })));
+      const opener = $('#present');
+      const overlay = h('div', { class: 'present', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Present mode', tabindex: '-1' });
+      document.body.append(overlay);
+      let pages = [];
+      let index = 0;
+
+      const columns = (n) => (n <= 3 ? n : n === 4 ? 2 : 3);
+      const marker = (mark) => {
+        if (!mark || (!mark.star && !mark.tag)) return null;
+        return h('span', { class: 'mark', text: [mark.star && 'Starred', mark.tag].filter(Boolean).join(' · ') });
+      };
+      const draw = (page, number = 0, count = 1) => {
+        overlay.replaceChildren(h('div', { class: 'slide' },
+          h('p', { class: 'slide-eyebrow', text: `${two(page.section.number)} · ${page.section.title}` }),
+          h('h2', { class: 'slide-title', text: page.title + (page.count > 1 ? ` (${page.part + 1} of ${page.count})` : '') }),
+          page.entries.length
+            ? h('div', { class: 'slide-grid', style: `--cols:${columns(page.entries.length)}` },
+              page.entries.map((e) => h('figure', { class: 'slide-card' },
+                h('blockquote', { text: e.text }),
+                (e.label || marker(e.mark)) && h('figcaption', {}, e.label, marker(e.mark)))))
+            : h('p', { class: 'slide-empty', text: 'No replies to show.' }),
+          h('div', { class: 'slide-foot' },
+            h('button', { type: 'button', class: 'btn btn-ghost btn-sm', text: '←', 'aria-label': 'Previous', onclick: () => go(-1), disabled: number === 0 }),
+            h('span', { text: `${number + 1} / ${count}` }),
+            h('button', { type: 'button', class: 'btn btn-ghost btn-sm', text: '→', 'aria-label': 'Next', onclick: () => go(1), disabled: number >= count - 1 }),
+            h('span', { text: 'Esc to exit' }))));
+      };
+      const fits = () => {
+        const grid = $('.slide-grid', overlay);
+        return !grid || grid.scrollHeight <= grid.clientHeight + 1;
+      };
+      // Keep the text size and split a crowded slide into parts instead.
+      const paginate = () => slides.flatMap((slide) => {
+        const n = slide.entries.length;
+        const sizes = [...new Set([n, 6, 4, 3, 2, 1])].filter((size) => size <= n).sort((a, b) => b - a);
+        for (const size of sizes) {
+          const parts = [];
+          for (let i = 0; i < n; i += size) parts.push(slide.entries.slice(i, i + size));
+          const pagesForSlide = parts.map((entries, part) => ({ ...slide, entries, part, count: parts.length }));
+          if (size === 1 || pagesForSlide.every((page) => { draw(page); return fits(); })) return pagesForSlide;
+        }
+        return [];
+      });
+      const layout = () => {
+        pages = slides.length ? paginate() : [{ section: sections[0], title: 'Nothing to present', entries: [], part: 0, count: 1 }];
+        index = Math.min(index, pages.length - 1);
+        draw(pages[index], index, pages.length);
+      };
+      const go = (step) => {
+        index = Math.max(0, Math.min(pages.length - 1, index + step));
+        draw(pages[index], index, pages.length);
+        announce(`${pages[index].title}, ${index + 1} of ${pages.length}`);
+      };
+      const close = () => {
+        document.removeEventListener('keydown', onKey);
+        document.removeEventListener('fullscreenchange', onFullscreen);
+        window.removeEventListener('resize', layout);
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+        overlay.remove();
+        closePresent = null;
+        opener?.focus();
+      };
+      const onKey = (event) => {
+        const next = ['ArrowRight', 'ArrowDown', 'PageDown', ' '];
+        const prev = ['ArrowLeft', 'ArrowUp', 'PageUp'];
+        if (next.includes(event.key)) { event.preventDefault(); go(1); }
+        else if (prev.includes(event.key)) { event.preventDefault(); go(-1); }
+        else if (event.key === 'Home') { event.preventDefault(); go(-pages.length); }
+        else if (event.key === 'End') { event.preventDefault(); go(pages.length); }
+        else if (event.key === 'Escape') close();
+      };
+      const onFullscreen = () => { if (!document.fullscreenElement) close(); else layout(); };
+
+      document.addEventListener('keydown', onKey);
+      closePresent = close;
+      window.addEventListener('resize', layout);
+      layout();
+      overlay.focus();
+      if (overlay.requestFullscreen) {
+        overlay.requestFullscreen().then(() => document.addEventListener('fullscreenchange', onFullscreen)).catch(() => {});
+      }
+    }
+
+    function render() {
+      const banner = demo && h('div', { class: 'demo-banner', role: 'region', 'aria-label': 'Demo' },
+        h('p', { class: 'label', text: CANVAS.demo.banner }),
+        h('div', { class: 'row', role: 'group', 'aria-label': CANVAS.demo.switchLabel },
+          WhyCanvas.DEMO_TYPES.map((id) => h('button', {
+            type: 'button', class: 'btn btn-ghost btn-sm', 'aria-pressed': String(id === settings.type), text: CANVAS.types[id].label,
+            onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'demo', type: id }); },
+          }))),
+        h('button', { type: 'button', class: 'btn btn-dark btn-sm', text: CANVAS.demo.exit, onclick: exitDemo }));
+      root.replaceChildren(...[banner, header(), state.tab === 'board' ? boardView() : repliesView()].filter(Boolean));
+    }
+
+    render();
+  }
+
+  // ---------------------------------------------------------------- routing
+
+  let current = null;
+  let demoExit = '';
+  // Present mode is an overlay; a route change (browser Back, say) closes it.
+  let closePresent = null;
+  const TITLES = { start: 'Why Canvas', example: 'Why Canvas · Example', participant: 'Why Canvas', facilitator: 'Why Canvas · Group view', demo: 'Why Canvas · Demo' };
+  function route() {
+    if (location.hash === current) return;
+    const previous = current;
+    current = location.hash;
+    const settings = WhyCanvas.readSettings(current);
+    // The demo's Exit goes back to wherever you came from, or to setup.
+    if (settings.view === 'demo' && (previous === null || WhyCanvas.readSettings(previous).view !== 'demo')) demoExit = previous ?? '';
+    closeTip();
+    closePresent?.();
+    for (const open of document.querySelectorAll('dialog.sheet')) open.finish?.(false);
+    document.title = TITLES[settings.view];
+    const root = $('#app');
+    if (settings.view === 'start' || settings.view === 'participant') participant(root, settings);
+    else if (settings.view === 'example') {
+      const example = WhyCanvas.exampleReply($('#samples').textContent, settings.type);
+      participant(root, { ...settings, view: 'participant', group: example.group ?? '' }, { example });
+    }
+    else facilitator(root, settings, { demo: settings.view === 'demo', exitDemo: () => { location.hash = demoExit; } });
+  }
+  window.addEventListener('hashchange', route);
+  if (CANVAS.credit) {
+    const { lead, name, url, site, code, codeLabel } = CANVAS.credit;
+    const link = (href, text) => h('a', { href, target: '_blank', rel: 'noopener', text });
+    $('#credit').append(`${lead} ${name} · `, link(url, site), ' · ', link(code, codeLabel));
+  }
+  route();
+})();
+</script>
+</body>
+</html>
