@@ -4,6 +4,8 @@ A free, open tool for getting clear on why something exists. Fill in a short can
 
 It works for a community, a team, a product, or your own personal why. It's one HTML file with no server, no build step and no dependencies: answers stay in each person's browser until they choose to save or send them.
 
+The styling is deliberately minimal: a plain starting point, not a finished look. Make it yours, by hand or with an AI assistant. Every colour, font and size sits in one block at the top of the styles (see [Make it your own](#make-it-your-own)).
+
 ## Using it
 
 1. Open the page and pick what you're working on: a community, a team, a product, or your own personal why. Give it a name if you like, and start.
