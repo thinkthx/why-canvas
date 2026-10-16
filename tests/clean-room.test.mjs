@@ -23,8 +23,10 @@ function textFiles(dir = '') {
 
 // Case-sensitive, so the -apple-system font name passes.
 const BRANDS = [/\bAI on Apple\b/i, /ai-on-apple/i, /\bVersent\b/i, /\bApple\b/];
-// The credit is a single line in the CANVAS block; the licence names its holder.
+// The credit and the source address are single lines in the CANVAS block;
+// the licence names its holder.
 const CREDIT_LINE = /^ {2}credit: \{[^\n]*\},\n/m;
+const SOURCE_LINE = /^ {2}source: '[^'\n]*',\n/m;
 const AUTHOR = /\bRod\b|rodsampera|thinkthx/i;
 
 test('no file names a community or company', () => {
@@ -36,14 +38,14 @@ test('no file names a community or company', () => {
 
 test('the author appears only in the credit and the licence', () => {
   for (const path of textFiles().filter((p) => p !== 'LICENSE')) {
-    assert.doesNotMatch(read(path).replace(CREDIT_LINE, ''), AUTHOR, path);
+    assert.doesNotMatch(read(path).replace(CREDIT_LINE, '').replace(SOURCE_LINE, ''), AUTHOR, path);
   }
 });
 
 test('the credit is optional and says where the code lives', () => {
   assert.equal(CANVAS.credit.name, 'Rod Sampera');
   assert.equal(CANVAS.credit.url, 'https://rodsampera.com');
-  assert.equal(CANVAS.credit.code, 'https://github.com/thinkthx/why-canvas');
+  assert.equal(CANVAS.source, 'https://github.com/thinkthx/why-canvas');
   assert.match(read('why-canvas.html'), /if \(CANVAS\.credit\)/);
 });
 

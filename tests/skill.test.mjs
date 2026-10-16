@@ -40,3 +40,8 @@ test('the skill works pasted into any chatbot', () => {
   assert.doesNotMatch(body, /[—–]/);
   assert.doesNotMatch(body, /\b(Bash|Read tool|Write tool|Claude Code|file system|subagent)\b/i);
 });
+
+test('the page carries the skill exactly', async () => {
+  const { SKILL_EMBED } = await import('./load.mjs');
+  assert.equal(SKILL_EMBED.trim(), body.trim());
+});

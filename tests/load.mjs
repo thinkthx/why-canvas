@@ -19,3 +19,4 @@ export const { CANVAS, WhyCanvas } = runInNewContext(
   { URLSearchParams },
 );
 export const SAMPLES = script('samples');
+export const SKILL_EMBED = script('skill');

@@ -249,3 +249,41 @@ test('a copy titled Purpose statement still reads, with no warnings', () => {
 test('no copy says purpose statement', () => {
   assert.doesNotMatch(HTML, /purpose statement/i);
 });
+
+const people = () => [priya(), { ...priya(), name: 'Sam', answers: { 'villain.name': 'Gatekeeping', 'personal.why': 'To meet builders.' } }];
+
+test('the prompt export names nobody', () => {
+  const md = WhyCanvas.promptMarkdown(people(), { type: 'community', group: 'Riverbend', seed: 1 });
+  assert.match(md, /Person 1/);
+  assert.match(md, /Person 2/);
+  assert.doesNotMatch(md, /Priya|Sam/);
+  assert.doesNotMatch(md, /^From:/m);
+});
+
+test('each person keeps one label in every section', () => {
+  const md = WhyCanvas.promptMarkdown(people(), { seed: 1 });
+  const label = (text) => md.match(new RegExp(`\\*\\*(Person \\d+):\\*\\* ${text}`))[1];
+  assert.equal(label('The cloud-by-default habit'), label('I want peers to learn with\\.'));
+});
+
+test("labels don't follow alphabetical order", () => {
+  const names = ['Alex', 'Ben', 'Cai', 'Dee', 'Eli', 'Fay'];
+  const labels = plain(WhyCanvas.personLabels(names.map((name) => ({ ...priya(), name })), 1));
+  assert.notDeepEqual(names.map((n) => labels[n.toLowerCase()]), names.map((_, i) => `Person ${i + 1}`));
+  assert.deepEqual(Object.values(labels).sort(), names.map((_, i) => `Person ${i + 1}`).sort());
+});
+
+test('highlights travel with the prompt', () => {
+  const md = WhyCanvas.promptMarkdown([priya()], { seed: 1, highlights: { [WhyCanvas.highlightKey('Priya', 'villain.name')]: { star: true, tag: 'diverge' } } });
+  assert.match(md, /The cloud-by-default habit _\(starred, diverge\)_/);
+});
+
+test('a reply from another group says so', () => {
+  const replies = [{ ...priya(), type: 'community', group: 'Riverbend' }, { ...priya(), name: 'Sam', type: 'community', group: 'Acme' }];
+  const md = WhyCanvas.promptMarkdown(replies, { type: 'community', group: 'Riverbend', seed: 1 });
+  assert.match(md, /^People:\n- Person \d: community, Acme$/m);
+});
+
+test('the agent prompt is the skill, then the replies', () => {
+  assert.ok(WhyCanvas.agentPrompt('SKILL', people(), { seed: 1 }).startsWith('SKILL\n\n---\n\n# Why Canvas: all replies'));
+});
