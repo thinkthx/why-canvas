@@ -117,6 +117,9 @@ const CANVAS = {
 
   // Group view's prompt for any agent, and a pointer to the skill.
   agent: {
+    heading: 'Make sense of the replies',
+    lead: 'An AI assistant reads every reply and gives you a short prep pack for the session: where the group agrees and where it splits, up to three why statements to discuss, and questions to ask the room. It never picks a winner; the room decides.',
+    empty: 'Add some replies first.',
     copy: 'Copy prompt for your agent',
     copied: 'Copied. Paste it into your agent as it is.',
     failed: 'Couldn’t copy automatically. The prompt below is selected: copy it with your keyboard.',
@@ -604,6 +607,9 @@ const WhyCanvas = (() => {
     return mergeReplies({}, replies.filter((r) => r.type === type)).replies;
   }
 
+  // A label's number, so Person 10 sorts after Person 2.
+  const personNumber = (labels, reply) => Number(labels[nameKey(reply.name)].replace(/\D/g, ''));
+
   // Labels for the agent prompt: Person 1 to Person n, one per person in every
   // section, in an order that follows neither the names nor the board.
   function personLabels(replies, seed = 1) {
@@ -667,7 +673,7 @@ const WhyCanvas = (() => {
   function arrange(replies, section, { anonymise, seed, labels }) {
     // Labelled for an agent: in label order, so the order says nothing either.
     if (labels) {
-      const n = (reply) => Number(labels[nameKey(reply.name)].replace(/\D/g, ''));
+      const n = (reply) => personNumber(labels, reply);
       return [...replies].sort((a, b) => n(a) - n(b)).map((reply) => ({ reply, label: labels[nameKey(reply.name)] }));
     }
     const sorted = [...replies].sort((a, b) => a.name.localeCompare(b.name));
@@ -693,7 +699,8 @@ const WhyCanvas = (() => {
     if (labels) {
       // Anyone from another type or group, so an agent can keep sessions apart.
       const other = replies.filter((r) => (clean(r.type) && r.type !== type) || (clean(r.group) && groupKey(r.group) !== groupKey(group)))
-        .map((r) => `- ${labels[nameKey(r.name)]}: ${[clean(r.type), clean(r.group)].filter(Boolean).join(', ')}`).sort();
+        .sort((a, b) => personNumber(labels, a) - personNumber(labels, b))
+        .map((r) => `- ${labels[nameKey(r.name)]}: ${[clean(r.type), clean(r.group)].filter(Boolean).join(', ')}`);
       if (other.length) out.push('', 'People:', ...other);
     } else if (!anonymise) out.push(`From: ${[...replies].map((r) => r.name).sort().join(', ')}`);
     for (const section of CANVAS.sections) {
@@ -962,7 +969,8 @@ td.numeric { font-variant-numeric: tabular-nums; }
 .type-option .prompt { grid-column: 2; }
 .link-out { flex: 1 1 280px; min-width: 0; font-family: var(--mono); font-size: var(--text-sm); }
 .mismatch { display: block; }
-.agent { display: flex; flex-direction: column; gap: 8px; }
+/* Make sense of the replies: its own panel above Export. */
+.agent { display: flex; flex-direction: column; gap: 12px; padding: 24px; background: var(--bg-subtle); border: 1px solid var(--border); border-radius: var(--radius); }
 .agent a { color: var(--fg1); text-underline-offset: 3px; }
 /* Dialogs: a sheet over the screen; full screen on a phone. */
 .sheet {
@@ -3472,9 +3480,9 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
           : h('div', { class: 'row' },
             h('p', { class: 'small', text: 'No replies yet.' }),
             !demo && h('button', { type: 'button', class: 'link', text: CANVAS.demo.try, onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'demo', type: settings.type }); } })),
+        agentBlock(rows.length === 0),
         h('div', { style: 'display:flex;flex-direction:column;gap:12px' },
           h('h2', { class: 'section-title', text: 'Export' }),
-          agentBlock(rows.length === 0),
           h('p', { class: 'prompt', text: 'Export Markdown follows the Anonymise switch and notes your highlights. JSON holds everything.' }),
           h('div', { class: 'row' },
             h('button', { class: 'btn btn-ghost', type: 'button', text: 'Export Markdown', disabled: rows.length === 0, onclick: () => download('why-canvas-all-replies.md', WhyCanvas.combinedMarkdown(replies(), { ...state, type: settings.type, group: settings.group }), 'text/markdown') }),
@@ -3502,8 +3510,10 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
           status.textContent = ok ? c.copied : c.failed;
         },
       });
-      return h('div', { class: 'agent' },
-        h('div', { class: 'row' }, button, status),
+      return h('section', { class: 'agent', 'aria-labelledby': 'agent-heading' },
+        h('h2', { class: 'section-title', id: 'agent-heading', text: c.heading }),
+        h('p', { class: 'body', text: c.lead }),
+        h('div', { class: 'row' }, button, empty ? h('p', { class: 'small', text: c.empty }) : status),
         h('p', { class: 'prompt', text: c.note }),
         CANVAS.source && h('p', { class: 'prompt' }, `${c.hint} `, h('a', { href: CANVAS.source + c.path, target: '_blank', rel: 'noopener', text: c.link }), '.'),
         out);

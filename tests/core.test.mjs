@@ -291,3 +291,16 @@ test('the agent prompt is the skill, then the replies', () => {
 test('the Copy prompt note does not overpromise', () => {
   assert.match(CANVAS.agent.note, /What people wrote goes as written/);
 });
+
+test('the People list runs Person 1, 2 … 10, not 1, 10, 2', () => {
+  const replies = Array.from({ length: 11 }, (_, i) => ({ ...priya(), name: `P${String.fromCharCode(97 + i)}`, type: 'community', group: 'Acme' }));
+  const md = WhyCanvas.promptMarkdown(replies, { type: 'community', group: 'Riverbend', seed: 1 });
+  const order = [...md.matchAll(/^- (Person \d+): community, Acme$/gm)].map((m) => m[1]);
+  assert.deepEqual(order, Array.from({ length: 11 }, (_, i) => `Person ${i + 1}`));
+});
+
+test('Group view explains what the prompt is for', () => {
+  assert.equal(CANVAS.agent.heading, 'Make sense of the replies');
+  assert.match(CANVAS.agent.lead, /prep pack/);
+  assert.match(CANVAS.agent.lead, /never picks a winner/);
+});
