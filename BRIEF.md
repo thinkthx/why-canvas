@@ -76,6 +76,10 @@ The canvas is the front door. Most people use it on their own or on a shared scr
 
 **Save or send** (formerly Share) and **Run it with a group** open as dialogs over the canvas (16 October), so Back, Esc and Close all return to it. Save or send asks for a first name if the canvas has none, because the Markdown opens with it, and keeps the raw Markdown behind Show the Markdown.
 
+**Why statement** (16 October). Section 8 is the Why statement, not the Purpose statement. Field ids stay `purpose.*`, and older copies still import (sections match by number).
+
+**Synthesis skill** (16 October). `skills/why-canvas-synthesis/SKILL.md` turns replies into a facilitator's prep pack. Group view's **Copy prompt for your agent** sends the same instructions and the replies, pseudonymised as Person 1 to n, to any chatbot. The page embeds the skill's body; a test keeps it identical to `SKILL.md`. The design is kept outside the repo.
+
 **Credit.** A subtle footer on every screen credits the author and links to the code, from `CANVAS.credit`. Set it to `null` to remove the footer.
 
 **Copy without a host** is written for working alone (save or download); a link with `host` switches to the group copy ("Share it with Sam"). The wording model holds this as `copy` (the solo base) and `groupCopy`, at both canvas and type level.

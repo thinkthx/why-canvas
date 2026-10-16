@@ -21,6 +21,18 @@ Replies you paste in stay in the browser where you opened Group view. **Clear al
 
 To see what a finished canvas looks like, choose **See an example** on the start screen. From there, **See a group’s answers** shows Group view with six sample replies, no session needed.
 
+## Make sense of the replies
+
+The [synthesis skill](skills/why-canvas-synthesis/SKILL.md) turns a set of replies into a short prep pack for whoever runs the session: themes and how aligned the room is for each section, a quote here and there, up to three why statements with what each one gives up, questions to run the conversation, and gaps. It keeps everyone anonymous and never picks a winner; the room decides. Give it one canvas and it reads that canvas back to you instead.
+
+It works from a folder of `.md` replies, Group view's export, or text pasted in.
+
+- **Any chatbot:** in Group view, choose **Copy prompt for your agent** and paste the result in as it is. It holds the instructions and the replies, with names swapped for Person 1, Person 2 and so on. Or paste in [SKILL.md](skills/why-canvas-synthesis/SKILL.md) and attach the replies.
+- **Claude Code:** copy the `skills/why-canvas-synthesis` folder into your project's `.claude/skills/` (or `~/.claude/skills/` for every project), then ask Claude to make sense of the replies.
+- **Claude's apps:** add the `why-canvas-synthesis` folder as a custom skill (Claude's help explains how for your plan), then share the replies in a chat.
+
+If you change the skill, run the tests: the page carries a copy of it for Copy prompt, and a test keeps the two in step.
+
 ## Make it your own
 
 Download `why-canvas.html`. That one file is the whole tool.
