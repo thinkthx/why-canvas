@@ -218,14 +218,58 @@ const CANVAS = {
   // name), and may override copy keys, section help (by section id),
   // field prompt and example (by field id) and the purpose template.
   types: {
-    community: {
-      label: 'Community',
-      description: 'A meetup, user group, online group or any group people choose to join.',
-      fallback: 'this community',
-      example: 'Ana’s canvas for Riverbend Coders, a local developer meetup.',
+    personal: {
+      label: 'Personal',
+      description: 'Your own purpose: your work, a career move or a project of your own.',
+      fallback: 'my work',
+      example: 'Rae’s canvas: a team lead working out what to do next.',
+      solo: true,
       copy: {
-        explainStory: { title: "It's told as a story", text: "The people we serve are the hero, not us. They face a problem, and something in their way: the villain. The community is the guide that helps them get past it. The stakes are what happens if we succeed, or don't. The last step pulls it all into one sentence." },
+        question: "What's my why?",
+        intro: [
+          'A short canvas to get clear on why you do what you do. Fill it in on your own, or with a coach or a group. It takes about 20 minutes.',
+          'Rough notes are fine. No wordsmithing.',
+        ],
+        explainFor: { title: 'What this is for', text: "Getting clear on your own why: who you want to help, what stands in their way, and why you're the one to help. Use it for your work, a career move or a project of your own." },
+        explainStory: { title: "It's told as a story", text: "The people you help are the hero, not you. They face a problem, and something in their way: the villain. You're the guide who helps them get past it. The stakes are what happens if you do, or don't. The last step pulls it all into one sentence." },
       },
+      groupCopy: {
+        intro: [
+          'Before the session, {host} would like you to fill in your own why. It takes about 20 minutes.',
+          'Rough notes are fine. No wordsmithing.',
+        ],
+        explainFor: { title: 'What this is for', text: 'Before the session, everyone fills in their own canvas. {host} puts the answers side by side, so you can see what you share and where you differ.' },
+      },
+      sectionTitles: {
+        guide: 'Why me (the guide)',
+        offer: 'What I offer and the plan',
+        personal: 'Why it matters to me',
+      },
+      help: {
+        hero: { why: 'Even a personal why is about other people. Who you most want to help shapes every other answer.', think: "Who you love helping, who already asks you for help, and who you'd regret not reaching." },
+        facing: { why: "The people you help are trying to get past something. The surface problem is what they'd say out loud, the internal driver is how it feels, and the bigger change is why it matters.", think: 'One real person you have helped, and what was in their way.' },
+        villain: { why: 'Naming what stands in their way gives your why an edge.', think: 'A force, habit or condition, not a person. What makes their problem hard?' },
+        guide: { why: "You're the guide, not the hero. People trust you because you understand the struggle and you've been through it.", think: "What you've lived through yourself, and what you've built, done or learnt." },
+        offer: { why: 'A why needs a way to act on it, simple enough to start this week.', think: 'What you actually do for people, and the smallest step you could take this month.' },
+        stakes: { why: "Stakes make it matter. Success gives you something to aim for; giving up shows what you'd lose.", think: 'Something you could see in two years, and who would feel it if you stopped.' },
+        personal: { why: 'The honest version: what drives you, and what would make you stop.', think: 'What you get out of it, what you hope it leads to, and your real deal-breakers.' },
+        purpose: { why: 'This pulls it together in one sentence you can come back to.', think: 'Plain words over polish. Use your earlier answers as a starting point.' },
+      },
+      fields: {
+        'hero.primary': { prompt: 'Who do I most want to help?' },
+        'hero.tertiary': { prompt: 'Who is on the edge, but still matters to me?' },
+        'hero.one': { prompt: 'If I could only help one group, who is it?' },
+        'guide.empathy': { prompt: 'Why do I understand them?' },
+        'guide.authority': { prompt: 'Why am I credible?', example: 'Think of what you have built, done or learnt the hard way.' },
+        'offer.what': { title: 'What I do for them', prompt: 'What do I actually do for them?' },
+        'offer.steps': { prompt: 'Three simple steps to act on it.', example: 'A few words per step. Start with one you could do this week.' },
+        'stakes.fizzle': { prompt: "What happens if I don't do this, or give up?" },
+        'personal.why': { prompt: 'Why does this really matter to me?' },
+        'personal.stepback': { prompt: 'What would make me give up on it?' },
+        'purpose.hero': { prompt: 'Who I help' },
+        'purpose.what': { title: 'What I do', prompt: 'I do it by…' },
+      },
+      template: 'I want to help {purpose.hero} who struggle with {purpose.problem} because of {purpose.villain}, so that {purpose.change}. I do it by {purpose.what}.',
     },
     team: {
       label: 'Team',
@@ -284,58 +328,14 @@ const CANVAS = {
       },
       template: '{group} helps {purpose.hero} who struggle with {purpose.problem} because of {purpose.villain}, so that {purpose.change}. It does it by {purpose.what}.',
     },
-    personal: {
-      label: 'Personal',
-      description: 'Your own purpose: your work, a career move or a project of your own.',
-      fallback: 'my work',
-      example: 'Rae’s canvas: a team lead working out what to do next.',
-      solo: true,
+    community: {
+      label: 'Community',
+      description: 'A meetup, user group, online group or any group people choose to join.',
+      fallback: 'this community',
+      example: 'Ana’s canvas for Riverbend Coders, a local developer meetup.',
       copy: {
-        question: "What's my why?",
-        intro: [
-          'A short canvas to get clear on why you do what you do. Fill it in on your own, or with a coach or a group. It takes about 20 minutes.',
-          'Rough notes are fine. No wordsmithing.',
-        ],
-        explainFor: { title: 'What this is for', text: "Getting clear on your own why: who you want to help, what stands in their way, and why you're the one to help. Use it for your work, a career move or a project of your own." },
-        explainStory: { title: "It's told as a story", text: "The people you help are the hero, not you. They face a problem, and something in their way: the villain. You're the guide who helps them get past it. The stakes are what happens if you do, or don't. The last step pulls it all into one sentence." },
+        explainStory: { title: "It's told as a story", text: "The people we serve are the hero, not us. They face a problem, and something in their way: the villain. The community is the guide that helps them get past it. The stakes are what happens if we succeed, or don't. The last step pulls it all into one sentence." },
       },
-      groupCopy: {
-        intro: [
-          'Before the session, {host} would like you to fill in your own why. It takes about 20 minutes.',
-          'Rough notes are fine. No wordsmithing.',
-        ],
-        explainFor: { title: 'What this is for', text: 'Before the session, everyone fills in their own canvas. {host} puts the answers side by side, so you can see what you share and where you differ.' },
-      },
-      sectionTitles: {
-        guide: 'Why me (the guide)',
-        offer: 'What I offer and the plan',
-        personal: 'Why it matters to me',
-      },
-      help: {
-        hero: { why: 'Even a personal why is about other people. Who you most want to help shapes every other answer.', think: "Who you love helping, who already asks you for help, and who you'd regret not reaching." },
-        facing: { why: "The people you help are trying to get past something. The surface problem is what they'd say out loud, the internal driver is how it feels, and the bigger change is why it matters.", think: 'One real person you have helped, and what was in their way.' },
-        villain: { why: 'Naming what stands in their way gives your why an edge.', think: 'A force, habit or condition, not a person. What makes their problem hard?' },
-        guide: { why: "You're the guide, not the hero. People trust you because you understand the struggle and you've been through it.", think: "What you've lived through yourself, and what you've built, done or learnt." },
-        offer: { why: 'A why needs a way to act on it, simple enough to start this week.', think: 'What you actually do for people, and the smallest step you could take this month.' },
-        stakes: { why: "Stakes make it matter. Success gives you something to aim for; giving up shows what you'd lose.", think: 'Something you could see in two years, and who would feel it if you stopped.' },
-        personal: { why: 'The honest version: what drives you, and what would make you stop.', think: 'What you get out of it, what you hope it leads to, and your real deal-breakers.' },
-        purpose: { why: 'This pulls it together in one sentence you can come back to.', think: 'Plain words over polish. Use your earlier answers as a starting point.' },
-      },
-      fields: {
-        'hero.primary': { prompt: 'Who do I most want to help?' },
-        'hero.tertiary': { prompt: 'Who is on the edge, but still matters to me?' },
-        'hero.one': { prompt: 'If I could only help one group, who is it?' },
-        'guide.empathy': { prompt: 'Why do I understand them?' },
-        'guide.authority': { prompt: 'Why am I credible?', example: 'Think of what you have built, done or learnt the hard way.' },
-        'offer.what': { title: 'What I do for them', prompt: 'What do I actually do for them?' },
-        'offer.steps': { prompt: 'Three simple steps to act on it.', example: 'A few words per step. Start with one you could do this week.' },
-        'stakes.fizzle': { prompt: "What happens if I don't do this, or give up?" },
-        'personal.why': { prompt: 'Why does this really matter to me?' },
-        'personal.stepback': { prompt: 'What would make me give up on it?' },
-        'purpose.hero': { prompt: 'Who I help' },
-        'purpose.what': { title: 'What I do', prompt: 'I do it by…' },
-      },
-      template: 'I want to help {purpose.hero} who struggle with {purpose.problem} because of {purpose.villain}, so that {purpose.change}. I do it by {purpose.what}.',
     },
   },
 };
@@ -883,6 +883,8 @@ button, input, textarea { font: inherit; color: inherit; }
 .grid { display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); }
 .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* The two rows read as one canvas: no gap, one hairline between them. */
+.grid-4 + .grid-3 { margin-top: -16px; border-top: 0; }
 .cell { background: var(--surface); padding: 20px 20px 24px; display: flex; flex-direction: column; gap: 16px; scroll-margin-top: calc(var(--bar-h) + 16px); }
 .cell-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .cell-titles { display: flex; flex-direction: column; gap: 4px; }
@@ -898,7 +900,7 @@ button, input, textarea { font: inherit; color: inherit; }
 .help-panel div { display: flex; flex-direction: column; gap: 4px; }
 
 /* The why statement sits apart, on its own grey band. */
-.purpose-box { margin-top: 16px; background: var(--bg-subtle); border: 1px solid var(--border); padding: 28px 28px 32px; display: flex; flex-direction: column; gap: 20px; scroll-margin-top: calc(var(--bar-h) + 16px); }
+.purpose-box { margin-top: 48px; background: var(--bg-subtle); border: 1px solid var(--border); padding: 28px 28px 32px; display: flex; flex-direction: column; gap: 20px; scroll-margin-top: calc(var(--bar-h) + 16px); }
 .purpose-tools { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; justify-content: flex-end; }
 .purpose-tools .link { padding-top: 0; min-height: 0; margin-top: 2px; }
 .sentence-inline { font-size: var(--text-xl); line-height: 2; letter-spacing: -0.01em; color: var(--fg1); max-width: 1200px; }
@@ -3091,7 +3093,8 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
 
     function showStart() {
       const c = CANVAS.start;
-      let type = WhyCanvas.DEFAULT_TYPE;
+      // Nothing is picked until the person chooses; the radios are required.
+      let type = null;
       const field = (id, label, hint, attrs) => {
         const input = h('input', { type: 'text', id, class: 'text-input', 'aria-describedby': `${id}-hint`, ...attrs });
         return { input, block: h('div', { class: 'stack' }, h('label', { for: id, class: 'label', text: label }), h('p', { id: `${id}-hint`, class: 'prompt', text: hint }), input) };
@@ -3100,6 +3103,7 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
       const name = field('name', c.nameLabel, c.nameHint, { autocomplete: 'given-name' });
       const last = chooser && storage.read(LAST);
       const begin = (next) => {
+        if (chooser && !type) return;
         const target = chooser ? { view: 'participant', type, group: CANVAS.types[type].solo ? '' : group.input.value, host: '' } : null;
         if (!target) { draft = next; save(); return draft.introSeen ? showCanvas() : showExplain(); }
         handoff = next;
@@ -3119,7 +3123,7 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
         chooser && h('fieldset', { class: 'type-picker' },
           h('legend', { class: 'label', text: c.typeQuestion }),
           WhyCanvas.TYPES.map((id) => h('label', { class: 'type-option' },
-            h('input', { type: 'radio', name: 'type', value: id, checked: id === type, onchange: () => { type = id; group.block.hidden = !!CANVAS.types[id].solo; } }),
+            h('input', { type: 'radio', name: 'type', value: id, required: true, onchange: () => { type = id; group.block.hidden = !!CANVAS.types[id].solo; } }),
             h('span', { class: 'label', text: CANVAS.types[id].label }),
             h('span', { class: 'prompt', text: CANVAS.types[id].description })))),
         chooser && group.block,
@@ -3127,7 +3131,7 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
         h('div', { class: 'row' }, h('button', { class: 'btn btn-primary btn-big', type: 'submit', text: c.start }))),
         h('div', { class: 'row' },
           h('button', { class: 'link', type: 'button', onclick: showRestore, text: c.restore }),
-          chooser && h('button', { class: 'link', type: 'button', text: c.example, onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'example', type }); } })),
+          chooser && h('button', { class: 'link', type: 'button', text: c.example, onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'example', type: type ?? WhyCanvas.DEFAULT_TYPE }); } })),
       ));
       window.scrollTo(0, 0);
       (chooser ? $('input[name="type"]', root) : name.input).focus();

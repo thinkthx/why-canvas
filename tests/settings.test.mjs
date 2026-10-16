@@ -59,7 +59,7 @@ test('old #facilitator links still open Group view', () => {
 });
 
 test('the demo covers the group types only', () => {
-  assert.deepEqual(plain(WhyCanvas.DEMO_TYPES), ['community', 'team', 'product']);
+  assert.deepEqual(plain(WhyCanvas.DEMO_TYPES), ['team', 'product', 'community']);
   assert.equal(read('#demo=personal').type, 'community');
 });
 

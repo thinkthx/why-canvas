@@ -67,8 +67,8 @@ test('an unknown type falls back to community', () => {
   assert.equal(WhyCanvas.copyFor('club', {}).type, 'community');
 });
 
-test('setup offers community, team and product, in that order', () => {
-  assert.deepEqual(plain(WhyCanvas.TYPES), ['community', 'team', 'product', 'personal']);
+test('types run from personal out to community, widening in reach', () => {
+  assert.deepEqual(plain(WhyCanvas.TYPES), ['personal', 'team', 'product', 'community']);
 });
 
 test('the product sentence opens with its name, or a capitalised fallback', () => {
