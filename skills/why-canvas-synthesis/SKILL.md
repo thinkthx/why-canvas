@@ -22,7 +22,7 @@ Each reply is one person's canvas in Markdown:
 
 You may instead get one combined export, which starts `# Why Canvas: all replies` (older copies: `# Our Why canvas: all replies`). It is many people, never one person called "all replies". Under each section and field it lists everyone's answers as bullets, labelled `**Name:**` or `**Person 1:**`, or with no label at all. Section 8 has a `### Statements` list. A `People:` list, if present, notes anyone whose type or group differs from the rest. A `From:` line lists names; never use them.
 
-The facilitator may have marked answers. Marks follow an answer as `_(starred)_`, `_(agree)_`, `_(diverge)_` or a mix such as `_(starred, diverge)_`. A star means "this caught my eye". Agree marks an answer the facilitator sees as common ground; diverge marks one that pulls away from it.
+The facilitator may have starred answers to mean "this caught my eye". Older exports may also carry Agree/Diverge marks. Marks follow an answer as `_(starred)_`, `_(agree)_`, `_(diverge)_` or a mix such as `_(starred, diverge)_`. Read legacy Agree as common ground and Diverge as a different direction; neither establishes group consensus.
 
 ## Before you read
 

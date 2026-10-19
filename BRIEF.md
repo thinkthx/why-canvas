@@ -23,13 +23,13 @@ Success looks like:
 | Audience | Anyone picks **community**, **team**, **product** or **personal** on the start screen. |
 | Canvas | The same eight sections and fields for every type. Wording, and a few titles, change. |
 | Flow | Canvas first. Run it with a group builds the links. Settings travel in the URL hash. |
-| Look | Neutral. All visual values in one token block, to be restyled later. Light only. No logo. |
+| Look | Neutral. All visual values in one token block, to be restyled later. Light and dark modes. No logo. |
 | Demo | Six sample replies per type, loaded in memory, never touching real data. |
 | Repo | Public, MIT licence. The unbranded version, for anyone to download and make their own. |
 | Architecture | One self-contained HTML file, no backend, no build step, no dependencies, no analytics. |
 | Timing | Two to four weeks. |
 
-Cut on purpose: a send-by date, a choice of channel, hiding sections, dark mode, a logo, a copyright line on the page (revisit when the website exists).
+Cut on purpose: a send-by date, a choice of channel, hiding sections, a logo, a copyright line on the page (revisit when the website exists).
 
 ## Approach
 
@@ -147,6 +147,20 @@ Unchanged from the earlier canvas (import by paste or file, received list, board
 - An empty view offers **Try it with sample answers**, which switches to the demo.
 - The group-mismatch warning above.
 
+## Group navigation and preferences
+
+Group view uses Import and Responses (with its count). Example and demo types use a native dropdown with consistent exit and start actions; group demos preserve their supported types and return route. Setup stays unselected, and See an example uses the current type or Product without saving a selection.
+
+Response controls use independent stars. Legacy Agree/Diverge marks remain in storage and exports, and the synthesis skill can still read them. Anonymisation and type switching preserve keyboard focus.
+
+Neutral light and dark palettes share the root tokens. The system preference applies until an explicit choice, saved under `whycanvas:theme` independently of drafts. The control remains available during presentation. Blocked storage leaves the control usable in memory. Skip to canvas focuses the application without changing its hash route.
+
+## Presentation improvements
+
+Pages fit their responses independently, trying up to six replies or four assembled statements before fewer, taller cards. Narrow screens try two stacked cards before one. Very long answers remain keyboard-scrollable and untruncated. Resizing preserves the current response anchor. Section explanations and discussion prompts live in `CANVAS.presentation`.
+
+The overlay contains keyboard focus and suspends the background while open. It has an explicit close control, response-page indicators, and a control bar that stays available on touch and keyboard use. Escape, fullscreen exit and route changes restore the background and opener without writing workshop data.
+
 ## Demo
 
 - Eighteen made-up replies: six per type, each type with its own fictional group (for example a local developer meetup, a payments team, a small budgeting app). Generic first names. Group names are checked against obvious real brands, and the owner approves them before release.
@@ -178,7 +192,7 @@ Order inside the HTML: `canvas-config`, styles (tokens first), `core`, `samples`
 
 ## Testing
 
-`node --test tests/`, no npm dependencies. The existing tests carry over, renamed and adjusted. New tests:
+`node --test tests/*.test.mjs`, no npm dependencies. The existing tests carry over, renamed and adjusted. New tests:
 
 - Settings: hash round trip; cleaning, length caps and control-character stripping; unknown or missing type; missing group and host fall back.
 - Copy: every type sheet overrides only field and section ids that exist; every type template uses exactly the shared purpose blanks; every token in every sheet resolves; no unresolved `{…}` reaches resolved copy.
