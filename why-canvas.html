@@ -24,6 +24,13 @@ const CANVAS = {
   // Where the code and the synthesis skill live. Set to null to drop both links.
   source: 'https://github.com/thinkthx/why-canvas',
 
+  accessibility: { skip: 'Skip to canvas' },
+  theme: { label: 'Dark mode', light: 'Switch to light mode', dark: 'Switch to dark mode' },
+  groupView: {
+    import: 'Import', responses: 'Responses', empty: 'No responses yet. Add them in the Import tab.',
+    exportNote: 'Save the replies as Markdown, including highlights and the current Anonymise setting. JSON saves all replies with names and highlights.',
+    star: 'Star response', unstar: 'Unstar response',
+  },
   presentation: {
     label: 'Present mode', previous: 'Previous', next: 'Next', close: 'Close presentation',
     shortcuts: 'Use the arrow keys to navigate', replies: 'Replies', page: 'Response page', of: 'of',
@@ -774,7 +781,7 @@ const WhyCanvas = (() => {
 })();
 </script>
 
-<!-- Styles: sharp, flat, hairlines, one accent. Light only. Every visual value lives in :root. -->
+<!-- Styles: sharp, flat, hairlines, one accent. Light and dark palettes. Every visual value lives in :root. -->
 <style>
 /* Tokens: restyle here. Nothing below this block sets a colour, font, type size or radius. */
 :root {
@@ -814,6 +821,42 @@ const WhyCanvas = (() => {
   --radius: 2px;
   --ease: cubic-bezier(0.2, 0, 0, 1);
   --bar-h: 64px;
+  /* Neutral dark palette. */
+  --dark-accent: #A9C3EA;
+  --dark-accent-hover: #C8DAF5;
+  --dark-on-accent: #10131A;
+  --dark-bg: #16181D;
+  --dark-bg-subtle: #22252B;
+  --dark-surface: #1B1E24;
+  --dark-fg1: #F2F3F5;
+  --dark-fg2: #D1D4DC;
+  --dark-fg3: #ADB2BE;
+  --dark-border: #555D6D;
+  --dark-border-strong: #7B8392;
+  --dark-invert-bg: #F2F3F5;
+  --dark-invert-fg: #16181D;
+  --dark-disabled-bg: #363B46;
+  --dark-disabled-fg: #BABFCA;
+
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --accent: var(--dark-accent);
+  --accent-hover: var(--dark-accent-hover);
+  --on-accent: var(--dark-on-accent);
+  --bg: var(--dark-bg);
+  --bg-subtle: var(--dark-bg-subtle);
+  --surface: var(--dark-surface);
+  --fg1: var(--dark-fg1);
+  --fg2: var(--dark-fg2);
+  --fg3: var(--dark-fg3);
+  --border: var(--dark-border);
+  --border-strong: var(--dark-border-strong);
+  --invert-bg: var(--dark-invert-bg);
+  --invert-fg: var(--dark-invert-fg);
+  --disabled-bg: var(--dark-disabled-bg);
+  --disabled-fg: var(--dark-disabled-fg);
 }
 
 * { box-sizing: border-box; }
@@ -977,8 +1020,6 @@ td.numeric { font-variant-numeric: tabular-nums; }
 .cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 .answer { border: 1px solid var(--border); background: var(--surface); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
 .answer.starred { border: 2px solid var(--fg1); padding: 15px; }
-.answer[data-tag="agree"] { box-shadow: inset 4px 0 0 var(--accent); }
-.answer[data-tag="diverge"] { box-shadow: inset 4px 0 0 var(--fg1); }
 .answer-text { white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--text-md); line-height: 1.5; }
 .answer-name { font-size: var(--text-sm); font-weight: 600; color: var(--fg3); }
 .answer-tools { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; }
@@ -1021,6 +1062,7 @@ td.numeric { font-variant-numeric: tabular-nums; }
   .present-screen { padding: 16px 16px 8px; }
 }
 
+.example-picker { min-height: 44px; max-width: 100%; padding: 8px 12px; background: var(--surface); color: var(--fg1); border: 1px solid var(--border-strong); border-radius: var(--radius); font: inherit; }
 /* Responsive */
 /* Setup */
 .steps { margin: 0; padding-left: 1.4em; display: flex; flex-direction: column; gap: 6px; }
@@ -1086,13 +1128,39 @@ td.numeric { font-variant-numeric: tabular-nums; }
   .agent-export { grid-template-columns: minmax(0, 1fr); }
   .export { padding-top: 0; }
 }
+.theme-home { position: fixed; top: 10px; right: 12px; z-index: 30; }
+.theme-control { width: 44px; padding: 8px; background: var(--bg); }
+.topbar { padding-inline-end: 80px; }
+.demo-banner { padding-inline-end: 80px; }
+.canvas-skip { position: fixed; z-index: 60; top: 8px; left: 8px; padding: 12px; background: var(--bg); color: var(--fg1); transform: translateY(-150%); }
+.canvas-skip:focus { transform: none; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; scroll-behavior: auto !important; }
 }
 </style>
+<script id="theme">
+// Set the palette before the first paint. This preference is separate from drafts.
+const WhyCanvasTheme = (() => {
+  const key = 'whycanvas:theme';
+  const system = matchMedia('(prefers-color-scheme: dark)');
+  let explicit;
+  try { const saved = localStorage.getItem(key); if (saved === 'light' || saved === 'dark') explicit = saved; } catch { /* In-memory switching still works. */ }
+  const apply = value => {
+    document.documentElement.dataset.theme = value;
+    document.dispatchEvent(new Event('canvas-theme-change'));
+  };
+  apply(explicit || (system.matches ? 'dark' : 'light'));
+  system.addEventListener('change', event => { if (!explicit) apply(event.matches ? 'dark' : 'light'); });
+  return { toggle() {
+    explicit = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    apply(explicit);
+    try { localStorage.setItem(key, explicit); } catch { /* Keep the choice in memory. */ }
+  } };
+})();
+</script>
 </head>
 <body>
-<div id="app"></div>
+<div id="app" tabindex="-1"></div>
 <footer id="credit" class="credit"></footer>
 <div id="live-polite" class="sr-only" aria-live="polite"></div>
 <div id="live-assertive" class="sr-only" aria-live="assertive"></div>
@@ -2710,7 +2778,7 @@ Each reply is one person's canvas in Markdown:
 
 You may instead get one combined export, which starts `# Why Canvas: all replies` (older copies: `# Our Why canvas: all replies`). It is many people, never one person called "all replies". Under each section and field it lists everyone's answers as bullets, labelled `**Name:**` or `**Person 1:**`, or with no label at all. Section 8 has a `### Statements` list. A `People:` list, if present, notes anyone whose type or group differs from the rest. A `From:` line lists names; never use them.
 
-The facilitator may have marked answers. Marks follow an answer as `_(starred)_`, `_(agree)_`, `_(diverge)_` or a mix such as `_(starred, diverge)_`. A star means "this caught my eye". Agree marks an answer the facilitator sees as common ground; diverge marks one that pulls away from it.
+The facilitator may have starred answers to mean "this caught my eye". Older exports may also carry Agree/Diverge marks. Marks follow an answer as `_(starred)_`, `_(agree)_`, `_(diverge)_` or a mix such as `_(starred, diverge)_`. Read legacy Agree as common ground and Diverge as a different direction; neither establishes group consensus.
 
 ## Before you read
 
@@ -2849,6 +2917,23 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
     }
     return el;
   }
+
+  const themeButton = h('button', { class: 'btn btn-ghost theme-control', type: 'button', role: 'switch',
+    'aria-label': CANVAS.theme.label, onclick: () => WhyCanvasTheme.toggle() });
+  const themeHome = h('div', { class: 'theme-home' }, themeButton);
+  function updateThemeControl() {
+    const dark = document.documentElement.dataset.theme === 'dark';
+    themeButton.setAttribute('aria-checked', String(dark));
+    themeButton.title = dark ? CANVAS.theme.light : CANVAS.theme.dark;
+    themeButton.replaceChildren(h('span', { 'aria-hidden': 'true', text: dark ? '☀' : '◐' }));
+  }
+  document.addEventListener('canvas-theme-change', updateThemeControl);
+  updateThemeControl();
+  const skip = h('a', { class: 'canvas-skip', href: '#app', text: CANVAS.accessibility.skip, onclick: event => {
+    event.preventDefault();
+    const app = $('div#app'); app.focus(); app.scrollIntoView({behavior:'instant'});
+  } });
+  document.body.prepend(skip, themeHome);
 
   // Line icons in the Lucide style (ISC licence), drawn in currentColor.
   const ICONS = {
@@ -3011,6 +3096,16 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
   // Leaving for another screen: the new screen takes the dialog's history
   // entry, so one Back returns to the canvas. A bare '#' keeps it in-page.
   const leaveDialog = (dialog, hash) => { dialog.finish(false); location.replace(`${location.href.replace(/#.*$/, '')}${hash || '#'}`); };
+
+  let pendingPickerFocus = null;
+  function examplePicker(view, type, ids, label) {
+    const picker = h('select', { class: 'example-picker', 'aria-label': label,
+      onchange: event => {
+        pendingPickerFocus = view;
+        location.hash = WhyCanvas.settingsHash({view, type: event.target.value});
+      } }, ids.map(id => h('option', { value: id, text: CANVAS.types[id].label, selected: id === type })));
+    return picker;
+  }
 
   // ---------------------------------------------------------------- participant
 
@@ -3200,7 +3295,7 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
         h('div', { class: 'row' }, h('button', { class: 'btn btn-primary btn-big', type: 'submit', text: c.start }))),
         h('div', { class: 'row' },
           h('button', { class: 'link', type: 'button', onclick: showRestore, text: c.restore }),
-          chooser && h('button', { class: 'link', type: 'button', text: c.example, onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'example', type: type ?? WhyCanvas.DEFAULT_TYPE }); } })),
+          chooser && h('button', { class: 'link', type: 'button', text: c.example, onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'example', type: type ?? 'product' }); } })),
       ));
       window.scrollTo(0, 0);
       (chooser ? $('input[name="type"]', root) : name.input).focus();
@@ -3274,12 +3369,9 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
       const c = CANVAS.example;
       return h('div', { class: 'demo-banner', role: 'region', 'aria-label': c.label },
         h('p', { class: 'body' }, h('strong', { text: `${c.label}: ` }), `${CANVAS.types[settings.type].example} ${c.note}`),
-        h('div', { class: 'row', role: 'group', 'aria-label': c.switchLabel },
-          WhyCanvas.TYPES.map((id) => h('button', {
-            type: 'button', class: 'btn btn-ghost btn-sm', 'aria-pressed': String(id === settings.type), text: CANVAS.types[id].label,
-            onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'example', type: id }); },
-          }))),
+        examplePicker('example', settings.type, WhyCanvas.TYPES, c.switchLabel),
         h('div', { class: 'row' },
+          h('button', { type: 'button', class: 'link', text: CANVAS.demo.exit, onclick: () => { location.hash = ''; } }),
           !CANVAS.types[settings.type].solo && h('button', { type: 'button', class: 'btn btn-ghost btn-sm', text: c.groupView, onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'demo', type: settings.type }); } }),
           h('button', { type: 'button', class: 'btn btn-dark btn-sm', text: c.start, onclick: () => { location.hash = ''; } })));
     }
@@ -3507,10 +3599,10 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
         h('div', { class: 'topbar-id' },
           wordmark('wordmark'),
           h('span', { class: 'topbar-name', text: settings.group ? `Group view · ${settings.group}` : 'Group view' })),
-        h('div', { class: 'tabs' }, tab('replies', `Replies (${replies().length})`), tab('board', 'Board')),
+        h('div', { class: 'tabs' }, tab('replies', CANVAS.groupView.import), tab('board', `${CANVAS.groupView.responses} (${replies().length})`)),
         h('div', { class: 'topbar-meta' },
           h('div', { class: 'switch-row' },
-            switchButton('anonymise', state.anonymise, (on) => { state.anonymise = on; persist(); render(); }),
+            switchButton('anonymise', state.anonymise, (on) => { const focused = document.activeElement?.id === 'anonymise'; state.anonymise = on; persist(); render(); if (focused) $('#anonymise').focus({preventScroll:true}); }),
             h('label', { for: 'anonymise', class: 'label', text: 'Anonymise' })),
           h('button', { class: 'btn btn-dark', type: 'button', id: 'present', text: 'Present', disabled: replies().length === 0, onclick: present })));
     }
@@ -3545,7 +3637,7 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
       });
 
       return h('main', { class: 'wide' },
-        h('h1', { class: 'title', text: 'Replies' }),
+        h('h1', { class: 'title', text: CANVAS.groupView.import }),
         drop,
         h('div', { class: 'report', role: 'status' }, state.report.map((line) => h('p', { text: line }))),
         rows.length
@@ -3558,7 +3650,7 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
         agentBlock(rows.length === 0),
         h('div', { class: 'export' },
           h('h2', { class: 'section-title', text: 'Export' }),
-          h('p', { class: 'prompt', text: 'Export Markdown follows the Anonymise switch and notes your highlights. JSON holds everything.' }),
+          h('p', { class: 'prompt', text: CANVAS.groupView.exportNote }),
           h('div', { class: 'row' },
             h('button', { class: 'btn btn-ghost', type: 'button', text: 'Export Markdown', disabled: rows.length === 0, onclick: () => download('why-canvas-all-replies.md', WhyCanvas.combinedMarkdown(replies(), { ...state, type: settings.type, group: settings.group }), 'text/markdown') }),
             h('button', { class: 'btn btn-ghost', type: 'button', text: 'Export JSON', disabled: rows.length === 0, onclick: () => download('why-canvas-all-replies.json', `${JSON.stringify({ canvas: CANVAS.id, version: CANVAS.version, type: settings.type, group: settings.group, exported: new Date().toISOString(), replies: replies(), highlights: state.highlights }, null, 2)}\n`, 'application/json') }),
@@ -3599,19 +3691,16 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
       const key = WhyCanvas.highlightKey(reply.name, fieldId);
       const mark = { ...(state.highlights[key] ?? {}) };
       const star = h('button', { type: 'button', class: 'btn btn-ghost btn-sm' });
-      const agree = h('button', { type: 'button', class: 'btn btn-ghost btn-sm agree', text: 'Agree' });
-      const diverge = h('button', { type: 'button', class: 'btn btn-ghost btn-sm', text: 'Diverge' });
       const card = h('article', { class: 'answer' },
         h('p', { class: 'answer-text', text }),
         label && h('p', { class: 'answer-name', text: label }),
-        h('div', { class: 'answer-tools' }, star, agree, diverge));
+        h('div', { class: 'answer-tools' }, star));
       const paint = () => {
-        star.replaceChildren(icon('star', 16, !!mark.star), mark.star ? 'Starred' : 'Star');
+        star.replaceChildren(icon('star', 20, !!mark.star));
+        star.setAttribute('aria-label', mark.star ? CANVAS.groupView.unstar : CANVAS.groupView.star);
+        star.title = star.getAttribute('aria-label');
         star.setAttribute('aria-pressed', String(!!mark.star));
-        agree.setAttribute('aria-pressed', String(mark.tag === 'agree'));
-        diverge.setAttribute('aria-pressed', String(mark.tag === 'diverge'));
         card.classList.toggle('starred', !!mark.star);
-        card.dataset.tag = mark.tag ?? '';
       };
       const update = (next) => {
         Object.assign(mark, next);
@@ -3621,8 +3710,6 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
         paint();
       };
       star.addEventListener('click', () => update({ star: !mark.star }));
-      agree.addEventListener('click', () => update({ tag: mark.tag === 'agree' ? null : 'agree' }));
-      diverge.addEventListener('click', () => update({ tag: mark.tag === 'diverge' ? null : 'diverge' }));
       paint();
       return card;
     }
@@ -3661,7 +3748,7 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
           h('h1', { class: 'title', text: section.title }),
           state.anonymise && h('p', { class: 'prompt', text: 'Names hidden and order shuffled.' })),
         replies().length === 0
-          ? h('p', { class: 'small', text: 'No replies yet. Paste them in on the Replies tab.' })
+          ? h('p', { class: 'small', text: CANVAS.groupView.empty })
           : sectionRows(section).map((row) => h('section', { class: 'board-row' },
             h('div', {}, h('h2', { class: 'label', text: row.title }), h('p', { class: 'prompt', text: row.prompt })),
             row.entries.length
@@ -3693,6 +3780,7 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
       document.body.style.overflow = 'hidden';
       overlay.append(screen, controls, status);
       document.body.append(overlay);
+      $('.present-tools', overlay).prepend(themeButton);
       let pages = [], index = 0, closed = false, resizeFrame, idleTimer;
       function stage(page) {
         if (!page) return h('article', { class: 'slide' }, h('h2', { class: 'slide-title', text: c.emptyTitle }), h('p', { class: 'slide-empty', text: c.empty }));
@@ -3706,8 +3794,8 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
             count > 1 && h('div', { class: 'present-progress', 'aria-label': `${c.page} ${part + 1} ${c.of} ${count}` },
               h('span', { class: 'present-segments', 'aria-hidden': 'true' }, Array.from({length:count}, (_,i) => h('i', { class: i === part ? 'current' : '' }))), h('span', { text: range }))),
           h('div', { class: 'slide-grid', style: `--cols:${columns};--rows:${rows}` }, entries.map(e => {
-            const mark = e.mark?.star || e.mark?.tag;
-            const marker = mark && h('span', { class: 'mark', text: [e.mark.star && c.starred, e.mark.tag].filter(Boolean).join(' · ') });
+            const mark = e.mark?.star;
+            const marker = mark && h('span', { class: 'mark', text: c.starred });
             return h('figure', { class: 'slide-card' }, h('blockquote', { text: e.text }),
               (e.label || mark) && h('figcaption', {}, e.label, marker));
           })),
@@ -3769,6 +3857,7 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
         document.removeEventListener('fullscreenchange', onFullscreen);
         window.removeEventListener('resize', resize);
         if (document.fullscreenElement === overlay) document.exitFullscreen().catch(() => {});
+        themeHome.append(themeButton);
         overlay.remove();
         background.forEach(([node, inert]) => { node.inert = inert; });
         document.body.style.overflow = overflow;
@@ -3811,12 +3900,10 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
     function render() {
       const banner = demo && h('div', { class: 'demo-banner', role: 'region', 'aria-label': 'Demo' },
         h('p', { class: 'label', text: CANVAS.demo.banner }),
-        h('div', { class: 'row', role: 'group', 'aria-label': CANVAS.demo.switchLabel },
-          WhyCanvas.DEMO_TYPES.map((id) => h('button', {
-            type: 'button', class: 'btn btn-ghost btn-sm', 'aria-pressed': String(id === settings.type), text: CANVAS.types[id].label,
-            onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'demo', type: id }); },
-          }))),
-        h('button', { type: 'button', class: 'btn btn-dark btn-sm', text: CANVAS.demo.exit, onclick: exitDemo }));
+        examplePicker('demo', settings.type, WhyCanvas.DEMO_TYPES, CANVAS.demo.switchLabel),
+        h('div', { class: 'row' },
+          h('button', { type: 'button', class: 'link', text: CANVAS.demo.exit, onclick: exitDemo }),
+          h('button', { type: 'button', class: 'btn btn-primary btn-sm', text: CANVAS.example.start, onclick: () => { location.hash = ''; } })));
       root.replaceChildren(...[banner, header(), state.tab === 'board' ? boardView() : repliesView()].filter(Boolean));
     }
 
@@ -3849,7 +3936,14 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
     }
     else facilitator(root, settings, { demo: settings.view === 'demo', exitDemo: () => { location.hash = demoExit; } });
   }
-  window.addEventListener('hashchange', route);
+  window.addEventListener('hashchange', () => {
+    route();
+    if (pendingPickerFocus) {
+      const view = pendingPickerFocus;
+      pendingPickerFocus = null;
+      if (WhyCanvas.readSettings(location.hash).view === view) $('.example-picker')?.focus({preventScroll:true});
+    }
+  });
   if (CANVAS.credit) {
     const { lead, name, url, site, codeLabel } = CANVAS.credit;
     const link = (href, text) => h('a', { href, target: '_blank', rel: 'noopener', text });

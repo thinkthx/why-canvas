@@ -15,7 +15,7 @@ The styling is deliberately minimal: a plain starting point, not a finished look
 
 1. On your canvas, choose **Run it with a group**. Add the group's name and your first name, and copy the two links.
 2. Send **Share with your group** to everyone. Each person fills in the canvas (about 20 minutes), presses **Save or send** and sends you their copy in a message or email.
-3. Open **Your Group view link**. Paste the replies in, prepare highlights on the Board, then **Present** (arrow keys to move, Esc to exit). Export a combined Markdown file to summarise afterwards.
+3. Open **Your Group view link**. Paste the replies in, star responses on the Responses tab, then **Present** (arrow keys to move, Esc to exit). Export a combined Markdown file to summarise afterwards.
 
 Replies you paste in stay in the browser where you opened Group view. **Clear all** removes them.
 
@@ -23,7 +23,7 @@ To see what a finished canvas looks like, choose **See an example** on the start
 
 ## Talk it through
 
-The canvas is there to start a conversation. Read the replies together, compare what matters to each person, and work towards a shared why. Group view puts every answer side by side for exactly that.
+The canvas is there to start a conversation. Read the responses together, compare what matters to each person, and work towards a shared why. Group view puts every answer side by side for exactly that.
 
 If you'd like a hand preparing, an AI assistant can help. The [synthesis skill](skills/why-canvas-synthesis/SKILL.md) turns a set of replies into a short prep pack: how aligned the group is on each part of the canvas, a quote here and there, up to three why statements with what each one gives up, questions to ask the room, and gaps. It keeps everyone anonymous and never picks a winner; the room decides. Give it one canvas and it reads that canvas back to you instead.
 
@@ -33,6 +33,14 @@ It works from a folder of `.md` replies, Group view's export, or text pasted in.
 - **Assistants that support skills:** add the `skills/why-canvas-synthesis` folder as a skill, then share the replies. In Claude Code, for example, copy it into your project's `.claude/skills/` (or `~/.claude/skills/` for every project).
 
 If you change the skill, run the tests: the page carries a copy of it for Copy AI prompt, and a test keeps the two in step.
+
+## Navigation and preferences
+
+Group view starts on Import. Responses shows the number of imported replies. Star any responses you want to return to; each star is independent and survives a reload. Stars also appear in exports. Older Agree/Diverge marks remain in saved data and exports for compatibility, although the current controls use stars only.
+
+Example and demo types use a dropdown. Exit demo returns from a group demo to its previous view; Start your own opens setup. With no type selected, See an example opens Product. Demos never save their sample replies to your sessions.
+
+The light/dark switch follows the system until you choose a mode, then remembers your choice separately from canvas drafts. It also works during presentation. If browser storage is blocked, switching still works for the current page.
 
 ## Presenting the responses
 

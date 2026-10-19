@@ -23,13 +23,13 @@ Success looks like:
 | Audience | Anyone picks **community**, **team**, **product** or **personal** on the start screen. |
 | Canvas | The same eight sections and fields for every type. Wording, and a few titles, change. |
 | Flow | Canvas first. Run it with a group builds the links. Settings travel in the URL hash. |
-| Look | Neutral. All visual values in one token block, to be restyled later. Light only. No logo. |
+| Look | Neutral. All visual values in one token block, to be restyled later. Light and dark modes. No logo. |
 | Demo | Six sample replies per type, loaded in memory, never touching real data. |
 | Repo | Public, MIT licence. The unbranded version, for anyone to download and make their own. |
 | Architecture | One self-contained HTML file, no backend, no build step, no dependencies, no analytics. |
 | Timing | Two to four weeks. |
 
-Cut on purpose: a send-by date, a choice of channel, hiding sections, dark mode, a logo, a copyright line on the page (revisit when the website exists).
+Cut on purpose: a send-by date, a choice of channel, hiding sections, a logo, a copyright line on the page (revisit when the website exists).
 
 ## Approach
 
@@ -146,6 +146,14 @@ Unchanged from the earlier canvas (import by paste or file, received list, board
 - Copy comes from the type's sheet.
 - An empty view offers **Try it with sample answers**, which switches to the demo.
 - The group-mismatch warning above.
+
+## Group navigation and preferences
+
+Group view uses Import and Responses (with its count). Example and demo types use a native dropdown with consistent exit and start actions; group demos preserve their supported types and return route. Setup stays unselected, and See an example uses the current type or Product without saving a selection.
+
+Response controls use independent stars. Legacy Agree/Diverge marks remain in storage and exports, and the synthesis skill can still read them. Anonymisation and type switching preserve keyboard focus.
+
+Neutral light and dark palettes share the root tokens. The system preference applies until an explicit choice, saved under `whycanvas:theme` independently of drafts. The control remains available during presentation. Blocked storage leaves the control usable in memory. Skip to canvas focuses the application without changing its hash route.
 
 ## Presentation improvements
 

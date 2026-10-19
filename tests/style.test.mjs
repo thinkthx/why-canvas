@@ -36,3 +36,10 @@ test('text and the accent meet WCAG AA on their backgrounds', () => {
     assert.ok(contrast(token(fg), token(bg)) >= 4.5, `${fg} on ${bg}: ${contrast(token(fg), token(bg)).toFixed(2)}`);
   }
 });
+
+test('dark text and actions remain readable on their backgrounds', () => {
+  for (const [fg, bg] of [['fg1','bg'],['fg2','bg'],['fg3','bg'],['fg3','bg-subtle'],['on-accent','accent'],['on-accent','accent-hover'],['invert-fg','invert-bg']]) {
+    assert.ok(root.includes(`--dark-${fg}:`), 'dark palette exposes its foreground token');
+    assert.ok(contrast(token(`dark-${fg}`),token(`dark-${bg}`))>=4.5,`${fg} on ${bg} in dark mode`);
+  }
+});

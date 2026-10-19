@@ -10,7 +10,7 @@ const errors=[], external=[];
 const phase=process.env.WHY_CANVAS_PHASE || 'all';
 const evidence=process.env.WHY_CANVAS_EVIDENCE;
 if(evidence)mkdirSync(evidence,{recursive:true});
-async function context(options={}) {
+async function context({nativeFullscreen=false,...options}={}) {
   const ctx=await browser.newContext({viewport:{width:1920,height:1080},reducedMotion:'reduce',...options});
   await ctx.route('**/*',async route=>{
     if(new URL(route.request().url()).origin!==origin){external.push(route.request().url());return route.abort();}
@@ -18,7 +18,7 @@ async function context(options={}) {
   });
   ctx.on('page',p=>{p.setDefaultTimeout(8000);p.on('pageerror',e=>errors.push(e.message));});
   // Exercise the windowed fallback deterministically; native fullscreen is checked separately.
-  await ctx.addInitScript(()=>{Element.prototype.requestFullscreen=()=>Promise.reject(new Error('Windowed fallback'));});
+  if(!nativeFullscreen)await ctx.addInitScript(()=>{Element.prototype.requestFullscreen=()=>Promise.reject(new Error('Windowed fallback'));});
   return ctx;
 }
 async function seed(page,texts,{anonymise=false,empty=false,type='team'}={}) {
@@ -101,34 +101,85 @@ try {
     await seed(page,['one'],{empty:true});await page.locator('#present').click();
     assert.equal(await page.locator('.slide-empty').innerText(),'No replies to show.');
     await page.getByRole('button',{name:'Close presentation',exact:true}).click();
-    await ctx.close(); console.log('PASS presenter ordering, pagination, long text, anonymity, resize, keyboard and cleanup');
+    // Paragraph-sized replies exercise every field, not just the first slide.
+    await seed(page,Array.from({length:6},(_,i)=>`Reply ${i+1}`));
+    await page.evaluate(()=>{
+      const key=WhyCanvas.storageKey({type:'team',group:'Workshop'},'facilitator');
+      const saved=JSON.parse(localStorage.getItem(key));
+      Object.values(saved.replies).forEach((reply,i)=>{
+        for(const section of CANVAS.sections)for(const field of section.fields){
+          if(!field.id.startsWith('purpose.'))reply.answers[field.id]=`Reply ${i+1}: `+'People need a clear direction and a useful next step. '.repeat(4);
+        }
+      });
+      localStorage.setItem(key,JSON.stringify(saved));
+    });
+    await page.reload();await page.locator('#present').click();
+    const covered=new Map();
+    for(let step=0;step<160;step++){
+      const field=await page.locator('.slide').getAttribute('data-field');
+      const count=await page.locator('.slide-card').count();
+      covered.set(field,(covered.get(field)||0)+count);
+      assert.equal(await page.locator('blockquote').evaluateAll(nodes=>nodes.every(q=>q.scrollHeight<=q.clientHeight+1)),true,'paragraphs fit without internal scrolling');
+      if(await page.locator('[data-next]').isDisabled())break;
+      await page.keyboard.press('ArrowRight');
+    }
+    assert.equal(covered.size,17,'all fields and assembled statements are presented');
+    for(const [field,count]of covered)assert.equal(count,6,field+' preserves all replies');
+    await page.keyboard.press('Escape');
+    // Pointer inactivity never removes controls from keyboard users.
+    await seed(page,['one','two']);await page.locator('#present').click();
+    await page.waitForTimeout(3150);
+    assert.equal(await page.locator('.present-controls').evaluate(el=>getComputedStyle(el).opacity),'0');
+    await page.keyboard.press('Tab');
+    assert.equal(await page.locator('.present-controls').evaluate(el=>getComputedStyle(el).opacity),'1');
+    await page.keyboard.press('Escape');
+    await ctx.close();
+    const touch=await context({viewport:{width:390,height:844},hasTouch:true,isMobile:true});
+    const touchPage=await touch.newPage();await seed(touchPage,['one','two']);await touchPage.locator('#present').tap();
+    await touchPage.waitForTimeout(3150);
+    assert.equal(await touchPage.locator('.present-controls').evaluate(el=>getComputedStyle(el).opacity),'1','touch controls remain available');
+    if(evidence)await touchPage.screenshot({path:evidence+'/presenter-mobile.png'});
+    await touchPage.getByRole('button',{name:'Close presentation',exact:true}).tap();await touch.close();
+    const native=await context({nativeFullscreen:true});const nativePage=await native.newPage();await seed(nativePage,['one']);
+    await nativePage.locator('#present').click();await nativePage.waitForTimeout(150);
+    if(await nativePage.evaluate(()=>Boolean(document.fullscreenElement))){
+      await nativePage.evaluate(()=>document.exitFullscreen());await nativePage.locator('.present').waitFor({state:'detached'});
+      console.log('PASS native fullscreen exit');
+    }else{await nativePage.keyboard.press('Escape');console.log('PASS native fullscreen refusal fallback');}
+    await native.addInitScript(()=>{Element.prototype.requestFullscreen=()=>new Promise(resolve=>{window.finishFullscreenRequest=resolve;});});
+    await seed(nativePage,['one']);await nativePage.locator('#present').click();await nativePage.keyboard.press('Escape');
+    await nativePage.evaluate(()=>window.finishFullscreenRequest());
+    assert.equal(await nativePage.locator('.present').count(),0,'a late fullscreen promise cannot revive the overlay');
+    await native.close();
+    console.log('PASS presenter ordering, pagination, long text, anonymity, resize, keyboard and cleanup');
   }
   if(['all','navigation'].includes(phase)) {
     const ctx=await context({viewport:{width:390,height:844}});const page=await ctx.newPage();
     await page.goto(origin+'/why-canvas.html');
     assert.equal(await page.locator('.type-picker input:checked').count(),0);
     await page.getByRole('button',{name:'See an example',exact:true}).click();
-    await page.waitForURL('**/#example=product');
+    await page.waitForURL(url=>url.hash === '#example=product');
     const select=page.getByRole('combobox',{name:'Example type'});
     await select.selectOption('personal');
-    await page.waitForURL('**/#example=personal');
+    await page.waitForURL(url=>url.hash === '#example=personal');
     await page.getByRole('combobox',{name:'Example type'}).waitFor();
     assert.equal(await page.getByRole('combobox',{name:'Example type'}).evaluate(el=>el===document.activeElement),true);
     await page.getByRole('button',{name:'Exit demo',exact:true}).click();
     await page.locator('.type-picker').waitFor();
     await page.locator('input[value="team"]').check();
     await page.getByRole('button',{name:'See an example',exact:true}).click();
-    await page.waitForURL('**/#example=team');
+    await page.waitForURL(url=>url.hash === '#example=team');
     await page.getByRole('button',{name:'See a group’s answers',exact:true}).click();
-    await page.waitForURL('**/#demo=team');
-    assert.deepEqual(await page.getByRole('combobox',{name:'Demo type'}).locator('option').allTextContents(),['Team','Product','Community']);
+    await page.waitForURL(url=>url.hash === '#demo=team');
+    await page.getByRole('combobox',{name:'Sample group'}).waitFor();
+    assert.deepEqual(await page.getByRole('combobox',{name:'Sample group'}).locator('option').allTextContents(),['Team','Product','Community']);
     await page.getByRole('button',{name:'Exit demo',exact:true}).click();
-    await page.waitForURL('**/#example=team');
+    await page.waitForURL(url=>url.hash === '#example=team');
     await seed(page,['one','two']);
     assert.deepEqual(await page.locator('.tabs button').allTextContents(),['Import','Responses (2)']);
     await page.getByRole('button',{name:'Responses (2)',exact:true}).click();
     assert.equal(await page.getByRole('button',{name:/^(Agree|Diverge)$/}).count(),0);
-    const star=page.getByRole('button',{name:'Star response',exact:true}).first();
+    const star=page.locator('.board-row').first().locator('.answer').nth(1).locator('.answer-tools button');
     await star.focus();await page.keyboard.press('Space');
     assert.equal(await star.getAttribute('aria-pressed'),'true');
     assert.equal(await star.evaluate(el=>el===document.activeElement),true);
@@ -149,6 +200,10 @@ try {
     for(const scheme of ['light','dark']) {
       const ctx=await context({colorScheme:scheme});const page=await ctx.newPage();await page.goto(origin+'/why-canvas.html');
       assert.equal(await page.locator('html').getAttribute('data-theme'),scheme);
+      await page.emulateMedia({colorScheme:scheme==='light'?'dark':'light'});
+      await page.waitForFunction(expected=>document.documentElement.dataset.theme===expected,scheme==='light'?'dark':'light',{timeout:3000});
+      await page.emulateMedia({colorScheme:scheme});
+      await page.waitForFunction(expected=>document.documentElement.dataset.theme===expected,scheme,{timeout:3000});
       const toggle=page.getByRole('switch',{name:'Dark mode',exact:true});await toggle.click();
       assert.equal(await toggle.getAttribute('aria-checked'),String(scheme==='light'));
       await page.reload();assert.equal(await page.locator('html').getAttribute('data-theme'),scheme==='light'?'dark':'light');
@@ -166,6 +221,16 @@ try {
     const page=await ctx.newPage();await page.goto(origin+'/why-canvas.html');await page.getByRole('switch',{name:'Dark mode',exact:true}).click();
     assert.equal(await page.locator('html').getAttribute('data-theme'),'light');await ctx.close();
     console.log('PASS system themes, explicit persistence, blocked storage and presentation theme switching');
+  }
+  if(phase==='all'){
+    const direct=await browser.newContext();const page=await direct.newPage();
+    await page.goto(new URL('../why-canvas.html',import.meta.url).href);
+    assert.equal(await page.locator('.type-picker input').count(),4);
+    await page.getByRole('switch',{name:'Dark mode',exact:true}).click();
+    await page.locator('.canvas-skip').focus();await page.keyboard.press('Enter');
+    assert.equal(await page.locator('div#app').evaluate(el=>el===document.activeElement),true);
+    assert.equal(new URL(page.url()).hash,'','skip navigation does not overwrite routing');
+    await direct.close();console.log('PASS standalone file use and skip navigation');
   }
   assert.deepEqual(errors,[],'no browser errors');assert.deepEqual(external,[],'no external requests');
 } finally {await browser.close();}
