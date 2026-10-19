@@ -126,6 +126,19 @@ try {
     assert.equal(covered.size,17,'all fields and assembled statements are presented');
     for(const [field,count]of covered)assert.equal(count,6,field+' preserves all replies');
     await page.keyboard.press('Escape');
+    // A larger workshop must keep the active indicator visible on its final page.
+    await page.setViewportSize({width:390,height:844});
+    for(const count of [40,100]){
+      await seed(page,Array.from({length:count},(_,i)=>`${i+1}: `+'A response about making the next step clear. '.repeat(20)));
+      await page.locator('#present').click();
+      for(let i=1;i<count;i++)await page.keyboard.press('ArrowRight');
+      assert.equal(await page.locator('.slide').getAttribute('data-field'),'hero.primary');
+      assert.equal(await page.locator('.present').evaluate(el=>el.scrollWidth<=el.clientWidth),true,'many response-page segments fit the viewport');
+      const bounds=await page.locator('.present-segments .current').boundingBox();
+      assert.ok(bounds.x>=0 && bounds.x+bounds.width<=390 && bounds.y>=0 && bounds.y+bounds.height<=844,'late-page indicator remains visible');
+      await page.keyboard.press('Escape');
+    }
+    await page.setViewportSize({width:1920,height:1080});
     // Pointer inactivity never removes controls from keyboard users.
     await seed(page,['one','two']);await page.locator('#present').click();
     await page.waitForTimeout(3150);
