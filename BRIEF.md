@@ -147,6 +147,12 @@ Unchanged from the earlier canvas (import by paste or file, received list, board
 - An empty view offers **Try it with sample answers**, which switches to the demo.
 - The group-mismatch warning above.
 
+## Presentation improvements
+
+Pages fit their responses independently, trying up to six replies or four assembled statements before fewer, taller cards. Narrow screens try two stacked cards before one. Very long answers remain keyboard-scrollable and untruncated. Resizing preserves the current response anchor. Section explanations and discussion prompts live in `CANVAS.presentation`.
+
+The overlay contains keyboard focus and suspends the background while open. It has an explicit close control, response-page indicators, and a control bar that stays available on touch and keyboard use. Escape, fullscreen exit and route changes restore the background and opener without writing workshop data.
+
 ## Demo
 
 - Eighteen made-up replies: six per type, each type with its own fictional group (for example a local developer meetup, a payments team, a small budgeting app). Generic first names. Group names are checked against obvious real brands, and the owner approves them before release.
@@ -178,7 +184,7 @@ Order inside the HTML: `canvas-config`, styles (tokens first), `core`, `samples`
 
 ## Testing
 
-`node --test tests/`, no npm dependencies. The existing tests carry over, renamed and adjusted. New tests:
+`node --test tests/*.test.mjs`, no npm dependencies. The existing tests carry over, renamed and adjusted. New tests:
 
 - Settings: hash round trip; cleaning, length caps and control-character stripping; unknown or missing type; missing group and host fall back.
 - Copy: every type sheet overrides only field and section ids that exist; every type template uses exactly the shared purpose blanks; every token in every sheet resolves; no unresolved `{…}` reaches resolved copy.

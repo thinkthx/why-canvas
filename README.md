@@ -34,6 +34,12 @@ It works from a folder of `.md` replies, Group view's export, or text pasted in.
 
 If you change the skill, run the tests: the page carries a copy of it for Copy AI prompt, and a test keeps the two in step.
 
+## Presenting the responses
+
+Present keeps answers in their board order and follows the Anonymise setting. It fits each page separately, so a long answer does not crowd out the shorter replies that follow. Very long answers scroll inside their cards without losing text. Tab to a long answer to scroll it with the keyboard.
+
+Each section includes its question, a short explanation and a discussion prompt. Previous and next move through the responses; arrow keys, Page Up, Page Down, Home and End also work. Escape or Close presentation returns to Group view. Controls stay available on touch screens and during keyboard use, and hide after pointer inactivity.
+
 ## Make it your own
 
 Download `why-canvas.html`. That one file is the whole tool.
@@ -64,10 +70,12 @@ Then open http://localhost:8766/why-canvas.html.
 ## Tests
 
 ```bash
-node --test tests/
+node --test tests/*.test.mjs
 ```
 
 No npm install needed. The tests read the code straight out of `why-canvas.html`.
+
+An optional browser harness exercises the real page, including pagination, keyboard scrolling, focus, resize and route cleanup. It uses a separately installed `playwright` module, never a script loaded by the application. Set `WHY_CANVAS_PLAYWRIGHT` to that module's file URL if it is not on your module path, then run `node tests/browser-check.mjs`. `WHY_CANVAS_PHASE=presenter` runs just the presenter checks. `WHY_CANVAS_BROWSER=webkit` selects the alternative browser engine; `PLAYWRIGHT_EXECUTABLE_PATH` selects a locally installed Chromium executable. Screenshots can be saved with `WHY_CANVAS_EVIDENCE` set to a directory outside the repository.
 
 ## Hosting
 

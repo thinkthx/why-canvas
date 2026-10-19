@@ -24,6 +24,23 @@ const CANVAS = {
   // Where the code and the synthesis skill live. Set to null to drop both links.
   source: 'https://github.com/thinkthx/why-canvas',
 
+  presentation: {
+    label: 'Present mode', previous: 'Previous', next: 'Next', close: 'Close presentation',
+    shortcuts: 'Use the arrow keys to navigate', replies: 'Replies', page: 'Response page', of: 'of',
+    discuss: 'Discuss', empty: 'No replies to show.', emptyTitle: 'Nothing to present',
+    long: 'Long response; scroll to read the rest', starred: 'Starred',
+    sections: {
+      hero: ['Who is served shapes every other answer.', 'Who is missing from these answers?'],
+      facing: ['Name the problem, how it feels and the change people need.', 'Which problem matters most?'],
+      villain: ['Name the force or habit that makes the problem harder.', 'Where does this show up?'],
+      guide: ['Explain what gives people a reason to trust the guide.', 'What makes that trust credible?'],
+      offer: ['Make the help concrete, with a simple path to get started.', 'Is the next step clear and useful?'],
+      stakes: ['Describe what success changes and what is at risk.', 'What would meaningful progress look like?'],
+      personal: ['Explore why this matters and what could change that.', 'What connects these reasons?'],
+      purpose: ['Bring the answers together and look for a common thread.', 'Which words feel true?'],
+    },
+  },
+
   // Screen copy shared by every type. This base is for working alone or on
   // a shared screen; groupCopy replaces parts of it when the link names a
   // host. A type's sheet can override keys in either (copy, groupCopy).
@@ -722,7 +739,32 @@ const WhyCanvas = (() => {
     return `${out.join('\n')}\n`;
   }
 
+  // Layout policy is independent of the DOM; the presenter supplies real measurements.
+  function presentationPages(slides, { narrow = false, fits = () => true } = {}) {
+    return slides.flatMap(slide => {
+      const layouts = narrow ? [[1, 2], [1, 1]] : slide.section.template
+        ? [[2, 2], [2, 1], [1, 1]] : [[3, 2], [2, 2], [3, 1], [2, 1], [1, 1]];
+      const pages = [];
+      for (let start = 0; start < slide.entries.length;) {
+        let chosen;
+        for (const [columns, rows] of layouts) {
+          const entries = slide.entries.slice(start, start + columns * rows);
+          const page = { slide, start, entries, columns, rows, part: pages.length, count: slide.entries.length };
+          if (fits(page) || columns * rows === 1) { chosen = page; break; }
+        }
+        pages.push(chosen);
+        start += chosen.entries.length;
+      }
+      return pages.map(page => ({ ...page, count: pages.length }));
+    });
+  }
+  function presentationAnchor(pages, anchor) {
+    return Math.max(0, pages.findIndex(page => page.slide.key === anchor?.slide.key
+      && page.start <= anchor.start && page.start + page.entries.length > anchor.start));
+  }
+
   return {
+    presentationPages, presentationAnchor,
     DEFAULT_TYPE, TYPES, DEMO_TYPES, knownType, sectionTitle, fieldTitle, fill, templateFor, copyFor,
     LIMITS, cleanSetting, readSettings, settingsHash, groupKey, storageKey,
     fields, fieldById, purposeSection, nameKey, highlightKey,
@@ -943,20 +985,41 @@ td.numeric { font-variant-numeric: tabular-nums; }
 .answer-tools svg { display: block; }
 
 /* Present mode: sized to the screen so it reads from across a room. */
-.present { position: fixed; inset: 0; z-index: 40; display: flex; padding: 5vh 4vw 2.5vh; background: var(--bg); color: var(--fg1); }
+.present { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; background: var(--bg); color: var(--fg1); }
+.topbar #present { display: inline-flex; }
 .present:focus { outline: none; box-shadow: none; }
-.slide { display: flex; flex-direction: column; gap: 2.8vh; width: 100%; height: 100%; }
-.slide-eyebrow { font-size: var(--slide-small); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg3); }
+.present-screen { flex: 1; min-height: 0; padding: 3vh 4vw 1vh; }
+.slide { display: flex; flex-direction: column; gap: 1.4vh; width: 100%; height: 100%; min-height: 0; }
+.slide-eyebrow { font-size: var(--slide-small); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg3); }
 .slide-title { font-size: var(--slide-title); font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
-.slide-grid { flex: 1; min-height: 0; overflow: hidden; display: grid; gap: 2.2vh 1.6vw; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); align-content: start; }
-.slide-card { margin: 0; padding: 2.8vh 1.8vw; background: var(--bg-subtle); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 1.8vh; }
-.slide-card blockquote { margin: 0; font-size: var(--slide-text); line-height: 1.3; white-space: pre-wrap; overflow-wrap: anywhere; }
-.slide-card figcaption { display: flex; align-items: center; gap: 1vw; font-size: var(--slide-small); font-weight: 600; color: var(--fg3); }
+.present-context { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: var(--slide-small); line-height: 1.4; color: var(--fg2); }
+.present-context > p { max-width: 66%; }
+.present-progress { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; font-size: var(--text-sm); }
+.present-segments { display: flex; gap: 4px; }
+.present-segments i { width: 12px; height: 3px; background: var(--border); }
+.present-segments i.current { background: var(--fg1); }
+.slide-grid { flex: 1; min-height: 0; overflow: hidden; display: grid; gap: 1.8vh 1.6vw; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); grid-template-rows: repeat(var(--rows), minmax(0, 1fr)); }
+.slide-card { margin: 0; min-height: 0; min-width: 0; padding: 2vh 1.8vw; background: var(--bg-subtle); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 1vh; overflow: hidden; }
+.slide-grid:has(> :only-child) { grid-template-columns: minmax(0, 1fr); }
+.slide-grid:has(> :only-child) .slide-card { width: min(100%, 60ch); justify-self: center; }
+.slide-card blockquote { margin: 0; min-height: 0; flex: 1; overflow: auto; font-size: var(--slide-text); line-height: 1.3; white-space: pre-wrap; overflow-wrap: anywhere; overscroll-behavior: contain; }
+.slide-card figcaption { display: flex; align-items: center; flex-wrap: wrap; gap: 1vw; font-size: var(--slide-small); font-weight: 600; color: var(--fg3); }
 .mark { display: inline-flex; align-items: center; gap: 0.5em; color: var(--fg1); text-transform: uppercase; letter-spacing: 0.08em; }
 .mark::before { content: ""; width: 0.6em; height: 0.6em; background: var(--accent); box-shadow: inset 0 0 0 1px var(--fg1); }
-.slide-foot { display: flex; align-items: center; gap: 16px; font-size: var(--slide-eyebrow); color: var(--fg3); font-variant-numeric: tabular-nums; }
-.slide-foot .btn { border-color: var(--border); color: var(--fg2); }
+.present-discuss { font-size: var(--slide-small); color: var(--fg2); }
+.present-controls { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; padding: 8px 4vw; min-height: 64px; border-top: 1px solid var(--border); font-size: var(--text-sm); color: var(--fg3); }
+.present-nav { justify-content: center; }
+.present-tools { justify-content: flex-end; }
+@media (hover:hover) and (pointer:fine) { .present-controls.is-idle:not(:focus-within) { opacity: 0; } }
 .slide-empty { font-size: var(--slide-text); color: var(--fg3); }
+@media (max-width:760px) {
+  .present-hint { display: none; }
+  .present-controls { grid-template-columns: 1fr auto 1fr; }
+  .present-nav { grid-column: 2; }
+  .present-context { flex-wrap: wrap; }
+  .present-context > p { max-width: 100%; }
+  .present-screen { padding: 16px 16px 8px; }
+}
 
 /* Responsive */
 /* Setup */
@@ -3607,93 +3670,142 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
     }
 
     function present() {
-      const slides = sections.flatMap((section) => sectionRows(section)
-        .filter((row) => row.entries.length && !(section.template && row.fieldId !== 'purpose.sentence'))
-        .map((row) => ({
-          section, title: row.title,
-          entries: row.entries.map((e) => ({ ...e, mark: state.highlights[WhyCanvas.highlightKey(e.reply.name, row.fieldId)] })),
+      if (closePresent) return;
+      const c = CANVAS.presentation;
+      const slides = sections.flatMap(section => sectionRows(section)
+        .filter(row => row.entries.length && !(section.template && row.fieldId !== 'purpose.sentence'))
+        .map(row => ({ section, key: row.fieldId, title: row.title, question: row.prompt,
+          entries: row.entries.map(e => ({ ...e, mark: state.highlights[WhyCanvas.highlightKey(e.reply.name, row.fieldId)] })),
         })));
       const opener = $('#present');
-      const overlay = h('div', { class: 'present', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Present mode', tabindex: '-1' });
+      const overlay = h('div', { class: 'present', role: 'dialog', 'aria-modal': 'true', 'aria-label': c.label, tabindex: '-1' });
+      const screen = h('div', { class: 'present-screen' });
+      const status = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
+      const back = h('button', { type: 'button', class: 'btn btn-ghost', 'data-back': '', 'aria-label': c.previous, 'aria-keyshortcuts': 'ArrowLeft ArrowUp', text: '←', onclick: () => go(index - 1) });
+      const next = h('button', { type: 'button', class: 'btn btn-ghost', 'data-next': '', 'aria-label': c.next, 'aria-keyshortcuts': 'ArrowRight ArrowDown', text: '→', onclick: () => go(index + 1) });
+      const controls = h('nav', { class: 'present-controls', 'aria-label': c.label },
+        h('span', { class: 'present-hint', text: c.shortcuts }),
+        h('div', { class: 'row present-nav' }, back, next),
+        h('div', { class: 'row present-tools' }, h('button', { type: 'button', class: 'btn btn-ghost', 'aria-label': c.close, 'aria-keyshortcuts': 'Escape', text: '×', onclick: close })));
+      const background = [...document.body.children].map(node => [node, node.inert]);
+      const overflow = document.body.style.overflow;
+      background.forEach(([node]) => { node.inert = true; });
+      document.body.style.overflow = 'hidden';
+      overlay.append(screen, controls, status);
       document.body.append(overlay);
-      let pages = [];
-      let index = 0;
-
-      const columns = (n) => (n <= 3 ? n : n === 4 ? 2 : 3);
-      const marker = (mark) => {
-        if (!mark || (!mark.star && !mark.tag)) return null;
-        return h('span', { class: 'mark', text: [mark.star && 'Starred', mark.tag].filter(Boolean).join(' · ') });
-      };
-      const draw = (page, number = 0, count = 1) => {
-        overlay.replaceChildren(h('div', { class: 'slide' },
-          h('p', { class: 'slide-eyebrow', text: `${two(page.section.number)} · ${page.section.title}` }),
-          h('h2', { class: 'slide-title', text: page.title + (page.count > 1 ? ` (${page.part + 1} of ${page.count})` : '') }),
-          page.entries.length
-            ? h('div', { class: 'slide-grid', style: `--cols:${columns(page.entries.length)}` },
-              page.entries.map((e) => h('figure', { class: 'slide-card' },
-                h('blockquote', { text: e.text }),
-                (e.label || marker(e.mark)) && h('figcaption', {}, e.label, marker(e.mark)))))
-            : h('p', { class: 'slide-empty', text: 'No replies to show.' }),
-          h('div', { class: 'slide-foot' },
-            h('button', { type: 'button', class: 'btn btn-ghost btn-sm', text: '←', 'aria-label': 'Previous', onclick: () => go(-1), disabled: number === 0 }),
-            h('span', { text: `${number + 1} / ${count}` }),
-            h('button', { type: 'button', class: 'btn btn-ghost btn-sm', text: '→', 'aria-label': 'Next', onclick: () => go(1), disabled: number >= count - 1 }),
-            h('span', { text: 'Esc to exit' }))));
-      };
-      const fits = () => {
-        const grid = $('.slide-grid', overlay);
-        return !grid || grid.scrollHeight <= grid.clientHeight + 1;
-      };
-      // Keep the text size and split a crowded slide into parts instead.
-      const paginate = () => slides.flatMap((slide) => {
-        const n = slide.entries.length;
-        const sizes = [...new Set([n, 6, 4, 3, 2, 1])].filter((size) => size <= n).sort((a, b) => b - a);
-        for (const size of sizes) {
-          const parts = [];
-          for (let i = 0; i < n; i += size) parts.push(slide.entries.slice(i, i + size));
-          const pagesForSlide = parts.map((entries, part) => ({ ...slide, entries, part, count: parts.length }));
-          if (size === 1 || pagesForSlide.every((page) => { draw(page); return fits(); })) return pagesForSlide;
-        }
-        return [];
-      });
-      const layout = () => {
-        pages = slides.length ? paginate() : [{ section: sections[0], title: 'Nothing to present', entries: [], part: 0, count: 1 }];
-        index = Math.min(index, pages.length - 1);
-        draw(pages[index], index, pages.length);
-      };
-      const go = (step) => {
-        index = Math.max(0, Math.min(pages.length - 1, index + step));
-        draw(pages[index], index, pages.length);
-        announce(`${pages[index].title}, ${index + 1} of ${pages.length}`);
-      };
-      const close = () => {
-        document.removeEventListener('keydown', onKey);
-        document.removeEventListener('fullscreenchange', onFullscreen);
-        window.removeEventListener('resize', layout);
-        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
-        overlay.remove();
-        closePresent = null;
-        opener?.focus();
-      };
-      const onKey = (event) => {
-        const next = ['ArrowRight', 'ArrowDown', 'PageDown', ' '];
-        const prev = ['ArrowLeft', 'ArrowUp', 'PageUp'];
-        if (next.includes(event.key)) { event.preventDefault(); go(1); }
-        else if (prev.includes(event.key)) { event.preventDefault(); go(-1); }
-        else if (event.key === 'Home') { event.preventDefault(); go(-pages.length); }
-        else if (event.key === 'End') { event.preventDefault(); go(pages.length); }
-        else if (event.key === 'Escape') close();
-      };
-      const onFullscreen = () => { if (!document.fullscreenElement) close(); else layout(); };
-
-      document.addEventListener('keydown', onKey);
-      closePresent = close;
-      window.addEventListener('resize', layout);
-      layout();
-      overlay.focus();
-      if (overlay.requestFullscreen) {
-        overlay.requestFullscreen().then(() => document.addEventListener('fullscreenchange', onFullscreen)).catch(() => {});
+      let pages = [], index = 0, closed = false, resizeFrame, idleTimer;
+      function stage(page) {
+        if (!page) return h('article', { class: 'slide' }, h('h2', { class: 'slide-title', text: c.emptyTitle }), h('p', { class: 'slide-empty', text: c.empty }));
+        const {slide, entries, start, part, count, columns, rows} = page;
+        const context = c.sections[slide.section.id] || ['', ''];
+        const range = `${c.replies} ${start + 1}–${start + entries.length} ${c.of} ${slide.entries.length}`;
+        return h('article', { class: 'slide', 'data-field': slide.key },
+          h('p', { class: 'slide-eyebrow', text: `${two(slide.section.number)} · ${slide.section.title}` }),
+          h('h2', { class: 'slide-title', text: slide.title }),
+          h('div', { class: 'present-context' }, h('p', { text: `${slide.question} ${context[0]}` }),
+            count > 1 && h('div', { class: 'present-progress', 'aria-label': `${c.page} ${part + 1} ${c.of} ${count}` },
+              h('span', { class: 'present-segments', 'aria-hidden': 'true' }, Array.from({length:count}, (_,i) => h('i', { class: i === part ? 'current' : '' }))), h('span', { text: range }))),
+          h('div', { class: 'slide-grid', style: `--cols:${columns};--rows:${rows}` }, entries.map(e => {
+            const mark = e.mark?.star || e.mark?.tag;
+            const marker = mark && h('span', { class: 'mark', text: [e.mark.star && c.starred, e.mark.tag].filter(Boolean).join(' · ') });
+            return h('figure', { class: 'slide-card' }, h('blockquote', { text: e.text }),
+              (e.label || mark) && h('figcaption', {}, e.label, marker));
+          })),
+          h('p', { class: 'present-discuss' }, h('strong', { text: `${c.discuss}: ` }), context[1]));
       }
+      function draw() {
+        const page = pages[index];
+        screen.replaceChildren(stage(page));
+        for (const quote of $$('.slide-card blockquote', screen)) {
+          if (quote.scrollHeight > quote.clientHeight + 1) {
+            quote.tabIndex = 0;
+            quote.setAttribute('aria-label', c.long);
+          }
+        }
+        back.disabled = index === 0;
+        next.disabled = index >= pages.length - 1;
+        status.textContent = page ? `${page.slide.section.title}. ${page.slide.title}. ${c.page} ${page.part + 1} ${c.of} ${page.count}.` : c.empty;
+      }
+      function layout() {
+        if (closed) return;
+        const anchor = pages[index];
+        const focused = document.activeElement;
+        const scrolling = focused?.matches('.slide-card blockquote') ? { text: focused.textContent, top: focused.scrollTop } : null;
+        pages = WhyCanvas.presentationPages(slides, { narrow: innerWidth <= 760, fits: page => {
+          screen.replaceChildren(stage(page));
+          const article = screen.firstElementChild;
+          return article.scrollHeight <= article.clientHeight + 1 && $$('.slide-card', screen).every(card => {
+            const quote = $('blockquote', card);
+            return card.scrollHeight <= card.clientHeight + 1 && quote.scrollHeight <= quote.clientHeight + 1;
+          });
+        }});
+        index = WhyCanvas.presentationAnchor(pages, anchor);
+        draw();
+        if (scrolling) {
+          const quote = $$('.slide-card blockquote', screen).find(node => node.textContent === scrolling.text);
+          if (quote?.tabIndex === 0) { quote.focus({preventScroll:true}); quote.scrollTop = scrolling.top; }
+          else overlay.focus({preventScroll:true});
+        }
+      }
+      function reveal() {
+        controls.classList.remove('is-idle');
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => { if (!controls.contains(document.activeElement)) controls.classList.add('is-idle'); }, 3000);
+      }
+      function go(target) {
+        const to = Math.max(0, Math.min(pages.length - 1, target));
+        if (to === index) return;
+        index = to;
+        draw();
+        if (document.activeElement === back && back.disabled || document.activeElement === next && next.disabled) overlay.focus();
+        reveal();
+      }
+      function close() {
+        if (closed) return;
+        closed = true;
+        clearTimeout(idleTimer);
+        cancelAnimationFrame(resizeFrame);
+        document.removeEventListener('keydown', onKey, true);
+        document.removeEventListener('fullscreenchange', onFullscreen);
+        window.removeEventListener('resize', resize);
+        if (document.fullscreenElement === overlay) document.exitFullscreen().catch(() => {});
+        overlay.remove();
+        background.forEach(([node, inert]) => { node.inert = inert; });
+        document.body.style.overflow = overflow;
+        closePresent = null;
+        if (opener?.isConnected) opener.focus({preventScroll:true});
+      }
+      function onKey(event) {
+        reveal();
+        if (event.key === 'Escape') { event.preventDefault(); close(); return; }
+        if (event.key === 'Tab') {
+          const targets = $$('button:not(:disabled),[tabindex="0"]', overlay);
+          const first = targets[0], last = targets.at(-1);
+          if (event.shiftKey && (document.activeElement === first || document.activeElement === overlay)) { event.preventDefault(); last?.focus(); }
+          else if (!event.shiftKey && (document.activeElement === last || document.activeElement === overlay)) { event.preventDefault(); first?.focus(); }
+          return;
+        }
+        if (event.target.matches('blockquote[tabindex],select,input,textarea') || event.target.isContentEditable) return;
+        // Space and Enter activate focused controls; do not steal their native action.
+        if (event.target.closest('button') && [' ', 'Enter'].includes(event.key)) return;
+        const commands = { ArrowRight: index + 1, ArrowDown: index + 1, PageDown: index + 1, ' ': index + 1,
+          ArrowLeft: index - 1, ArrowUp: index - 1, PageUp: index - 1, Home: 0, End: pages.length - 1 };
+        if (event.key in commands) { event.preventDefault(); go(commands[event.key]); }
+      }
+      function resize() { cancelAnimationFrame(resizeFrame); resizeFrame = requestAnimationFrame(layout); }
+      function onFullscreen() { if (document.fullscreenElement !== overlay) close(); else layout(); }
+      overlay.addEventListener('pointermove', reveal);
+      overlay.addEventListener('pointerdown', reveal);
+      controls.addEventListener('focusin', reveal);
+      controls.addEventListener('focusout', reveal);
+      document.addEventListener('keydown', onKey, true);
+      window.addEventListener('resize', resize);
+      closePresent = close;
+      layout(); overlay.focus(); reveal();
+      overlay.requestFullscreen?.().then(() => {
+        if (closed) { if (document.fullscreenElement === overlay) document.exitFullscreen().catch(() => {}); }
+        else document.addEventListener('fullscreenchange', onFullscreen);
+      }).catch(() => {});
     }
 
     function render() {

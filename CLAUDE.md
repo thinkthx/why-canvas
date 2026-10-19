@@ -10,4 +10,4 @@ Read `BRIEF.md` first.
 - Every colour, font, type size and radius lives in the `:root` token block.
 - Australian English. No hype words. No em-dashes in copy.
 - No logos, trademarks or icon sets from other companies.
-- Tests: `node --test tests/`. Commit in small, working steps.
+- Tests: `node --test tests/*.test.mjs`. Commit in small, working steps.
