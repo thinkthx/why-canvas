@@ -137,7 +137,7 @@ const CANVAS = {
 
   // An example canvas: one person's filled-in canvas, read-only.
   example: {
-    label: 'Example',
+    label: 'Sample answers',
     note: 'Nothing here is saved.',
     start: 'Start your own',
     groupView: 'See a group’s answers',
@@ -161,7 +161,7 @@ const CANVAS = {
 
   // The demo banner and the empty Group view.
   demo: {
-    banner: 'Sample answers. Nothing here is real.',
+    banner: 'Sample answers',
     exit: 'Exit demo',
     try: 'Try it with sample answers',
     switchLabel: 'Sample group',
@@ -252,7 +252,6 @@ const CANVAS = {
       label: 'Personal',
       description: 'Your own purpose: your work, a career move or a project of your own.',
       fallback: 'my work',
-      example: 'Rae’s canvas: a team lead working out what to do next.',
       solo: true,
       copy: {
         question: "What's my why?",
@@ -305,7 +304,6 @@ const CANVAS = {
       label: 'Team',
       description: 'A team or department inside an organisation.',
       fallback: 'this team',
-      example: 'Grace’s canvas for the Payments team, who run payments for a mid-sized online retailer.',
       copy: {
         explainStory: { title: "It's told as a story", text: "The people our work serves are the hero, not us. They face a problem, and something in their way: the villain. The team is the guide that helps them get past it. The stakes are what happens if we succeed, or don't. The last step pulls it all into one sentence." },
       },
@@ -331,7 +329,6 @@ const CANVAS = {
       label: 'Product',
       description: 'A product, service or app, and the people who build it.',
       fallback: 'this product',
-      example: 'Maya’s canvas for Penny Jar, a household budgeting app.',
       copy: {
         explainStory: { title: "It's told as a story", text: "The people who use it are the hero, not the product. They face a problem, and something in their way: the villain. The product, and the people behind it, are the guide that helps them get past it. The stakes are what happens if it succeeds, or doesn't. The last step pulls it all into one sentence." },
       },
@@ -362,7 +359,6 @@ const CANVAS = {
       label: 'Community',
       description: 'A meetup, user group, online group or any group people choose to join.',
       fallback: 'this community',
-      example: 'Ana’s canvas for Riverbend Coders, a local developer meetup.',
       copy: {
         explainStory: { title: "It's told as a story", text: "The people we serve are the hero, not us. They face a problem, and something in their way: the villain. The community is the guide that helps them get past it. The stakes are what happens if we succeed, or don't. The last step pulls it all into one sentence." },
       },
@@ -947,6 +943,7 @@ button, input, textarea { font: inherit; color: inherit; }
 .topbar-id { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .wordmark { font-size: var(--text-body); font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; align-self: center; }
 .lockup { display: flex; align-items: center; gap: 12px; align-self: flex-start; }
+.lockup > * { align-self: center; }
 .topbar .lockup { align-self: center; }
 .logo { display: block; height: var(--logo-h); width: auto; flex: none; }
 .logo-dark, :root[data-theme="dark"] .lockup:has(.logo-dark) .logo-light { display: none; }
@@ -968,7 +965,7 @@ button, input, textarea { font: inherit; color: inherit; }
 .page .stack, .sheet .stack { display: flex; flex-direction: column; gap: 12px; }
 /* A hint belongs to its label: 4px under it, 12px above the field. */
 .stack > .label + .prompt { margin-top: -8px; }
-.page-wordmark { font-size: var(--text-md); font-weight: 700; letter-spacing: 0.02em; color: var(--fg3); align-self: flex-start; }
+.page-wordmark { font-size: var(--text-md); font-weight: 700; letter-spacing: 0.02em; color: var(--fg1); align-self: flex-start; }
 .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .explain { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
 .explain-item { background: var(--surface); padding: 24px; display: flex; flex-direction: column; gap: 8px; }
@@ -1108,13 +1105,15 @@ td.numeric { font-variant-numeric: tabular-nums; }
 .sheet .md { margin-top: 12px; }
 /* Credit */
 .credit { padding: 32px 24px 40px; text-align: center; font-size: var(--text-sm); color: var(--fg3); }
+.credit:empty { display: none; }
 .credit a { color: inherit; text-underline-offset: 3px; }
 .credit a:hover { color: var(--fg1); }
 .resume { white-space: normal; text-align: left; justify-content: flex-start; }
 .demo-banner {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 12px 24px; background: var(--bg-subtle); border-bottom: 1px solid var(--border);
+  padding: 12px 40px; background: var(--bg-subtle); border-bottom: 1px solid var(--border);
 }
+.demo-context { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; min-width: 0; }
 
 @media (max-width: 1180px) {
   .grid-4, .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1122,6 +1121,7 @@ td.numeric { font-variant-numeric: tabular-nums; }
 }
 @media (max-width: 860px) {
   .topbar { padding: 12px 16px; position: static; }
+  .demo-banner { padding-inline-start: 16px; }
   .topbar-meta { gap: 12px 20px; }
   .topbar .btn-dark, .topbar .topbar-group { display: none; }
   .title { font-size: var(--text-2xl); line-height: 1.15; }
@@ -1141,7 +1141,8 @@ td.numeric { font-variant-numeric: tabular-nums; }
   .export { padding-top: 0; }
 }
 .theme-home { position: fixed; top: 10px; right: 12px; z-index: 30; }
-.theme-control { width: 44px; padding: 8px; background: var(--bg); }
+.theme-control { width: 44px; padding: 0; border-width: 1px; border-radius: 50%; background: transparent; color: var(--fg1); }
+.theme-control:hover { border-color: var(--border); }
 .topbar { padding-inline-end: 80px; }
 .demo-banner { padding-inline-end: 80px; }
 .canvas-skip { position: fixed; z-index: 60; top: 8px; left: 8px; padding: 12px; background: var(--bg); color: var(--fg1); transform: translateY(-150%); }
@@ -2930,7 +2931,7 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
     return el;
   }
 
-  const themeButton = h('button', { class: 'btn btn-ghost theme-control', type: 'button', role: 'switch',
+  const themeButton = h('button', { class: 'btn theme-control', type: 'button', role: 'switch',
     'aria-label': CANVAS.theme.label, onclick: () => WhyCanvasTheme.toggle() });
   const themeHome = h('div', { class: 'theme-home' }, themeButton);
   function updateThemeControl() {
@@ -3383,12 +3384,13 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
       if (settings.host) showStart(); else location.hash = '';
     }
 
-    // Who wrote the example and what for, with a way to switch types or start your own.
+    // Which sample you're looking at, with a way to switch types or start your own.
     function exampleBanner() {
       const c = CANVAS.example;
       return h('div', { class: 'demo-banner', role: 'region', 'aria-label': c.label },
-        h('p', { class: 'body' }, h('strong', { text: `${c.label}: ` }), `${CANVAS.types[settings.type].example} ${c.note}`),
-        examplePicker('example', settings.type, WhyCanvas.TYPES, c.switchLabel),
+        h('div', { class: 'demo-context' },
+          examplePicker('example', settings.type, WhyCanvas.TYPES, c.switchLabel),
+          h('p', { class: 'label', text: c.label })),
         h('div', { class: 'row' },
           h('button', { type: 'button', class: 'link', text: CANVAS.demo.exit, onclick: () => { location.hash = ''; } }),
           !CANVAS.types[settings.type].solo && h('button', { type: 'button', class: 'btn btn-ghost btn-sm', text: c.groupView, onclick: () => { location.hash = WhyCanvas.settingsHash({ view: 'demo', type: settings.type }); } }),
@@ -3918,8 +3920,9 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
 
     function render() {
       const banner = demo && h('div', { class: 'demo-banner', role: 'region', 'aria-label': 'Demo' },
-        h('p', { class: 'label', text: CANVAS.demo.banner }),
-        examplePicker('demo', settings.type, WhyCanvas.DEMO_TYPES, CANVAS.demo.switchLabel),
+        h('div', { class: 'demo-context' },
+          examplePicker('demo', settings.type, WhyCanvas.DEMO_TYPES, CANVAS.demo.switchLabel),
+          h('p', { class: 'label', text: CANVAS.demo.banner })),
         h('div', { class: 'row' },
           h('button', { type: 'button', class: 'link', text: CANVAS.demo.exit, onclick: exitDemo }),
           h('button', { type: 'button', class: 'btn btn-primary btn-sm', text: CANVAS.example.start, onclick: () => { location.hash = ''; } })));

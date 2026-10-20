@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CANVAS, WhyCanvas, SAMPLES } from './load.mjs';
+import { WhyCanvas, SAMPLES } from './load.mjs';
 
 const { replies, errors } = WhyCanvas.parseReplies(SAMPLES);
 
@@ -43,12 +43,11 @@ test('a demo session takes its group from the samples, so no reply is flagged', 
   }
 });
 
-test('every type has a full example canvas, and its context names who wrote it', () => {
+test('every type has a full example canvas', () => {
   for (const type of WhyCanvas.TYPES) {
     const reply = WhyCanvas.exampleReply(SAMPLES, type);
     assert.equal(reply.type, type);
     assert.equal(WhyCanvas.progress(reply).started, 8, type);
-    assert.match(CANVAS.types[type].example, new RegExp(`^${reply.name}’s canvas`), type);
   }
 });
 
