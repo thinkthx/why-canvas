@@ -44,6 +44,15 @@ test('dark text and actions remain readable on their backgrounds', () => {
   }
 });
 
+test('control borders meet WCAG non-text contrast on their backgrounds', () => {
+  for (const prefix of ['', 'dark-']) {
+    for (const bg of ['bg', 'bg-subtle']) {
+      const ratio = contrast(token(`${prefix}border-strong`), token(`${prefix}${bg}`));
+      assert.ok(ratio >= 3, `${prefix}border-strong on ${prefix}${bg}: ${ratio.toFixed(2)}`);
+    }
+  }
+});
+
 test('a logo, when set, takes its height from a token', () => {
   assert.match(token('logo-h'), /^\d+px$/);
   assert.match(rest, /\.logo \{[^}]*height: var\(--logo-h\)/);
