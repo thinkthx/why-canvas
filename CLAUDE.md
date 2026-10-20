@@ -2,7 +2,7 @@
 
 Read `BRIEF.md` first.
 
-- This is the plain, unbranded version of Why Canvas, MIT licensed, for anyone to download and make their own. Keep it neutral: no brand, no logo, no company or community names. `tests/clean-room.test.mjs` checks every file.
+- This is the plain, unbranded version of Why Canvas, MIT licensed, for anyone to download and make their own. Keep it neutral: no brand, no logo, no company or community names. `CANVAS.logo` is a slot for other people's copies and stays `null` here. `tests/clean-room.test.mjs` checks every file.
 - The author appears only in the optional `CANVAS.credit` footer and in `LICENSE`.
 - One self-contained HTML file: no backend, no build step, no dependencies, no analytics or third-party scripts. Ask before changing that.
 - All wording lives in the `CANVAS` block. Never hard-code copy in the UI. Copy may use `{group}` and `{host}` only.

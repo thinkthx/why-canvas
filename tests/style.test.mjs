@@ -43,3 +43,8 @@ test('dark text and actions remain readable on their backgrounds', () => {
     assert.ok(contrast(token(`dark-${fg}`),token(`dark-${bg}`))>=4.5,`${fg} on ${bg} in dark mode`);
   }
 });
+
+test('a logo, when set, takes its height from a token', () => {
+  assert.match(token('logo-h'), /^\d+px$/);
+  assert.match(rest, /\.logo \{[^}]*height: var\(--logo-h\)/);
+});

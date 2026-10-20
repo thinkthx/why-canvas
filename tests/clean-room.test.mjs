@@ -53,8 +53,13 @@ test('the code is MIT licensed', () => {
   assert.match(read('LICENSE'), /^MIT License/);
 });
 
-test('the page embeds no images', () => {
+// CANVAS.logo is the slot for anyone who wants their own mark on the page.
+// It ships empty, so this copy stays plain.
+test('the logo slot ships empty and the page embeds no images', () => {
+  assert.ok('logo' in CANVAS, 'CANVAS.logo is missing');
+  assert.equal(CANVAS.logo, null);
   const html = read('why-canvas.html');
   assert.doesNotMatch(html, /data:image\//);
-  assert.doesNotMatch(html, /<img\b|h\('img'/);
+  assert.doesNotMatch(html, /<img\b/);
+  assert.equal(html.match(/h\('img'/g)?.length ?? 0, 1, 'only the logo slot makes an image');
 });

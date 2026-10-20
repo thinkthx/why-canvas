@@ -54,8 +54,9 @@ Download `why-canvas.html`. That one file is the whole tool.
 
 1. **Change the words** in the `CANVAS` block at the top: the questions, the prompts, the help notes, even the four types.
 2. **Change the look** in the `:root` block at the top of the styles: colours, fonts, type sizes and corners.
-3. **Change or remove the credit** in `CANVAS.credit`. Set it to `null` to remove the footer. You don't need to credit anyone.
-4. **Put it online** by uploading the file to any static host, or just open it from your computer.
+3. **Add your logo** in `CANVAS.logo`, for example `{ src: 'logo.svg', alt: 'Your name' }`. It sits beside the Why Canvas name on every screen. Use a data URI for `src` to keep the page one file, and set its height with `--logo-h` in `:root`. If your logo disappears on the dark palette, add `darkSrc` with a version that works there.
+4. **Change or remove the credit** in `CANVAS.credit`. Set it to `null` to remove the footer. You don't need to credit anyone.
+5. **Put it online** by uploading the file to any static host, or just open it from your computer.
 
 Run the tests after big changes (see below) to check that copies still read back.
 

@@ -23,6 +23,11 @@ const CANVAS = {
   credit: { lead: 'Created by', name: 'Rod Sampera', url: 'https://rodsampera.com', site: 'rodsampera.com', codeLabel: 'Get the code' },
   // Where the code and the synthesis skill live. Set to null to drop both links.
   source: 'https://github.com/thinkthx/why-canvas',
+  // Your own mark, shown beside the Why Canvas name: { src, alt, darkSrc }.
+  // src is a path or a data: URI (a data URI keeps the page one file).
+  // darkSrc is optional, for a mark that disappears on the dark palette.
+  // Its height is --logo-h in the styles. null shows the name alone.
+  logo: null,
 
   accessibility: { skip: 'Skip to canvas' },
   theme: { label: 'Dark mode', light: 'Switch to light mode', dark: 'Switch to dark mode' },
@@ -821,6 +826,7 @@ const WhyCanvas = (() => {
   --radius: 2px;
   --ease: cubic-bezier(0.2, 0, 0, 1);
   --bar-h: 64px;
+  --logo-h: 32px;
   /* Neutral dark palette. */
   --dark-accent: #A9C3EA;
   --dark-accent-hover: #C8DAF5;
@@ -940,6 +946,11 @@ button, input, textarea { font: inherit; color: inherit; }
 .topbar { position: sticky; top: 0; z-index: 20; min-height: var(--bar-h); padding: 0 40px; display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; background: var(--bg); border-bottom: 1px solid var(--border); }
 .topbar-id { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .wordmark { font-size: var(--text-body); font-weight: 700; letter-spacing: -0.01em; white-space: nowrap; align-self: center; }
+.lockup { display: flex; align-items: center; gap: 12px; align-self: flex-start; }
+.topbar .lockup { align-self: center; }
+.logo { display: block; height: var(--logo-h); width: auto; flex: none; }
+.logo-dark, :root[data-theme="dark"] .lockup:has(.logo-dark) .logo-light { display: none; }
+:root[data-theme="dark"] .logo-dark { display: block; }
 .topbar-name { font-size: var(--text-md); color: var(--fg2); }
 .topbar-meta { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
 .progress { display: flex; align-items: center; gap: 12px; font-size: var(--text-md); color: var(--fg2); }
@@ -2974,7 +2985,14 @@ When a section has little to go on, its block says "Little to go on: 2 of 7 answ
   const slug = (text) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'canvas';
   const two = (n) => String(n).padStart(2, '0');
   const fieldDomId = (field) => `f-${field.id.replace('.', '-')}`;
-  const wordmark = (cls) => h('span', { class: cls, text: 'Why Canvas' });
+  // The name, with CANVAS.logo beside it when there is one.
+  const wordmark = (cls) => {
+    const name = h('span', { class: cls, text: 'Why Canvas' });
+    const { src, alt = '', darkSrc } = CANVAS.logo ?? {};
+    if (!src) return name;
+    const mark = (cls, url) => h('img', { class: `logo ${cls}`, src: url, alt });
+    return h('span', { class: 'lockup' }, mark('logo-light', src), darkSrc && mark('logo-dark', darkSrc), name);
+  };
 
   function autosize(el) {
     if (CSS.supports?.('field-sizing', 'content')) return;
